@@ -1,15 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../gpt_manager.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
+import '../versioning.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    checkForUpdates();
+  }
+
+  Future<void> checkForUpdates() async {
+    final Version? latestVersion = await getLatestRelease();
+
+    if (latestVersion == null) return;
+
+    final packageInfo = await PackageInfo.fromPlatform();
+    final currentVersion = Version.parse(packageInfo.version);
+
+    // enable this for testing update UI.
+    // final latestVersion = Version(1, 0, 1);
+
+    if (latestVersion > currentVersion) {
+      showUpdateAvailableUI(latestVersion);
+    }
+  }
+
+  void showUpdateAvailableUI(Version latestVersion) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'A new version is available!',
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: context.colorScheme.onInverseSurface,
+          ),
+        ),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.fromLTRB(16, 16, 16, 34),
+        showCloseIcon: true,
+        duration: const Duration(days: 1),
+        backgroundColor: context.colorScheme.inverseSurface,
+        action: SnackBarAction(
+          label: 'Download',
+          textColor: context.colorScheme.inversePrimary,
+          onPressed: () {
+            launchUrlString(
+                'https://github.com/SwissCheese5/pocket_gpt/releases/$latestVersion');
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
