@@ -66,6 +66,8 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   void dispose() {
+    final GPTManager gpt = context.read<GPTManager>();
+    gpt.stopGenerating();
     scrollController.dispose();
     animationController.dispose();
     super.dispose();
@@ -395,125 +397,128 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
           ),
           clipBehavior: Clip.antiAlias,
           alignment: Alignment.center,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              switchOutCurve: Curves.easeOutQuart,
-              switchInCurve: Curves.easeOutQuart,
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 1),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: isGenerating
-                  ? Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          child: SafeArea(
+            top: false,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchOutCurve: Curves.easeOutQuart,
+                switchInCurve: Curves.easeOutQuart,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 1),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: isGenerating
+                    ? Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Tooltip(
+                              message: 'Stop generating response',
+                              child: FilledButton.tonalIcon(
+                                onPressed: gpt.stopGenerating,
+                                icon: const Icon(Icons.stop_circle),
+                                label: const Text('Stop generating'),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Row(
                         children: [
-                          Tooltip(
-                            message: 'Stop generating response',
-                            child: FilledButton.tonalIcon(
-                              onPressed: gpt.stopGenerating,
-                              icon: const Icon(Icons.stop_circle),
-                              label: const Text('Stop generating'),
+                          IconButton(
+                            tooltip: 'Add attachment',
+                            onPressed: () {},
+                            icon: const Icon(Icons.add),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: MediaQuery.of(context).size.height / 3,
+                              ),
+                              child: TextFormField(
+                                controller: textController,
+                                focusNode: focusNode,
+                                maxLength: 1000,
+                                maxLengthEnforcement:
+                                    MaxLengthEnforcement.enforced,
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                                autovalidateMode: AutovalidateMode.disabled,
+                                onChanged: (_) {
+                                  setState(() {});
+                                },
+                                onFieldSubmitted: (_) => triggerSend(context),
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onSecondaryContainer,
+                                ),
+                                decoration: InputDecoration(
+                                  counterText: '',
+                                  labelText: 'Type a message...',
+                                  isDense: true,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.never,
+                                  filled: true,
+                                  fillColor: context
+                                      .colorScheme.secondaryContainer
+                                      .withOpacity(0.5),
+                                  hoverColor: Colors.transparent,
+                                  border: OutlineInputBorder(
+                                    borderRadius: borderRadius,
+                                    borderSide: const BorderSide(width: 1.5),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: borderRadius,
+                                    borderSide: BorderSide(
+                                      color: context.colorScheme.primary,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: borderRadius,
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                cursorRadius: const Radius.circular(4),
+                              ),
                             ),
-                          )
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            tooltip: textController.text.isEmpty
+                                ? 'Start recording'
+                                : 'Send message',
+                            onPressed: () => triggerSend(context),
+                            icon: Icon(
+                              textController.text.isEmpty
+                                  ? Icons.mic
+                                  : Icons.send,
+                            ),
+                          ),
                         ],
                       ),
-                    )
-                  : Row(
-                      children: [
-                        IconButton(
-                          tooltip: 'Add attachment',
-                          onPressed: () {},
-                          icon: const Icon(Icons.add),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: MediaQuery.of(context).size.height / 3,
-                            ),
-                            child: TextFormField(
-                              controller: textController,
-                              focusNode: focusNode,
-                              maxLength: 1000,
-                              maxLengthEnforcement:
-                                  MaxLengthEnforcement.enforced,
-                              textInputAction: TextInputAction.newline,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
-                              autovalidateMode: AutovalidateMode.disabled,
-                              onChanged: (_) {
-                                setState(() {});
-                              },
-                              onFieldSubmitted: (_) => triggerSend(context),
-                              style: context.textTheme.bodyMedium?.copyWith(
-                                color: context.colorScheme.onSecondaryContainer,
-                              ),
-                              decoration: InputDecoration(
-                                counterText: '',
-                                labelText: 'Type a message...',
-                                isDense: true,
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                filled: true,
-                                fillColor: context
-                                    .colorScheme.secondaryContainer
-                                    .withOpacity(0.5),
-                                hoverColor: Colors.transparent,
-                                border: OutlineInputBorder(
-                                  borderRadius: borderRadius,
-                                  borderSide: const BorderSide(width: 1.5),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: borderRadius,
-                                  borderSide: BorderSide(
-                                    color: context.colorScheme.primary,
-                                    width: 1,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: borderRadius,
-                                  borderSide: const BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                              cursorRadius: const Radius.circular(4),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          tooltip: textController.text.isEmpty
-                              ? 'Start recording'
-                              : 'Send message',
-                          onPressed: () => triggerSend(context),
-                          icon: Icon(
-                            textController.text.isEmpty
-                                ? Icons.mic
-                                : Icons.send,
-                          ),
-                        ),
-                      ],
-                    ),
+              ),
             ),
           ),
         );

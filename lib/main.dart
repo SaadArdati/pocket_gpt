@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_openai/openai.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'package:window_manager/window_manager.dart';
 import 'gpt_manager.dart';
 import 'screens/open_ai_key_screen.dart';
@@ -19,11 +22,15 @@ import 'color_schemes.g.dart';
 import 'wave_background.dart';
 
 void main() async {
-  await SystemManager().init();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await SystemManager().init();
+  }
 
   await Hive.initFlutter();
   await Hive.openBox(history);
   await Hive.openBox(settings);
+
+  setPathUrlStrategy();
 
   OpenAI.apiKey = Hive.box(settings).get(openAIKey, defaultValue: '');
 
@@ -52,7 +59,7 @@ AnimatedWidget defaultPageTransition(
 
 ThemeMode getThemeMode() {
   final box = Hive.box(settings);
-  switch (box.get('theme_mode', defaultValue: 'system')) {
+  switch (box.get(themeMode, defaultValue: 'system')) {
     case 'dark':
       return ThemeMode.dark;
     case 'light':
@@ -70,7 +77,6 @@ class PocketGPT extends StatefulWidget {
 }
 
 class _PocketGPTState extends State<PocketGPT> with WindowListener {
-
   @override
   void initState() {
     windowManager.addListener(this);
@@ -216,6 +222,8 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top]);
     return ValueListenableBuilder(
       valueListenable: Hive.box(settings).listenable(),
       builder: (context, Box box, child) {
@@ -228,6 +236,15 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                systemStatusBarContrastEnforced: false,
+                systemNavigationBarContrastEnforced: false,
+                systemNavigationBarColor: Colors.transparent,
+                statusBarColor: Colors.transparent,
+                systemNavigationBarIconBrightness: Brightness.dark,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
             ),
           ),
           darkTheme: ThemeData(
@@ -237,6 +254,15 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                systemStatusBarContrastEnforced: false,
+                systemNavigationBarContrastEnforced: false,
+                systemNavigationBarColor: Colors.transparent,
+                statusBarColor: Colors.transparent,
+                systemNavigationBarIconBrightness: Brightness.dark,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+              ),
             ),
           ),
           themeMode: getThemeMode(),

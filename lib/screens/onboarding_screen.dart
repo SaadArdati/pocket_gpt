@@ -67,6 +67,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
         ],
       ),
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 500),

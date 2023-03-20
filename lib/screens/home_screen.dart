@@ -95,14 +95,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         ],
       ),
-      body: Center(
-        child: Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          runAlignment: WrapAlignment.center,
-          alignment: WrapAlignment.center,
-          children: [...ChatType.values.map((type) => GPTCard(type: type))],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Spacer(),
+          Expanded(
+            flex: 10,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                runAlignment: WrapAlignment.center,
+                alignment: WrapAlignment.center,
+                children: [...ChatType.values.map((type) => GPTCard(type: type))],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

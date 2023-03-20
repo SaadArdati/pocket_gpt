@@ -1,8 +1,11 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../constants.dart';
@@ -73,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       body: ValueListenableBuilder(
         valueListenable: box.listenable(),
         builder: (context, Box box, child) {
-          final ThemeMode themeMode = getThemeMode();
+          final ThemeMode mode = getThemeMode();
           return Stack(
             children: [
               Positioned.fill(
@@ -95,9 +98,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    themeMode == ThemeMode.light
+                                    mode == ThemeMode.light
                                         ? Icons.light_mode_outlined
-                                        : themeMode == ThemeMode.dark
+                                        : mode == ThemeMode.dark
                                             ? Icons.dark_mode_outlined
                                             : Icons.brightness_4,
                                   ),
@@ -125,10 +128,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   label: Text('System'),
                                 ),
                               ],
-                              selected: {themeMode},
+                              selected: {mode},
                               onSelectionChanged: (Set<ThemeMode> selected) {
                                 final ThemeMode newThemeMode = selected.first;
-                                box.put('theme_mode', newThemeMode.name);
+                                box.put(themeMode, newThemeMode.name);
                               },
                             ),
                           ],
@@ -136,9 +139,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ),
                       const SizedBox(height: 16),
                       const SettingsTile(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(16),
                         child: OpenAIKeyTile(),
                       ),
+                      const SizedBox(height: 16),
+                      buildInfoTile(context),
                     ],
                   ),
                 ),
@@ -172,6 +177,141 @@ class _SettingsScreenState extends State<SettingsScreen>
           );
         },
       ),
+    );
+  }
+
+  SettingsTile buildInfoTile(BuildContext context) {
+    return SettingsTile(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.info_outline),
+                const SizedBox(width: 8),
+                Text(
+                  'Pocket GPT',
+                  style: context.textTheme.bodyLarge,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          FutureBuilder(
+            future: PackageInfo.fromPlatform(),
+            builder:
+                (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+              final String version;
+              if (snapshot.hasError) {
+                version = snapshot.error.toString();
+              } else if (snapshot.hasData) {
+                version = snapshot.data!.version;
+              } else {
+                version = 'Checking...';
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildContactTile(
+                    title: 'Twitter',
+                    icon: 'assets/twitter_256x.png',
+                    url: 'https://twitter.com/SaadArdati',
+                  ),
+                  const SizedBox(height: 8),
+                  buildContactTile(
+                    title: 'Github',
+                    icon: Theme.of(context).brightness == Brightness.dark
+                        ? 'assets/github_black_256x.png'
+                        : 'assets/github_white_256x.png',
+                    url: 'https://github.com/SwissCheese5',
+                  ),
+                  const SizedBox(height: 8),
+                  buildContactTile(
+                    title: 'Discord',
+                    icon: 'assets/discord_256x.png',
+                    url: 'https://discord.gg/3Z2Z5Z5',
+                  ),
+                  const SizedBox(height: 8),
+                  buildContactTile(
+                    title: 'LinkedIn',
+                    icon: 'assets/linked_in_256x.png',
+                    url: 'https://www.linkedin.com/in/saad-ardati',
+                  ),
+                  const SizedBox(height: 16),
+                  Text('Version: $version'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Copyright © 2020-2021. All Rights Reserved',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          showLicensePage(context: context);
+                        },
+                        child: const Text('View Licenses'),
+                      )
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row buildContactTile({
+    required String icon,
+    required String title,
+    required String url,
+  }) {
+    return Row(
+      children: [
+        Container(
+            decoration: BoxDecoration(
+              color: context.colorScheme.inverseSurface,
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Image.asset(
+              icon,
+              width: 18,
+              height: 18,
+            )),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text.rich(
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.bodyMedium,
+            TextSpan(
+              text: '$title: ',
+              children: [
+                TextSpan(
+                  text: url,
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchUrlString('https://discord.gg/ARxJzxU');
+                    },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

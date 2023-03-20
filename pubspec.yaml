@@ -32,6 +32,7 @@ dependencies:
   package_info_plus: ^3.0.3
   pub_semver: ^2.1.3
   http: ^0.13.5
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -48,3 +49,9 @@ flutter:
     - assets/app_icon.png
     - assets/app_icon.ico
     - assets/app_logo.png
+    - assets/discord_256x.png
+    - assets/twitter_256x.png
+    - assets/linked_in_256x.png
+    - assets/github_black_256x.png
+    - assets/github_white_256x.png
+    - assets/profile_256x.png
