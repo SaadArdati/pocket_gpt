@@ -5,24 +5,35 @@ import 'dart:ui' as ui;
 
 import 'theme_extensions.dart';
 
+/// Configures a new wave.
 class Wave {
+  /// The amount of pixels the wave extends and contracts up and down.
   final double intensity;
+
+  /// The amount bumps the wave has.
   final double frequency;
 
   /// The amount of pixels the wave should be pushed in towards the center
   /// of the screen.
   final double gravity;
 
+  /// The color that washes the wave perpendicularly from the peaks.
   final Color startColor;
+
+  /// The color that washes the wave perpendicularly from the troughs.
   final Color endColor;
 
   /// The height of the square that makes up the entire area below the wave.
   /// This is used to control the strength of the gradients.
   final double depth;
 
+  /// The rotation of the wave in radians.
   final double rotation;
+
+  /// Whether the wave should glide in the opposite direction.
   final bool reverseDirection;
 
+  /// Creates a new wave.
   const Wave({
     required this.intensity,
     required this.frequency,
