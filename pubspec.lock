@@ -257,9 +257,11 @@ packages:
   flutter_markdown:
     dependency: "direct main"
     description:
-      path: "../packages/packages/flutter_markdown"
-      relative: true
-    source: path
+      path: "packages/flutter_markdown"
+      ref: HEAD
+      resolved-ref: b0dcd3de7eeccb95de5079955510441ec026d107
+      url: "https://github.com/SwissCheese5/packages.git"
+    source: git
     version: "0.6.14"
   flutter_test:
     dependency: "direct dev"
