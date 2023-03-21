@@ -52,6 +52,16 @@ enum ChatType {
     'Screen Analysis',
     Icons.search,
     "Analyzes your screen and gives you a summary of what's on it.",
+  ),
+  documentCode(
+    'Code Documentation',
+    Icons.code,
+    'Paste your code and the AI will embed docs in it for you.',
+  ),
+  readMe(
+    'Read Me',
+    Icons.book,
+    'Paste your code and the AI will generate a README.md for you.',
   );
 
   final String label;
@@ -245,7 +255,8 @@ class GPTManager extends ChangeNotifier {
 
   void saveChat() {
     box.put(history, {
-      for (final chat in chatHistory.entries) chat.key: chat.value.toJson(),
+      for (final MapEntry<String, Chat> chat in chatHistory.entries)
+        chat.key: chat.value.toJson(),
     });
   }
 
@@ -286,11 +297,31 @@ class GPTManager extends ChangeNotifier {
               ' specifically if there is nothing obvious.',
           role: Role.system,
         );
+      case ChatType.documentCode:
+        return ChatMessage.simple(
+          text: 'Try to embed code high quality, clean, and concise code docs '
+              'into any code the user sends. If the programming language is not'
+              'obvious, ask the user for it.',
+          role: Role.system,
+        );
+      case ChatType.readMe:
+        return ChatMessage.simple(
+          text: 'Analyze all of the user\'s code and try to write a README.md.'
+              'Ask the user for a template. If there is no template, try to do it'
+              ' yourself.',
+          role: Role.system,
+        );
     }
   }
 
+  bool needsExtendedContext() {
+    return currentChat!.type == ChatType.documentCode ||
+        currentChat!.type == ChatType.scientific ||
+        currentChat!.type == ChatType.readMe;
+  }
+
   /// Not clean. But it's the most optimized way to do it.
-  void sendMessage(String message) {
+  void sendMessage(String message, {required bool generateResponse}) {
     final ChatMessage userMsg = ChatMessage.simple(
       text: message.trim(),
       role: Role.user,
@@ -300,7 +331,9 @@ class GPTManager extends ChangeNotifier {
     saveChat();
     notifyListeners();
 
-    _generate();
+    if (generateResponse) {
+      _generate();
+    }
   }
 
   void _generate() {
@@ -308,7 +341,7 @@ class GPTManager extends ChangeNotifier {
 
     final Stream<OpenAIStreamChatCompletionModel> stream =
         OpenAI.instance.chat.createStream(
-      model: 'gpt-4',
+      model: needsExtendedContext() ? 'gpt-4-0314' : 'gpt-4',
       messages: [
         ChatMessage.simple(
           text: "You are PocketGPT, living in the user's system tray for easy"

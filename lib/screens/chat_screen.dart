@@ -356,7 +356,7 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
     onKey: (FocusNode node, RawKeyEvent evt) {
       if (!evt.isShiftPressed && evt.logicalKey == LogicalKeyboardKey.enter) {
         if (evt is RawKeyDownEvent) {
-          triggerSend(node.context!);
+          triggerSend(node.context!, generateResponse: true);
         }
         return KeyEventResult.handled;
       } else {
@@ -367,11 +367,11 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
 
   final TextEditingController textController = TextEditingController();
 
-  void triggerSend(BuildContext context) {
+  void triggerSend(BuildContext context, {required bool generateResponse}) {
     if (!Form.of(context).validate()) return;
 
     final GPTManager gpt = context.read<GPTManager>();
-    gpt.sendMessage(textController.text);
+    gpt.sendMessage(textController.text, generateResponse: generateResponse);
     textController.clear();
     setState(() {});
   }
@@ -398,7 +398,8 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
           child: SafeArea(
             top: false,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800, minHeight: 56, maxHeight: 56),
+              constraints: const BoxConstraints(
+                  maxWidth: 800, minHeight: 56),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 switchOutCurve: Curves.easeOutQuart,
@@ -449,7 +450,7 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                               child: TextFormField(
                                 controller: textController,
                                 focusNode: focusNode,
-                                maxLength: 1000,
+                                maxLength: 10000,
                                 maxLengthEnforcement:
                                     MaxLengthEnforcement.enforced,
                                 textInputAction: TextInputAction.newline,
@@ -465,7 +466,10 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                                 onChanged: (_) {
                                   setState(() {});
                                 },
-                                onFieldSubmitted: (_) => triggerSend(context),
+                                onFieldSubmitted: (_) => triggerSend(
+                                  context,
+                                  generateResponse: true,
+                                ),
                                 style: context.textTheme.bodyMedium?.copyWith(
                                   color:
                                       context.colorScheme.onSecondaryContainer,
@@ -505,15 +509,39 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          IconButton(
-                            tooltip: textController.text.isEmpty
-                                ? 'Start recording'
-                                : 'Send message',
-                            onPressed: () => triggerSend(context),
-                            icon: Icon(
-                              textController.text.isEmpty
-                                  ? Icons.mic
-                                  : Icons.send,
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                              shape: BoxShape.circle,
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Tooltip(
+                                message: textController.text.isEmpty
+                                    ? 'Start recording'
+                                    : 'Send message',
+                                child: InkWell(
+                                  onTap: () => triggerSend(
+                                    context,
+                                    generateResponse: true,
+                                  ),
+                                  onLongPress: () {
+                                    triggerSend(
+                                      context,
+                                      generateResponse: false,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Icon(
+                                      textController.text.isEmpty
+                                          ? Icons.mic
+                                          : Icons.send,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],

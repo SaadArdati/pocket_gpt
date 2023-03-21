@@ -57,4 +57,6 @@ const _$ChatTypeEnumMap = {
   ChatType.email: 'email',
   ChatType.scientific: 'scientific',
   ChatType.analyze: 'analyze',
+  ChatType.documentCode: 'documentCode',
+  ChatType.readMe: 'readMe',
 };

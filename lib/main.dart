@@ -221,7 +221,6 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 if (fromParam == '/chat') {
                   comesFrom = AxisDirection.up;
                 }
-                extra.clear();
               }
 
               return CustomTransitionPage(
@@ -257,7 +256,6 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                   (chatType) => chatType.name == typeParam,
                 );
                 child = ChatScreenWrapper(type: type);
-                extra.clear();
               }
 
               return CustomTransitionPage(

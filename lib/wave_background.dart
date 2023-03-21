@@ -5,35 +5,36 @@ import 'dart:ui' as ui;
 
 import 'theme_extensions.dart';
 
-/// Configures a new wave.
+/// A wave representing multiple properties such as intensity, frequency,
+/// and colors.
+///
+/// [Wave] is used to define on-screen wave patterns and characteristics.
 class Wave {
-  /// The amount of pixels the wave extends and contracts up and down.
+  /// The vertical oscillation in pixels.
   final double intensity;
 
-  /// The amount bumps the wave has.
+  /// The number of wave peaks.
   final double frequency;
 
-  /// The amount of pixels the wave should be pushed in towards the center
-  /// of the screen.
+  /// The horizontal offset in pixels towards the center of the screen.
   final double gravity;
 
-  /// The color that washes the wave perpendicularly from the peaks.
+  /// The color at the peak of the wave.
   final Color startColor;
 
-  /// The color that washes the wave perpendicularly from the troughs.
+  /// The color at the trough of the wave.
   final Color endColor;
 
-  /// The height of the square that makes up the entire area below the wave.
-  /// This is used to control the strength of the gradients.
+  /// The height of the wave's bounding box to control gradient strength.
   final double depth;
 
-  /// The rotation of the wave in radians.
+  /// The wave's rotation angle in radians.
   final double rotation;
 
-  /// Whether the wave should glide in the opposite direction.
+  /// Whether the wave should move in the opposite direction.
   final bool reverseDirection;
 
-  /// Creates a new wave.
+  /// Creates a new [Wave] with the given properties.
   const Wave({
     required this.intensity,
     required this.frequency,
@@ -46,10 +47,17 @@ class Wave {
   });
 }
 
+/// A widget that animates a set of [Wave] instances to create a wavy
+/// background.
 class WaveBackground extends ImplicitlyAnimatedWidget {
+  /// The list of [Wave] instances to render.
   final List<Wave> waves;
+
+  /// The horizontal motion of the wave.
   final double waveMotion;
 
+  /// Creates a [WaveBackground] instance with the provided list of waves and
+  /// animation settings.
   const WaveBackground({
     super.key,
     required super.duration,
@@ -63,6 +71,7 @@ class WaveBackground extends ImplicitlyAnimatedWidget {
       _FancyBackgroundState();
 }
 
+/// Manages the state of the [WaveBackground] widget.
 class _FancyBackgroundState
     extends ImplicitlyAnimatedWidgetState<WaveBackground> {
   Tween<double>? _waveMotion;
@@ -91,6 +100,7 @@ class _FancyBackgroundState
   }
 }
 
+/// A custom painter that renders a set of [Wave] instances onto the canvas.
 class FancyBackgroundPainter extends CustomPainter {
   final Color primaryColor;
   final Color secondaryColor;
@@ -99,6 +109,10 @@ class FancyBackgroundPainter extends CustomPainter {
   final List<Wave> waves;
   final Map<Wave, Paint> wavePaint;
 
+  /// Initializes properties for the [FancyBackgroundPainter].
+  ///
+  /// Takes in the primary and secondary colors, overlay color,
+  /// horizontal wave motion, and list of waves to render.
   FancyBackgroundPainter({
     required this.primaryColor,
     required this.secondaryColor,
@@ -125,6 +139,7 @@ class FancyBackgroundPainter extends CustomPainter {
 
     canvas.translate(size.width / 2, size.height / 2);
 
+    // Render each wave and apply transformations
     for (final Wave wave in waves) {
       final Path path = genCurvePath(
         depth: 300,
@@ -133,20 +148,18 @@ class FancyBackgroundPainter extends CustomPainter {
         waveExtent: waveExtent,
       );
 
-      // Need to translate it towards the screen's edge, with respect to rotation
-      final double edgeX = cos(wave.rotation) * size.width / 2;
-      final double edgeY = sin(wave.rotation) * size.height / 2;
+      // Save canvas state
+      canvas.save();
 
-      canvas.translate(edgeX, edgeY);
-
-      // Apply the gravity towards the center.
-      final double gravX = cos(wave.rotation) * -wave.gravity;
-      final double gravY = sin(wave.rotation) * -wave.gravity;
-      canvas.translate(gravX, gravY);
-
+      // Apply wave transformations
+      canvas.translate(cos(wave.rotation) * size.width / 2,
+          sin(wave.rotation) * size.height / 2);
+      canvas.translate(cos(wave.rotation) * -wave.gravity,
+          sin(wave.rotation) * -wave.gravity);
       canvas.rotate(wave.rotation);
       canvas.rotate(-pi / 2);
 
+      // Draw wave
       drawCurvedPath(
         path: path,
         canvas: canvas,
@@ -156,15 +169,19 @@ class FancyBackgroundPainter extends CustomPainter {
         reverse: wave.reverseDirection,
       );
 
-      canvas.rotate(pi / 2);
-      canvas.rotate(-wave.rotation);
-      canvas.translate(-gravX, -gravY);
-      canvas.translate(-edgeX, -edgeY);
+      // Restore canvas state
+      canvas.restore();
     }
-
-    canvas.translate(-size.width / 2, -size.height / 2);
   }
 
+  /// Draws a curved path with a waving motion effect on [canvas].
+  ///
+  /// [path] The Path to draw.
+  /// [waveExtent] The extent of the wave motion effect.
+  /// [canvas] The Canvas on which to draw the curved path.
+  /// [size] The size of the canvas.
+  /// [paint] The Paint object to use for drawing.
+  /// [reverse] Whether to reverse the direction of the wave motion effect. Defaults to false.
   void drawCurvedPath({
     required Path path,
     required double waveExtent,
@@ -183,22 +200,37 @@ class FancyBackgroundPainter extends CustomPainter {
     canvas.translate(waveExtent / 2, 0);
   }
 
+  /// [depth] The height of the generated wave.
+  /// [frequency] The number of complete waves in the path.
+  /// [waveExtent] The width of the wave.
+  /// [intensity] Multiplication factor to control wave intensity.
+  /// [returns] A [Path] object containing the generated wave.
   Path genCurvePath({
     required double depth,
     required double frequency,
     required double waveExtent,
     required double intensity,
   }) {
+    // Initialize path object and set initial position.
     final path = Path()..moveTo(0, depth);
+
+    // Loop through each wave segment in the path.
     for (int i = 0; i < frequency; i++) {
+      // Determine if the current wave segment is even or odd.
       final bool isEven = i % 2 == 0;
       final double x = waveExtent * (i / frequency);
+
+      // Move the path to the initial position if it's the first wave segment.
       if (i == 0) {
         path.moveTo(x, 0);
         continue;
       }
+
+      // Calculate the previous and half-point positions of the path.
       final double prevX = waveExtent * ((i - 1) / frequency);
       final double halfX = (x + prevX) / 2.0;
+
+      // Add a quadratic bezier curve segment to the path.
       path.quadraticBezierTo(
         halfX,
         intensity * (isEven ? 1 : -1),
@@ -206,6 +238,8 @@ class FancyBackgroundPainter extends CustomPainter {
         0,
       );
     }
+
+    // Complete the path by returning to the initial depth and closing the path.
     path.lineTo(waveExtent, depth);
     path.lineTo(0, depth);
     path.close();
