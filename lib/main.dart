@@ -37,23 +37,44 @@ void main() async {
   runApp(const PocketGPT());
 }
 
-AnimatedWidget defaultPageTransition(
+Widget defaultPageTransition(
   BuildContext context,
   Animation<double> animation,
+  Animation<double> secondaryAnimation,
   Widget child, {
-  required bool reverse,
+  required GoRouterState state,
+  required AxisDirection comesFrom,
 }) {
   return SlideTransition(
-    position: Tween<Offset>(
-      begin: Offset(0, reverse ? -1 : 1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutQuart,
+    position: CurvedAnimation(
+      parent: secondaryAnimation,
+      curve: Curves.linearToEaseOut,
+      reverseCurve: Curves.easeInToLinear,
+    ).drive(
+      Tween<Offset>(
+        begin: Offset.zero,
+        end: comesFrom == AxisDirection.up || comesFrom == AxisDirection.down
+            ? Offset(0.0, comesFrom == AxisDirection.up ? -1 : 1)
+            : Offset(comesFrom == AxisDirection.left ? -1 : 1, 0.0),
       ),
     ),
-    child: child,
+    transformHitTests: false,
+    child: SlideTransition(
+      position: CurvedAnimation(
+        parent: animation,
+        curve: Curves.linearToEaseOut,
+        reverseCurve: Curves.easeInToLinear,
+      ).drive(
+        Tween<Offset>(
+          begin:
+              comesFrom == AxisDirection.up || comesFrom == AxisDirection.down
+                  ? Offset(0.0, comesFrom == AxisDirection.up ? -1 : 1)
+                  : Offset(comesFrom == AxisDirection.left ? -1 : 1, 0.0),
+          end: Offset.zero,
+        ),
+      ),
+      child: child,
+    ),
   );
 }
 
@@ -140,80 +161,90 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
           GoRoute(
             path: '/home',
             builder: (context, state) => const HomeScreen(),
-            // pageBuilder: (context, state) {
-            //   return CustomTransitionPage(
-            //     key: state.pageKey,
-            //     child: const HomeScreen(),
-            //     opaque: false,
-            //     transitionsBuilder:
-            //         (context, animation, secondaryAnimation, child) {
-            //       return defaultPageTransition(
-            //         context,
-            //         animation,
-            //         child,
-            //         reverse: true,
-            //       );
-            //     },
-            //   );
-            // },
+            pageBuilder: (context, state) {
+              final extra = state.extra;
+              AxisDirection comesFrom = AxisDirection.down;
+              if (extra != null && extra is Map) {
+                final String? fromParam = extra['from'];
+                if (fromParam == '/chat') {
+                  comesFrom = AxisDirection.up;
+                }
+                extra.clear();
+              }
+
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: const HomeScreen(),
+                opaque: false,
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return defaultPageTransition(
+                    context,
+                    animation,
+                    secondaryAnimation,
+                    child,
+                    state: state,
+                    comesFrom: comesFrom,
+                  );
+                },
+              );
+            },
           ),
           GoRoute(
             path: '/chat',
-            builder: (context, state) {
+            pageBuilder: (context, state) {
+              final Widget child;
               final extra = state.extra;
               if (extra == null || extra is! Map) {
-                return const ChatScreenWrapper();
+                child = const ChatScreenWrapper();
+              } else {
+                final String typeParam = extra['type'] ?? ChatType.general.name;
+                final ChatType type = ChatType.values.firstWhere(
+                  (chatType) => chatType.name == typeParam,
+                );
+                child = ChatScreenWrapper(type: type);
+                extra.clear();
               }
 
-              final String typeParam = extra['type'] ?? ChatType.general.name;
-              final ChatType type = ChatType.values.firstWhere(
-                (chatType) => chatType.name == typeParam,
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: child,
+                opaque: false,
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return defaultPageTransition(
+                    context,
+                    animation,
+                    secondaryAnimation,
+                    child,
+                    state: state,
+                    comesFrom: AxisDirection.down,
+                  );
+                },
               );
-
-              return ChatScreenWrapper(type: type);
             },
-            // pageBuilder: (context, state) {
-            //   return CustomTransitionPage(
-            //     key: state.pageKey,
-            //     child: const ChatScreenWrapper(),
-            //     opaque: false,
-            //     transitionsBuilder:
-            //         (context, animation, secondaryAnimation, child) {
-            //       return defaultPageTransition(
-            //         context,
-            //         animation,
-            //         child,
-            //         reverse: false,
-            //       );
-            //     },
-            //   );
-            // },
           ),
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
-            //   pageBuilder: (context, state) {
-            //     return CustomTransitionPage(
-            //       key: state.pageKey,
-            //       child: const SettingsScreen(),
-            //       opaque: false,
-            //       transitionsBuilder:
-            //           (context, animation, secondaryAnimation, child) {
-            //         return SlideTransition(
-            //           position: Tween<Offset>(
-            //             begin: const Offset(1, 0),
-            //             end: Offset.zero,
-            //           ).animate(
-            //             CurvedAnimation(
-            //               parent: animation,
-            //               curve: Curves.easeOutQuart,
-            //             ),
-            //           ),
-            //           child: child,
-            //         );
-            //       },
-            //     );
-            //   },
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: const SettingsScreen(),
+                opaque: false,
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return defaultPageTransition(
+                    context,
+                    animation,
+                    secondaryAnimation,
+                    child,
+                    state: state,
+                    comesFrom: AxisDirection.up,
+                  );
+                },
+              );
+            },
           ),
         ],
       ),

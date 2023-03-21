@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
           tooltip: 'Settings',
           icon: const Icon(Icons.settings),
           onPressed: () {
-            context.go('/settings');
+            context.go('/settings', extra: {'from': '/home'});
           },
         ),
         actions: [
@@ -108,7 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 runSpacing: 16,
                 runAlignment: WrapAlignment.center,
                 alignment: WrapAlignment.center,
-                children: [...ChatType.values.map((type) => GPTCard(type: type))],
+                children: [
+                  ...ChatType.values.map((type) => GPTCard(type: type))
+                ],
               ),
             ),
           ),
@@ -149,7 +151,7 @@ class GPTCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           splashColor: context.colorScheme.tertiaryContainer,
           highlightColor: context.colorScheme.secondaryContainer,
-          onTap: () => context.go('/chat', extra: {'type': type.name}),
+          onTap: () => context.go('/chat', extra: {'type': type.name, 'from': '/home'}),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

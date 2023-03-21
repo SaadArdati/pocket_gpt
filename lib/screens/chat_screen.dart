@@ -66,8 +66,6 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   void dispose() {
-    final GPTManager gpt = context.read<GPTManager>();
-    gpt.stopGenerating();
     scrollController.dispose();
     animationController.dispose();
     super.dispose();
@@ -87,10 +85,12 @@ class _ChatScreenState extends State<ChatScreen>
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_upward),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             onPressed: () {
-              context.go('/home');
+              context.go('/home', extra: {
+                'from': '/chat',
+              });
             },
           ),
           title: Text(widget.type.label),
@@ -445,7 +445,8 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                           Expanded(
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxHeight: MediaQuery.of(context).size.height / 3,
+                                maxHeight:
+                                    MediaQuery.of(context).size.height / 3,
                               ),
                               child: TextFormField(
                                 controller: textController,
@@ -468,7 +469,8 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                                 },
                                 onFieldSubmitted: (_) => triggerSend(context),
                                 style: context.textTheme.bodyMedium?.copyWith(
-                                  color: context.colorScheme.onSecondaryContainer,
+                                  color:
+                                      context.colorScheme.onSecondaryContainer,
                                 ),
                                 decoration: InputDecoration(
                                   counterText: '',

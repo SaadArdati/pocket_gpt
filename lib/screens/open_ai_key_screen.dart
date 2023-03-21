@@ -402,7 +402,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutQuart,
-              height: isEditing ? 280 : 16,
+              height: isEditing ? 325 : 16,
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(),
               alignment: Alignment.center,
@@ -414,14 +414,17 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                       ? ScrollConfiguration(
                           behavior: ScrollConfiguration.of(context)
                               .copyWith(scrollbars: false),
-                          child: ListView(
+                          child: SingleChildScrollView(
                             physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.zero,
-                            children: [
-                              const SizedBox(height: 8),
-                              const OpenAIKeyInstructions(),
-                              statusSection(context),
-                            ],
+                            primary: false,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 8),
+                                const OpenAIKeyInstructions(),
+                                statusSection(context),
+                              ],
+                            ),
                           ),
                         )
                       : const SizedBox(height: 16)),

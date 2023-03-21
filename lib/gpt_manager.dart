@@ -237,6 +237,7 @@ class GPTManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    stopGenerating();
     responseStreamController.close();
     listener?.cancel();
     super.dispose();
