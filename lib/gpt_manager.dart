@@ -43,6 +43,11 @@ enum ChatType {
     Icons.email,
     'Messages automatically convert into formal emails',
   ),
+  documentCode(
+    'Code Documentation',
+    Icons.code,
+    'Paste your code and the AI will embed docs in it for you.',
+  ),
   scientific(
     'Scientific Researcher',
     Icons.school,
@@ -52,11 +57,6 @@ enum ChatType {
     'Screen Analysis',
     Icons.search,
     "Analyzes your screen and gives you a summary of what's on it.",
-  ),
-  documentCode(
-    'Code Documentation',
-    Icons.code,
-    'Paste your code and the AI will embed docs in it for you.',
   ),
   readMe(
     'Read Me',

@@ -22,14 +22,13 @@ import 'color_schemes.g.dart';
 import 'wave_background.dart';
 
 void main() async {
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await SystemManager().init();
-  }
-
   await Hive.initFlutter();
   await Hive.openBox(history);
   await Hive.openBox(settings);
 
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await SystemManager.init();
+  }
   setPathUrlStrategy();
 
   OpenAI.apiKey = Hive.box(settings).get(openAIKey, defaultValue: '');

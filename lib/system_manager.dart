@@ -1,25 +1,29 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:system_tray/system_tray.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'constants.dart';
+
 class SystemManager {
-  static bool isOpen = false;
   static bool isInit = true;
 
-  Future<void> init() async {
+  static Future<void> init() async {
+    final box = Hive.box(settings);
+    final bool alwaysOnTopResult = box.get(alwaysOnTop, defaultValue: true);
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
 
-    const WindowOptions windowOptions = WindowOptions(
-      size: Size(400, 600),
+    final WindowOptions windowOptions = WindowOptions(
+      size: const Size(400, 600),
       backgroundColor: Colors.transparent,
       skipTaskbar: true,
       titleBarStyle: TitleBarStyle.hidden,
-      alwaysOnTop: true,
+      alwaysOnTop: alwaysOnTopResult,
     );
     await windowManager.waitUntilReadyToShow(windowOptions);
     await windowManager.setMovable(true);
@@ -38,24 +42,34 @@ class SystemManager {
 
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) async {
+      final bool windowPositionMemoryResult =
+          box.get(windowPositionMemory, defaultValue: true);
+
       if (eventName == 'leftMouseUp') {
-        if (isOpen) {
+        final bool isFocused = await windowManager.isFocused();
+        if (isFocused) {
           windowManager.close();
-          isOpen = false;
         } else {
           windowManager.show();
 
-          // get cursor of system.
-          if (isInit) {
+          if (isInit || !windowPositionMemoryResult) {
+            windowManager.setSize(const Size(400, 600));
             windowManager.setPosition(
               await screenRetriever.getCursorScreenPoint() -
                   const Offset(200, 0),
             );
           }
           isInit = false;
-          isOpen = true;
         }
       }
     });
+  }
+
+  static Future<void> setAlwaysOnTop(bool isAlwaysOnTop) {
+    return windowManager.setAlwaysOnTop(isAlwaysOnTop);
+  }
+
+  static Future<void> closeWindow() {
+    return windowManager.close();
   }
 }

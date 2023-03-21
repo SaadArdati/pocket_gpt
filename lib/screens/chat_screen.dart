@@ -107,13 +107,10 @@ class _ChatScreenState extends State<ChatScreen>
                 },
               ),
             if (isDesktop)
-              IconButton(
+              const IconButton(
                 tooltip: 'Minimize',
-                icon: const Icon(Icons.minimize),
-                onPressed: () {
-                  windowManager.close();
-                  SystemManager.isOpen = false;
-                },
+                icon: Icon(Icons.minimize),
+                onPressed: SystemManager.closeWindow,
               ),
           ],
         ),
@@ -398,8 +395,7 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
           child: SafeArea(
             top: false,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                  maxWidth: 800, minHeight: 56),
+              constraints: const BoxConstraints(maxWidth: 800, minHeight: 56),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 switchOutCurve: Curves.easeOutQuart,

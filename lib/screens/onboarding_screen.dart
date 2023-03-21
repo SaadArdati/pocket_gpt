@@ -57,13 +57,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
           ),
           if (isDesktop)
-            IconButton(
+            const IconButton(
               tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: () {
-                windowManager.close();
-                SystemManager.isOpen = false;
-              },
+              icon: Icon(Icons.minimize),
+              onPressed: SystemManager.closeWindow,
             ),
         ],
       ),

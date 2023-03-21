@@ -1,9 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../gpt_manager.dart';
 import '../system_manager.dart';
@@ -85,13 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           if (isDesktop)
-            IconButton(
+            const IconButton(
               tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: () {
-                windowManager.close();
-                SystemManager.isOpen = false;
-              },
+              icon: Icon(Icons.minimize),
+              onPressed: SystemManager.closeWindow,
             ),
         ],
       ),
@@ -106,7 +104,25 @@ class _HomeScreenState extends State<HomeScreen> {
               runAlignment: WrapAlignment.center,
               alignment: WrapAlignment.center,
               children: [
-                ...ChatType.values.map((type) => GPTCard(type: type))
+                ...ChatType.values.map((type) {
+                  final bool isComingSoon;
+                  switch (type) {
+                    case ChatType.general:
+                    case ChatType.email:
+                    case ChatType.documentCode:
+                      isComingSoon = false;
+                      break;
+                    case ChatType.scientific:
+                    case ChatType.analyze:
+                    case ChatType.readMe:
+                      isComingSoon = true;
+                      break;
+                  }
+                  return GPTCard(
+                    type: type,
+                    isComingSoon: isComingSoon,
+                  );
+                })
               ],
             ),
           ),
@@ -118,10 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class GPTCard extends StatelessWidget {
   final ChatType type;
+  final bool isComingSoon;
 
   const GPTCard({
     super.key,
     required this.type,
+    this.isComingSoon = false,
   });
 
   @override
@@ -141,40 +159,65 @@ class GPTCard extends StatelessWidget {
           ],
         ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          splashColor: context.colorScheme.tertiaryContainer,
-          highlightColor: context.colorScheme.secondaryContainer,
-          onTap: () => context.go('/chat', extra: {'type': type.name, 'from': '/home'}),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  type.icon,
-                  color: context.colorScheme.tertiary,
+      child: Stack(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              splashColor: context.colorScheme.tertiaryContainer,
+              highlightColor: context.colorScheme.secondaryContainer,
+              onTap: isComingSoon
+                  ? null
+                  : () => context
+                      .go('/chat', extra: {'type': type.name, 'from': '/home'}),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      type.icon,
+                      color: context.colorScheme.tertiary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      type.label,
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        color: context.colorScheme.tertiary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      type.caption,
+                      style: context.textTheme.bodySmall!.copyWith(
+                        color: context.colorScheme.tertiary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  type.label,
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: context.colorScheme.tertiary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  type.caption,
-                  style: context.textTheme.bodySmall!.copyWith(
-                    color: context.colorScheme.tertiary,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (isComingSoon)
+            Center(
+              child: Transform.rotate(
+                angle: -35 * pi / 180,
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: context.colorScheme.inverseSurface,
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      'Coming Soon',
+                      style: context.textTheme.bodyMedium!.copyWith(
+                        color: context.colorScheme.onInverseSurface,
+                      ),
+                    )),
+              ),
+            )
+        ],
       ),
     );
   }

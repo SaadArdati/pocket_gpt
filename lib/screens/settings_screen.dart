@@ -62,13 +62,10 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
         actions: [
           if (isDesktop)
-            IconButton(
+            const IconButton(
               tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: () {
-                windowManager.close();
-                SystemManager.isOpen = false;
-              },
+              icon: Icon(Icons.minimize),
+              onPressed: SystemManager.closeWindow,
             ),
         ],
       ),
@@ -89,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           height: (Scaffold.of(context).appBarMaxHeight ?? 48) +
                               16),
                       SettingsTile(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -97,41 +94,89 @@ class _SettingsScreenState extends State<SettingsScreen>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
-                                    mode == ThemeMode.light
-                                        ? Icons.light_mode_outlined
-                                        : mode == ThemeMode.dark
-                                            ? Icons.dark_mode_outlined
-                                            : Icons.brightness_4,
-                                  ),
+                                  const Icon(Icons.desktop_windows_outlined),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Theme Mode',
+                                    'Window Settings',
                                     style: context.textTheme.bodyLarge,
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(height: 16),
-                            SegmentedButton<ThemeMode>(
-                              segments: const [
-                                ButtonSegment<ThemeMode>(
-                                  value: ThemeMode.light,
-                                  label: Text('Light'),
+                            ListTile(
+                              title: Text(
+                                'Theme Mode',
+                                style: context.textTheme.bodyMedium,
+                              ),
+                              subtitle: Text(
+                                'Controls the behavior of the light and dark theme.',
+                                style: context.textTheme.bodySmall,
+                              ),
+                              trailing: DropdownButton<ThemeMode>(
+                                value: mode,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onPrimaryContainer,
                                 ),
-                                ButtonSegment<ThemeMode>(
-                                  value: ThemeMode.dark,
-                                  label: Text('Dark'),
-                                ),
-                                ButtonSegment<ThemeMode>(
-                                  value: ThemeMode.system,
-                                  label: Text('System'),
-                                ),
-                              ],
-                              selected: {mode},
-                              onSelectionChanged: (Set<ThemeMode> selected) {
-                                final ThemeMode newThemeMode = selected.first;
-                                box.put(themeMode, newThemeMode.name);
+                                underline: const SizedBox.shrink(),
+                                borderRadius: BorderRadius.circular(8),
+                                alignment: Alignment.center,
+                                items: const [
+                                  DropdownMenuItem<ThemeMode>(
+                                    value: ThemeMode.light,
+                                    child: Text('Light'),
+                                  ),
+                                  DropdownMenuItem<ThemeMode>(
+                                    value: ThemeMode.dark,
+                                    child: Text('Dark'),
+                                  ),
+                                  DropdownMenuItem<ThemeMode>(
+                                    value: ThemeMode.system,
+                                    child: Text('System'),
+                                  ),
+                                ],
+                                onChanged: (ThemeMode? value) {
+                                  if (value != null) {
+                                    box.put(themeMode, value.name);
+                                  }
+                                },
+                              ),
+                            ),
+                            CheckboxListTile(
+                              value:
+                                  box.get(alwaysOnTop, defaultValue: true),
+                              title: Text(
+                                'Always on top',
+                                style: context.textTheme.bodyMedium,
+                              ),
+                              subtitle: Text(
+                                'The window will always be on top of all other windows.',
+                                style: context.textTheme.bodySmall,
+                              ),
+                              onChanged: (bool? value) {
+                                box.put(
+                                  alwaysOnTop,
+                                  value ?? !box.get(alwaysOnTop),
+                                );
+                                SystemManager.setAlwaysOnTop(value ?? true);
+                              },
+                            ),
+                            CheckboxListTile(
+                              value: box.get(windowPositionMemory,
+                                  defaultValue: true),
+                              title: Text(
+                                'Preserve window position',
+                                style: context.textTheme.bodyMedium,
+                              ),
+                              subtitle: Text(
+                                'Remembers the position of the window when you close it.',
+                                style: context.textTheme.bodySmall,
+                              ),
+                              onChanged: (bool? value) {
+                                box.put(
+                                  windowPositionMemory,
+                                  value ?? !box.get(windowPositionMemory),
+                                );
                               },
                             ),
                           ],
