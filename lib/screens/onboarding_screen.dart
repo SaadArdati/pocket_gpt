@@ -68,12 +68,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ],
       ),
       resizeToAvoidBottomInset: true,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: widget.child,
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: widget.child,
+            ),
           ),
         ),
       ),

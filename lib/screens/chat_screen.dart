@@ -88,9 +88,7 @@ class _ChatScreenState extends State<ChatScreen>
             icon: const Icon(Icons.arrow_upward),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             onPressed: () {
-              context.go('/home', extra: {
-                'from': '/chat',
-              });
+              context.go('/home', extra: {'from': '/chat'});
             },
           ),
           title: Text(widget.type.label),
@@ -400,7 +398,7 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
           child: SafeArea(
             top: false,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
+              constraints: const BoxConstraints(maxWidth: 800, minHeight: 56, maxHeight: 56),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 switchOutCurve: Curves.easeOutQuart,

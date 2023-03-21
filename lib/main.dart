@@ -119,6 +119,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
   final box = Hive.box(settings);
 
   late final _router = GoRouter(
+    // initialLocation: '/onboarding',
     initialLocation:
         box.get(isFirstTime, defaultValue: true) ? '/onboarding' : '/home',
     routes: [
@@ -144,15 +145,66 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 routes: [
                   GoRoute(
                     path: 'one',
-                    builder: (context, state) => const OnboardingWelcome(),
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const OnboardingWelcome(),
+                        opaque: false,
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return defaultPageTransition(
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                            state: state,
+                            comesFrom: AxisDirection.right,
+                          );
+                        },
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'two',
-                    builder: (context, state) => const OpenAIKeyScreen(),
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const OpenAIKeyScreen(),
+                        opaque: false,
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return defaultPageTransition(
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                            state: state,
+                            comesFrom: AxisDirection.right,
+                          );
+                        },
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'three',
-                    builder: (context, state) => const OnboardingDone(),
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const OnboardingDone(),
+                        opaque: false,
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return defaultPageTransition(
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                            state: state,
+                            comesFrom: AxisDirection.right,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -176,6 +228,8 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 key: state.pageKey,
                 child: const HomeScreen(),
                 opaque: false,
+                transitionDuration: const Duration(milliseconds: 600),
+                reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   return defaultPageTransition(
@@ -210,6 +264,8 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 key: state.pageKey,
                 child: child,
                 opaque: false,
+                transitionDuration: const Duration(milliseconds: 600),
+                reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   return defaultPageTransition(
@@ -232,6 +288,8 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 key: state.pageKey,
                 child: const SettingsScreen(),
                 opaque: false,
+                transitionDuration: const Duration(milliseconds: 600),
+                reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   return defaultPageTransition(
