@@ -32,7 +32,7 @@
     <!--#enddocregion android-queries-->
 
     <application
-            android:label="pocket_gpt"
+            android:label="PocketGPT"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
         <activity

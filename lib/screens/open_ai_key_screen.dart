@@ -14,8 +14,8 @@ class OpenAIKeyInstructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -33,83 +33,66 @@ class OpenAIKeyInstructions extends StatelessWidget {
         Text('Steps:', style: Theme.of(context).textTheme.bodyMedium),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('1.', style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'Go to ',
-                        children: [
-                          TextSpan(
-                            text:
-                                'https://platform.openai.com/account/api-keys',
-                            style: const TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                launchUrlString(
-                                    'https://platform.openai.com/account/api-keys');
-                              },
-                          ),
-                        ],
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 8),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('1.', style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(text: 'Go to ', children: [
+                    TextSpan(
+                      text: 'https://platform.openai.com/account/api-keys',
+                      style: const TextStyle(
+                        decoration: TextDecoration.underline,
                       ),
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          launchUrlString(
+                            'https://platform.openai.com/account/api-keys',
+                          );
+                        },
                     ),
-                  ),
-                ],
+                  ]),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('2.', style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Register an account or sign in.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
+            ]),
+            const SizedBox(height: 8),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('2.', style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Register an account or sign in.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('3.', style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Tap on the "Create new secret key" button.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
+            ]),
+            const SizedBox(height: 8),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('3.', style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Tap on the "Create new secret key" button.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('4.', style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Copy the key and paste it below.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
+            ]),
+            const SizedBox(height: 8),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('4.', style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Copy the key and paste it below.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
-            ],
-          ),
+            ]),
+          ]),
         ),
       ],
     );
@@ -186,7 +169,8 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       margin: const EdgeInsets.only(right: 16),
-                      child: const ImageIcon(AssetImage('assets/app_icon.png')),
+                      child:
+                          const ImageIcon(AssetImage('assets/openai_256.png')),
                     ),
                   ),
                   Text(
@@ -390,7 +374,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const ImageIcon(AssetImage('assets/app_icon.png')),
+                  const ImageIcon(AssetImage('assets/openai_256.png')),
                   const SizedBox(width: 8),
                   Text(
                     'OpenAI API Key',
@@ -517,23 +501,25 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
 
                           if (!Form.of(context).validate()) return;
 
-                          validateKey().then((bool success) {
-                            if (success) {
-                              box.put(openAIKey, controller.text);
-                              if (!mounted) return;
-                              setState(() {
-                                message = 'Key updated successfully!';
-                                isError = false;
-                              });
-                            } else {
-                              if (!mounted) return;
-                              setState(() {
-                                message =
-                                    "Invalid API key. Make sure it's correct and try again.";
-                                isError = true;
-                              });
-                            }
-                          });
+                          validateKey().then(
+                            (bool success) {
+                              if (success) {
+                                box.put(openAIKey, controller.text);
+                                if (!mounted) return;
+                                setState(() {
+                                  message = 'Key updated successfully!';
+                                  isError = false;
+                                });
+                              } else {
+                                if (!mounted) return;
+                                setState(() {
+                                  message =
+                                      "Invalid API key. Make sure it's correct and try again.";
+                                  isError = true;
+                                });
+                              }
+                            },
+                          );
                         },
                   child: Container(
                     width: 44,

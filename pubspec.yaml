@@ -44,13 +44,16 @@ dev_dependencies:
   build_runner: ^2.3.3
   extra_pedantic: ^3.0.0
   json_serializable: ^6.6.1
+  dart_code_metrics: ^5.6.0
+  dart_code_metrics_presets: ^1.4.1
 
 flutter:
   uses-material-design: true
   assets:
+    - assets/app_logo.png
     - assets/app_icon.png
     - assets/app_icon.ico
-    - assets/app_logo.png
+    - assets/openai_256.png
     - assets/discord_256x.png
     - assets/twitter_256x.png
     - assets/linked_in_256x.png

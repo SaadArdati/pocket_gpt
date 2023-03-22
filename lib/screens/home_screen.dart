@@ -11,6 +11,8 @@ import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../versioning.dart';
 
+bool didCheckForUpdates = false;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -26,6 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> checkForUpdates() async {
+    if (!didCheckForUpdates) {
+      didCheckForUpdates = true;
+    } else {
+      return;
+    }
     final Version? latestVersion = await getLatestRelease();
 
     if (latestVersion == null) return;
