@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../constants.dart';
 import '../gpt_manager.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
@@ -24,10 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkForUpdates();
+    runUpdateCheck();
   }
 
-  Future<void> checkForUpdates() async {
+  Future<void> runUpdateCheck() async {
+    final box = Hive.box(settings);
+    if (!box.get(checkForUpdates, defaultValue: true)) return;
+
     if (!didCheckForUpdates) {
       didCheckForUpdates = true;
     } else {

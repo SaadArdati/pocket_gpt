@@ -103,11 +103,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ),
                               const SizedBox(height: 16),
                               ListTile(
-                                title: Text('Theme Mode',
-                                    style: context.textTheme.bodyMedium),
+                                title: Text(
+                                  'Theme Mode',
+                                  style: context.textTheme.bodyMedium,
+                                ),
                                 subtitle: Text(
-                                    'Controls the behavior of the light and dark theme.',
-                                    style: context.textTheme.bodySmall),
+                                  'Controls the behavior of the light and dark theme.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
                                 trailing: DropdownButton<ThemeMode>(
                                   value: mode,
                                   style: context.textTheme.bodyMedium?.copyWith(
@@ -136,11 +140,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ),
                               CheckboxListTile(
                                 value: box.get(alwaysOnTop, defaultValue: true),
-                                title: Text('Always on top',
-                                    style: context.textTheme.bodyMedium),
+                                title: Text(
+                                  'Always on top',
+                                  style: context.textTheme.bodyMedium,
+                                ),
                                 subtitle: Text(
-                                    'The window will always be on top of all other windows.',
-                                    style: context.textTheme.bodySmall),
+                                  'The window will always be on top of all other windows.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
                                 onChanged: (bool? value) {
                                   box.put(
                                     alwaysOnTop,
@@ -152,18 +160,41 @@ class _SettingsScreenState extends State<SettingsScreen>
                               CheckboxListTile(
                                 value: box.get(windowPositionMemory,
                                     defaultValue: true),
-                                title: Text('Preserve window position',
-                                    style: context.textTheme.bodyMedium),
+                                title: Text(
+                                  'Preserve window position',
+                                  style: context.textTheme.bodyMedium,
+                                ),
                                 subtitle: Text(
-                                    'Remembers the position of the window when you close it.',
-                                    style: context.textTheme.bodySmall),
+                                  'Remembers the position of the window when you close it.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
                                 onChanged: (bool? value) {
                                   box.put(
                                     windowPositionMemory,
                                     value ?? !box.get(windowPositionMemory),
                                   );
                                 },
-                              )
+                              ),
+                              CheckboxListTile(
+                                value: box.get(checkForUpdates,
+                                    defaultValue: true),
+                                title: Text(
+                                  'Check for updates on startup',
+                                  style: context.textTheme.bodyMedium,
+                                ),
+                                subtitle: Text(
+                                  'Checks for updates when the app starts and notifies you if there is an update available.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                onChanged: (bool? value) {
+                                  box.put(
+                                    checkForUpdates,
+                                    value ?? !box.get(checkForUpdates),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -225,7 +256,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               children: [
                 const ImageIcon(
                   AssetImage('assets/app_icon.png'),
-                  ),
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Pocket GPT',
