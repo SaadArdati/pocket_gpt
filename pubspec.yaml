@@ -16,7 +16,7 @@ dependencies:
   go_router: ^6.2.0
   bubble: ^1.2.1
   equatable: ^2.0.5
-  uuid: ^4.0.0-beta1-1
+  uuid: ^3.0.5
   provider: ^6.0.5
   flutter_markdown:
     git:
@@ -53,17 +53,17 @@ dev_dependencies:
 flutter_native_splash:
   color: "#FBFCFE"
   color_dark: "#191C1E"
-  branding: "assets/app_logo.png"
-  branding_dark: "assets/app_logo.png"
+  image: "assets/logo_bg_light_256x.png"
+  image_dark: "assets/logo_bg_dark_256x.png"
   fullscreen: true
 
 flutter_icons:
-  image_path: "assets/app_logo.png"
-  ios: true
-  remove_alpha_ios: true
-  android: true
+  image_path: "assets/app_logo_1000x.png"
   adaptive_icon_background: "#191C1E"
-  adaptive_icon_foreground: "assets/app_logo.png"
+  adaptive_icon_foreground: "assets/app_logo_1000x.png"
+  android: true
+  image_path_ios: "assets/logo_bg_dark_padded_1024x.png"
+  ios: true
   web:
     generate: true
     background_color: "#191C1E"
@@ -76,13 +76,19 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets:
-    - assets/app_logo.png
+    - assets/app_logo_1000x.png
     - assets/app_icon.png
     - assets/app_icon.ico
     - assets/openai_256.png
     - assets/discord_256x.png
     - assets/twitter_256x.png
     - assets/linked_in_256x.png
-    - assets/github_black_256x.png
-    - assets/github_white_256x.png
+    - assets/github_dark_256x.png
+    - assets/github_light_256x.png
     - assets/profile_256x.png
+    - assets/logo_bg_dark_256x.png
+    - assets/logo_bg_light_256x.png
+    - assets/logo_bg_dark_1000x.png
+    - assets/logo_bg_light_1000x.png
+    - assets/logo_bg_dark_padded_1024x.png
+    - assets/logo_bg_light_padded_1024x.png

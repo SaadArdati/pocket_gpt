@@ -402,6 +402,11 @@ class _NavigationBackgroundState extends State<NavigationBackground>
     value: isOnboardingPage ? 150 : 130,
   );
 
+  late final AnimationController logoController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..forward();
+
   late final Animation<double> transitionAnimation = CurvedAnimation(
     parent: transitionController,
     curve: Curves.easeInOutQuart,
@@ -410,6 +415,11 @@ class _NavigationBackgroundState extends State<NavigationBackground>
   late final Animation<double> waveAnimation = CurvedAnimation(
     parent: waveController,
     curve: Curves.linear,
+  );
+
+  late final Animation<double> logoAnimation = CurvedAnimation(
+    parent: logoController,
+    curve: Curves.easeInOutQuart,
   );
 
   bool transitionDirection = false;
@@ -502,6 +512,7 @@ class _NavigationBackgroundState extends State<NavigationBackground>
     transitionController.dispose();
     waveController.dispose();
     rotationController.dispose();
+    logoController.dispose();
     super.dispose();
   }
 
@@ -511,17 +522,26 @@ class _NavigationBackgroundState extends State<NavigationBackground>
       color: context.colorScheme.background,
       child: Stack(
         children: [
-          Positioned(
-            top: -500,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/app_logo.png',
-              width: 1000,
-              height: 1000,
-              color: context.colorScheme.surfaceVariant.withOpacity(0.1),
-            ),
-          ),
+          LayoutBuilder(builder: (context, constraints) {
+            final double bestFit = constraints.biggest.shortestSide;
+            return AnimatedBuilder(
+                animation: logoAnimation,
+                builder: (context, child) {
+                  return Align(
+                    alignment: Alignment(0, -2 * logoAnimation.value),
+                    child: Image.asset(
+                      'assets/app_logo_1000x.png',
+                      width: 56 + (bestFit - 56) * logoAnimation.value,
+                      height: 56 + (bestFit - 56) * logoAnimation.value,
+                      color: Color.lerp(
+                        context.colorScheme.onBackground,
+                        context.colorScheme.surfaceVariant.withOpacity(0.5),
+                        logoAnimation.value,
+                      ),
+                    ),
+                  );
+                });
+          }),
           Positioned.fill(
             child: AnimatedBuilder(
               animation: rotationController,

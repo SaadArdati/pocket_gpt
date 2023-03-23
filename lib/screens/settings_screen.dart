@@ -324,8 +324,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                   buildContactTile(
                     title: 'Github',
                     icon: Theme.of(context).brightness == Brightness.dark
-                        ? 'assets/github_black_256x.png'
-                        : 'assets/github_white_256x.png',
+                        ? 'assets/github_dark_256x.png'
+                        : 'assets/github_light_256x.png',
                     url: 'https://github.com/SwissCheese5',
                   ),
                   const SizedBox(height: 8),
