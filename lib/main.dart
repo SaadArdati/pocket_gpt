@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:window_manager/window_manager.dart';
 import 'gpt_manager.dart';
@@ -28,6 +30,15 @@ void main() async {
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await SystemManager.init();
+
+    final box = Hive.box(settings);
+    if (box.get(settingLaunchOnStartup, defaultValue: true)) {
+      final packageInfo = await PackageInfo.fromPlatform();
+      LaunchAtStartup.instance.setup(
+        appName: packageInfo.appName,
+        appPath: Platform.resolvedExecutable,
+      );
+    }
   }
   setPathUrlStrategy();
 
@@ -79,7 +90,7 @@ Widget defaultPageTransition(
 
 ThemeMode getThemeMode() {
   final box = Hive.box(settings);
-  switch (box.get(themeMode, defaultValue: 'system')) {
+  switch (box.get(settingThemeMode, defaultValue: 'system')) {
     case 'dark':
       return ThemeMode.dark;
     case 'light':

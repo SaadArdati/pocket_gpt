@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -133,54 +134,58 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   ],
                                   onChanged: (ThemeMode? value) {
                                     if (value != null) {
-                                      box.put(themeMode, value.name);
+                                      box.put(settingThemeMode, value.name);
                                     }
                                   },
                                 ),
                               ),
-                              CheckboxListTile(
-                                value: box.get(alwaysOnTop, defaultValue: true),
-                                title: Text(
-                                  'Always on top',
-                                  style: context.textTheme.bodyMedium,
+                              if (isDesktop)
+                                CheckboxListTile(
+                                  value: box.get(settingAlwaysOnTop,
+                                      defaultValue: true),
+                                  title: Text(
+                                    'Always on top',
+                                    style: context.textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    'The window will always be on top of all other windows.',
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(fontSize: 10),
+                                  ),
+                                  onChanged: (bool? value) {
+                                    box.put(
+                                      settingAlwaysOnTop,
+                                      value ?? !box.get(settingAlwaysOnTop),
+                                    );
+                                    SystemManager.setAlwaysOnTop(value ?? true);
+                                  },
                                 ),
-                                subtitle: Text(
-                                  'The window will always be on top of all other windows.',
-                                  style: context.textTheme.bodySmall
-                                      ?.copyWith(fontSize: 10),
+                              if (isDesktop)
+                                CheckboxListTile(
+                                  value: box.get(settingWindowPositionMemory,
+                                      defaultValue: true),
+                                  title: Text(
+                                    'Preserve window position',
+                                    style: context.textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    'Remembers the position of the window when you close it.',
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(fontSize: 10),
+                                  ),
+                                  onChanged: (bool? value) {
+                                    box.put(
+                                      settingWindowPositionMemory,
+                                      value ??
+                                          !box.get(settingWindowPositionMemory),
+                                    );
+                                  },
                                 ),
-                                onChanged: (bool? value) {
-                                  box.put(
-                                    alwaysOnTop,
-                                    value ?? !box.get(alwaysOnTop),
-                                  );
-                                  SystemManager.setAlwaysOnTop(value ?? true);
-                                },
-                              ),
                               CheckboxListTile(
-                                value: box.get(windowPositionMemory,
+                                value: box.get(settingCheckForUpdates,
                                     defaultValue: true),
                                 title: Text(
-                                  'Preserve window position',
-                                  style: context.textTheme.bodyMedium,
-                                ),
-                                subtitle: Text(
-                                  'Remembers the position of the window when you close it.',
-                                  style: context.textTheme.bodySmall
-                                      ?.copyWith(fontSize: 10),
-                                ),
-                                onChanged: (bool? value) {
-                                  box.put(
-                                    windowPositionMemory,
-                                    value ?? !box.get(windowPositionMemory),
-                                  );
-                                },
-                              ),
-                              CheckboxListTile(
-                                value: box.get(checkForUpdates,
-                                    defaultValue: true),
-                                title: Text(
-                                  'Check for updates on startup',
+                                  'Automatically check for updates',
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 subtitle: Text(
@@ -190,11 +195,32 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    checkForUpdates,
-                                    value ?? !box.get(checkForUpdates),
+                                    settingCheckForUpdates,
+                                    value ?? !box.get(settingCheckForUpdates),
                                   );
                                 },
                               ),
+                              if (isDesktop)
+                                CheckboxListTile(
+                                  value: box.get(settingLaunchOnStartup,
+                                      defaultValue: true),
+                                  title: Text(
+                                    'Launch app on startup',
+                                    style: context.textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    'Launches the app when you start your computer.',
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(fontSize: 10),
+                                  ),
+                                  onChanged: (bool? value) {
+                                    box.put(
+                                      settingLaunchOnStartup,
+                                      value ?? !box.get(settingLaunchOnStartup),
+                                    );
+                                    LaunchAtStartup.instance.disable();
+                                  },
+                                ),
                             ],
                           ),
                         ),

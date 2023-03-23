@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> runUpdateCheck() async {
     final box = Hive.box(settings);
-    if (!box.get(checkForUpdates, defaultValue: true)) return;
+    if (!box.get(settingCheckForUpdates, defaultValue: true)) return;
 
     if (!didCheckForUpdates) {
       didCheckForUpdates = true;

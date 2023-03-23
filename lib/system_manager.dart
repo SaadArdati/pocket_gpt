@@ -13,7 +13,7 @@ class SystemManager {
 
   static Future<void> init() async {
     final box = Hive.box(settings);
-    final bool alwaysOnTopResult = box.get(alwaysOnTop, defaultValue: true);
+    final bool alwaysOnTopResult = box.get(settingAlwaysOnTop, defaultValue: true);
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
@@ -43,7 +43,7 @@ class SystemManager {
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) async {
       final bool windowPositionMemoryResult =
-          box.get(windowPositionMemory, defaultValue: true);
+          box.get(settingWindowPositionMemory, defaultValue: true);
 
       if (eventName == 'leftMouseUp') {
         final bool isFocused = await windowManager.isFocused();
