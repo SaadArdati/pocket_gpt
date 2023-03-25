@@ -228,11 +228,6 @@ class GPTManager extends ChangeNotifier {
   }
 
   void openChat({String? id, required bool notify, ChatType? type}) {
-    assert(
-      (id == null) != (type == null),
-      'Either id or type must be null.',
-    );
-
     if (id == null) {
       currentChat = Chat.simple(messages: [], type: type!);
       chatHistory[currentChat!.id] = currentChat!;

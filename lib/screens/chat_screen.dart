@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:bubble/bubble.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -67,7 +68,13 @@ class _ChatScreenState extends State<ChatScreen>
 
     final GPTManager gpt = context.read<GPTManager>();
     gpt.init();
-    gpt.openChat(notify: false, type: widget.type);
+    gpt.openChat(
+      notify: false,
+      type: widget.type,
+      id: gpt.chatHistory.values
+          .firstWhereOrNull((type) => type.type == widget.type)
+          ?.id,
+    );
   }
 
   @override

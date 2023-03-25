@@ -38,6 +38,7 @@ dependencies:
   launch_at_startup: ^0.2.2
   flutter_launcher_icons: ^0.12.0
   flutter_native_splash: ^2.2.19
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:
