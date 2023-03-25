@@ -8,7 +8,7 @@ Future<Version?> getLatestRelease() async {
   try {
     final response = await get(
       Uri.parse(
-        'https://api.github.com/repos/SwissCheese5/pocket_gpt/releases/latest',
+        'https://api.github.com/repos/SaadArdati/pocket_gpt/releases/latest',
       ),
     );
 

@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           textColor: context.colorScheme.inversePrimary,
           onPressed: () {
             launchUrlString(
-                'https://github.com/SwissCheese5/pocket_gpt/releases/$latestVersion');
+                'https://github.com/SaadArdati/pocket_gpt/releases/$latestVersion');
           },
         ),
       ),
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
           tooltip: 'Settings',
           icon: const Icon(Icons.settings),
           onPressed: () {
-            context.go('/settings', extra: {'from': '/home'});
+            context.go('/settings', extra: {'from': 'home'});
           },
         ),
         actions: [
@@ -105,11 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
         ],
       ),
-      body: ListView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 32),
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
             child: Wrap(
               spacing: 16,
               runSpacing: 16,
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

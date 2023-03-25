@@ -324,7 +324,7 @@ packages:
       path: "packages/flutter_markdown"
       ref: HEAD
       resolved-ref: b0dcd3de7eeccb95de5079955510441ec026d107
-      url: "https://github.com/SwissCheese5/packages.git"
+      url: "https://github.com/SaadArdati/packages.git"
     source: git
     version: "0.6.14"
   flutter_native_splash:

@@ -30,7 +30,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         actions: [
           ValueListenableBuilder(
             valueListenable: box.listenable(),
@@ -147,7 +146,7 @@ class OnboardingDone extends StatelessWidget {
             child: IconButton(
               tooltip: 'Finish',
               onPressed: () {
-                context.go('/home');
+                context.go('/home', extra: {'from': 'onboarding'});
               },
               iconSize: 32,
               icon: const Icon(Icons.navigate_next),

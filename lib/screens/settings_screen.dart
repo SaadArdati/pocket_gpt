@@ -49,228 +49,229 @@ class _SettingsScreenState extends State<SettingsScreen>
         platform == TargetPlatform.macOS;
 
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              context.go('/home');
-            },
-            icon: const Icon(Icons.arrow_downward),
-          ),
-          title: const Text('Settings'),
-          actions: [
-            if (isDesktop)
-              const IconButton(
-                onPressed: SystemManager.closeWindow,
-                tooltip: 'Minimize',
-                icon: Icon(Icons.minimize),
-              ),
-          ],
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.go('/home', extra: {'from': 'settings'});
+          },
+          icon: const Icon(Icons.arrow_downward),
         ),
-        body: ValueListenableBuilder(
-          valueListenable: box.listenable(),
-          builder: (context, Box box, child) {
-            final ThemeMode mode = getThemeMode();
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: Container(
-                    constraints: const BoxConstraints(maxWidth: 350),
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        SizedBox(
-                          height:
-                              (Scaffold.of(context).appBarMaxHeight ?? 48) + 16,
-                        ),
-                        SettingsTile(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Center(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.desktop_windows_outlined),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'App Settings',
-                                      style: context.textTheme.bodyLarge,
-                                    )
-                                  ],
-                                ),
+        title: const Text('Settings'),
+        actions: [
+          if (isDesktop)
+            const IconButton(
+              onPressed: SystemManager.closeWindow,
+              tooltip: 'Minimize',
+              icon: Icon(Icons.minimize),
+            ),
+        ],
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+      ),
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      body: ValueListenableBuilder(
+        valueListenable: box.listenable(),
+        builder: (context, Box box, child) {
+          final ThemeMode mode = getThemeMode();
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 350),
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
+                      SizedBox(
+                        height:
+                            (Scaffold.of(context).appBarMaxHeight ?? 48) + 16,
+                      ),
+                      SettingsTile(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.desktop_windows_outlined),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'App Settings',
+                                    style: context.textTheme.bodyLarge,
+                                  )
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              ListTile(
-                                title: Text(
-                                  'Theme Mode',
-                                  style: context.textTheme.bodyMedium,
-                                ),
-                                subtitle: Text(
-                                  'Controls the behavior of the light and dark theme.',
-                                  style: context.textTheme.bodySmall
-                                      ?.copyWith(fontSize: 10),
-                                ),
-                                trailing: DropdownButton<ThemeMode>(
-                                  value: mode,
-                                  style: context.textTheme.bodyMedium?.copyWith(
-                                      color: context
-                                          .colorScheme.onPrimaryContainer),
-                                  underline: const SizedBox.shrink(),
-                                  borderRadius: BorderRadius.circular(8),
-                                  alignment: Alignment.center,
-                                  items: const [
-                                    DropdownMenuItem<ThemeMode>(
-                                        value: ThemeMode.light,
-                                        child: Text('Light')),
-                                    DropdownMenuItem<ThemeMode>(
-                                        value: ThemeMode.dark,
-                                        child: Text('Dark')),
-                                    DropdownMenuItem<ThemeMode>(
-                                        value: ThemeMode.system,
-                                        child: Text('System'))
-                                  ],
-                                  onChanged: (ThemeMode? value) {
-                                    if (value != null) {
-                                      box.put(settingThemeMode, value.name);
-                                    }
-                                  },
-                                ),
+                            ),
+                            const SizedBox(height: 16),
+                            ListTile(
+                              title: Text(
+                                'Theme Mode',
+                                style: context.textTheme.bodyMedium,
                               ),
-                              if (isDesktop)
-                                CheckboxListTile(
-                                  value: box.get(settingAlwaysOnTop,
-                                      defaultValue: true),
-                                  title: Text(
-                                    'Always on top',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Text(
-                                    'The window will always be on top of all other windows.',
-                                    style: context.textTheme.bodySmall
-                                        ?.copyWith(fontSize: 10),
-                                  ),
-                                  onChanged: (bool? value) {
-                                    box.put(
-                                      settingAlwaysOnTop,
-                                      value ?? !box.get(settingAlwaysOnTop),
-                                    );
-                                    SystemManager.setAlwaysOnTop(value ?? true);
-                                  },
-                                ),
-                              if (isDesktop)
-                                CheckboxListTile(
-                                  value: box.get(settingWindowPositionMemory,
-                                      defaultValue: true),
-                                  title: Text(
-                                    'Preserve window position',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Text(
-                                    'Remembers the position of the window when you close it.',
-                                    style: context.textTheme.bodySmall
-                                        ?.copyWith(fontSize: 10),
-                                  ),
-                                  onChanged: (bool? value) {
-                                    box.put(
-                                      settingWindowPositionMemory,
-                                      value ??
-                                          !box.get(settingWindowPositionMemory),
-                                    );
-                                  },
-                                ),
+                              subtitle: Text(
+                                'Controls the behavior of the light and dark theme.',
+                                style: context.textTheme.bodySmall
+                                    ?.copyWith(fontSize: 10),
+                              ),
+                              trailing: DropdownButton<ThemeMode>(
+                                value: mode,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                    color:
+                                        context.colorScheme.onPrimaryContainer),
+                                underline: const SizedBox.shrink(),
+                                borderRadius: BorderRadius.circular(8),
+                                alignment: Alignment.center,
+                                items: const [
+                                  DropdownMenuItem<ThemeMode>(
+                                      value: ThemeMode.light,
+                                      child: Text('Light')),
+                                  DropdownMenuItem<ThemeMode>(
+                                      value: ThemeMode.dark,
+                                      child: Text('Dark')),
+                                  DropdownMenuItem<ThemeMode>(
+                                      value: ThemeMode.system,
+                                      child: Text('System'))
+                                ],
+                                onChanged: (ThemeMode? value) {
+                                  if (value != null) {
+                                    box.put(settingThemeMode, value.name);
+                                  }
+                                },
+                              ),
+                            ),
+                            if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(settingCheckForUpdates,
+                                value: box.get(settingAlwaysOnTop,
                                     defaultValue: true),
                                 title: Text(
-                                  'Automatically check for updates',
+                                  'Always on top',
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 subtitle: Text(
-                                  'Checks for updates when the app starts and notifies you if there is an update available.',
+                                  'The window will always be on top of all other windows.',
                                   style: context.textTheme.bodySmall
                                       ?.copyWith(fontSize: 10),
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    settingCheckForUpdates,
-                                    value ?? !box.get(settingCheckForUpdates),
+                                    settingAlwaysOnTop,
+                                    value ?? !box.get(settingAlwaysOnTop),
+                                  );
+                                  SystemManager.setAlwaysOnTop(value ?? true);
+                                },
+                              ),
+                            if (isDesktop)
+                              CheckboxListTile(
+                                value: box.get(settingWindowPositionMemory,
+                                    defaultValue: true),
+                                title: Text(
+                                  'Preserve window position',
+                                  style: context.textTheme.bodyMedium,
+                                ),
+                                subtitle: Text(
+                                  'Remembers the position of the window when you close it.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                onChanged: (bool? value) {
+                                  box.put(
+                                    settingWindowPositionMemory,
+                                    value ??
+                                        !box.get(settingWindowPositionMemory),
                                   );
                                 },
                               ),
-                              if (isDesktop)
-                                CheckboxListTile(
-                                  value: box.get(settingLaunchOnStartup,
-                                      defaultValue: true),
-                                  title: Text(
-                                    'Launch app on startup',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Text(
-                                    'Launches the app when you start your computer.',
-                                    style: context.textTheme.bodySmall
-                                        ?.copyWith(fontSize: 10),
-                                  ),
-                                  onChanged: (bool? value) {
-                                    box.put(
-                                      settingLaunchOnStartup,
-                                      value ?? !box.get(settingLaunchOnStartup),
-                                    );
-                                    LaunchAtStartup.instance.disable();
-                                  },
+                            CheckboxListTile(
+                              value: box.get(settingCheckForUpdates,
+                                  defaultValue: true),
+                              title: Text(
+                                'Automatically check for updates',
+                                style: context.textTheme.bodyMedium,
+                              ),
+                              subtitle: Text(
+                                'Checks for updates when the app starts and notifies you if there is an update available.',
+                                style: context.textTheme.bodySmall
+                                    ?.copyWith(fontSize: 10),
+                              ),
+                              onChanged: (bool? value) {
+                                box.put(
+                                  settingCheckForUpdates,
+                                  value ?? !box.get(settingCheckForUpdates),
+                                );
+                              },
+                            ),
+                            if (isDesktop)
+                              CheckboxListTile(
+                                value: box.get(settingLaunchOnStartup,
+                                    defaultValue: true),
+                                title: Text(
+                                  'Launch app on startup',
+                                  style: context.textTheme.bodyMedium,
                                 ),
-                            ],
-                          ),
+                                subtitle: Text(
+                                  'Launches the app when you start your computer.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                onChanged: (bool? value) {
+                                  box.put(
+                                    settingLaunchOnStartup,
+                                    value ?? !box.get(settingLaunchOnStartup),
+                                  );
+                                  LaunchAtStartup.instance.disable();
+                                },
+                              ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        const SettingsTile(
-                          padding: EdgeInsets.all(16),
-                          child: OpenAIKeyTile(),
-                        ),
-                        const SizedBox(height: 16),
-                        buildInfoTile(context),
-                        const SizedBox(height: 32)
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      const SettingsTile(
+                        padding: EdgeInsets.all(16),
+                        child: OpenAIKeyTile(),
+                      ),
+                      const SizedBox(height: 16),
+                      buildInfoTile(context),
+                      const SizedBox(height: 32)
+                    ],
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Builder(
-                    builder: (context) {
-                      return ClipRect(
-                        child: AnimatedBuilder(
-                          animation: blurAnimation,
-                          builder: (context, child) {
-                            return BackdropFilter(
-                                filter: ImageFilter.blur(
-                                    sigmaX: blurAnimation.value * 5,
-                                    sigmaY: blurAnimation.value * 5),
-                                child: child!);
-                          },
-                          child: Container(
-                            color: Colors.transparent,
-                            height:
-                                Scaffold.of(context).appBarMaxHeight ?? 48 + 16,
-                          ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Builder(
+                  builder: (context) {
+                    return ClipRect(
+                      child: AnimatedBuilder(
+                        animation: blurAnimation,
+                        builder: (context, child) {
+                          return BackdropFilter(
+                              filter: ImageFilter.blur(
+                                  sigmaX: blurAnimation.value * 5,
+                                  sigmaY: blurAnimation.value * 5),
+                              child: child!);
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          height:
+                              Scaffold.of(context).appBarMaxHeight ?? 48 + 16,
                         ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            );
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true);
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          );
+        },
+      ),
+    );
   }
 
-  SettingsTile buildInfoTile(BuildContext context) {
+  Widget buildInfoTile(BuildContext context) {
     return SettingsTile(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -326,7 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     icon: Theme.of(context).brightness == Brightness.dark
                         ? 'assets/github_dark_256x.png'
                         : 'assets/github_light_256x.png',
-                    url: 'https://github.com/SwissCheese5',
+                    url: 'https://github.com/SaadArdati',
                   ),
                   const SizedBox(height: 8),
                   buildContactTile(

@@ -87,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen>
             icon: const Icon(Icons.arrow_upward),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             onPressed: () {
-              context.go('/home', extra: {'from': '/chat'});
+              context.go('/home', extra: {'from': 'chat'});
             },
           ),
           title: Text(widget.type.label),

@@ -348,7 +348,7 @@ class GPTManager extends ChangeNotifier {
               ' access. The app in which you live in was created by Saad Ardati.'
               '\n - Twitter: @SaadArdati.'
               '\n - Website: https://saad-ardati.web.app/.'
-              '\n - Github: https://github.com/SwissCheese5.'
+              '\n - Github: https://github.com/SaadArdati.'
               '\n - Description: Self-taught software developer with 8+ years'
               ' of experience in game modding and 4+ years of experience'
               ' in Flutter development. Currently pursuing a degree in'

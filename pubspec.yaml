@@ -20,7 +20,7 @@ dependencies:
   provider: ^6.0.5
   flutter_markdown:
     git:
-      url: https://github.com/SwissCheese5/packages.git
+      url: https://github.com/SaadArdati/packages.git
       path: packages/flutter_markdown
   flutter_highlighter: ^0.1.1
   google_fonts: ^4.0.3

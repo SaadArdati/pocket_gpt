@@ -24,30 +24,36 @@ import 'color_schemes.g.dart';
 import 'wave_background.dart';
 
 void main() async {
+  await initPocketGPT();
+  runApp(const PocketGPT());
+}
+
+Future<bool> initPocketGPT({bool asWeb = false}) async {
   await Hive.initFlutter();
   await Hive.openBox(history);
   await Hive.openBox(settings);
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await SystemManager.init();
+  if (!asWeb) {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      await SystemManager.init();
 
-    final box = Hive.box(settings);
-    if (box.get(settingLaunchOnStartup, defaultValue: true)) {
-      final packageInfo = await PackageInfo.fromPlatform();
-      LaunchAtStartup.instance.setup(
-        appName: packageInfo.appName,
-        appPath: Platform.resolvedExecutable,
-      );
+      final box = Hive.box(settings);
+      if (box.get(settingLaunchOnStartup, defaultValue: true)) {
+        final packageInfo = await PackageInfo.fromPlatform();
+        LaunchAtStartup.instance.setup(
+          appName: packageInfo.appName,
+          appPath: Platform.resolvedExecutable,
+        );
+      }
     }
+    setPathUrlStrategy();
   }
-  setPathUrlStrategy();
 
   OpenAI.apiKey = Hive.box(settings).get(openAIKey, defaultValue: '');
-
-  runApp(const PocketGPT());
+  return true;
 }
 
-Widget defaultPageTransition(
+Widget pocketGPTTransition(
   BuildContext context,
   Animation<double> animation,
   Animation<double> secondaryAnimation,
@@ -162,7 +168,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                         opaque: false,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          return defaultPageTransition(
+                          return pocketGPTTransition(
                             context,
                             animation,
                             secondaryAnimation,
@@ -183,7 +189,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                         opaque: false,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          return defaultPageTransition(
+                          return pocketGPTTransition(
                             context,
                             animation,
                             secondaryAnimation,
@@ -204,7 +210,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                         opaque: false,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          return defaultPageTransition(
+                          return pocketGPTTransition(
                             context,
                             animation,
                             secondaryAnimation,
@@ -228,7 +234,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
               AxisDirection comesFrom = AxisDirection.down;
               if (extra != null && extra is Map) {
                 final String? fromParam = extra['from'];
-                if (fromParam == '/chat') {
+                if (fromParam == 'chat') {
                   comesFrom = AxisDirection.up;
                 }
               }
@@ -241,7 +247,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
-                  return defaultPageTransition(
+                  return pocketGPTTransition(
                     context,
                     animation,
                     secondaryAnimation,
@@ -276,7 +282,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
-                  return defaultPageTransition(
+                  return pocketGPTTransition(
                     context,
                     animation,
                     secondaryAnimation,
@@ -300,7 +306,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
                 reverseTransitionDuration: const Duration(milliseconds: 600),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
-                  return defaultPageTransition(
+                  return pocketGPTTransition(
                     context,
                     animation,
                     secondaryAnimation,
@@ -520,87 +526,92 @@ class _NavigationBackgroundState extends State<NavigationBackground>
   Widget build(BuildContext context) {
     return Material(
       color: context.colorScheme.background,
-      child: Stack(
-        children: [
-          LayoutBuilder(builder: (context, constraints) {
-            final double bestFit = constraints.biggest.shortestSide;
-            return AnimatedBuilder(
-                animation: logoAnimation,
-                builder: (context, child) {
-                  return Align(
-                    alignment: Alignment(0, -2 * logoAnimation.value),
-                    child: Image.asset(
-                      'assets/app_logo_1000x.png',
-                      width: 56 + (bestFit - 56) * logoAnimation.value,
-                      height: 56 + (bestFit - 56) * logoAnimation.value,
-                      color: Color.lerp(
-                        context.colorScheme.onBackground,
-                        context.colorScheme.surfaceVariant.withOpacity(0.5),
-                        logoAnimation.value,
-                      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final double bestFit = constraints.biggest.shortestSide;
+        return Stack(
+          children: [
+            AnimatedBuilder(
+              animation: logoAnimation,
+              builder: (context, child) {
+                return Positioned(
+                  top: (constraints.biggest.height / 2) *
+                          (1 - logoAnimation.value) +
+                      -bestFit / 2 * logoAnimation.value,
+                  left: 0,
+                  right: 0,
+                  child: Image.asset(
+                    'assets/app_logo_1000x.png',
+                    width: 56 + (bestFit - 56) * logoAnimation.value,
+                    height: 56 + (bestFit - 56) * logoAnimation.value,
+                    color: Color.lerp(
+                      context.colorScheme.onBackground,
+                      context.colorScheme.surfaceVariant.withOpacity(0.5),
+                      logoAnimation.value,
                     ),
-                  );
-                });
-          }),
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: rotationController,
-              builder: (BuildContext context, Widget? child) {
-                return AnimatedBuilder(
-                  animation: waveAnimation,
-                  builder: (context, child) {
-                    final primary = context.colorScheme.primary;
-                    final secondary = context.colorScheme.primaryContainer;
-                    final overlay = context.colorScheme.background;
-                    final double rot = rotationController.value;
-                    return WaveBackground(
-                      duration: const Duration(milliseconds: 10),
-                      waves: [
-                        Wave(
-                          intensity: 10,
-                          frequency: 50,
-                          gravity: 65,
-                          rotation: (pi / 180) * (rot + 20),
-                          startColor: primary,
-                          endColor: secondary,
-                        ),
-                        Wave(
-                          intensity: 20,
-                          frequency: 20,
-                          gravity: 60,
-                          rotation: (pi / 180) * (rot),
-                          startColor: secondary,
-                          endColor: primary,
-                          reverseDirection: true,
-                        ),
-                        Wave(
-                          intensity: 15,
-                          frequency: 30,
-                          gravity: 30,
-                          rotation: (pi / 180) * (rot + 15),
-                          startColor: primary,
-                          endColor: secondary,
-                        ),
-                        Wave(
-                          intensity: 20,
-                          frequency: 40,
-                          gravity: 10,
-                          rotation: (pi / 180) * (rot + 20),
-                          startColor: secondary,
-                          endColor: overlay,
-                          reverseDirection: true,
-                        ),
-                      ],
-                      waveMotion: waveAnimation.value * 2 - 1,
-                    );
-                  },
+                  ),
                 );
               },
             ),
-          ),
-          widget.child,
-        ],
-      ),
+            Positioned.fill(
+              child: AnimatedBuilder(
+                animation: rotationController,
+                builder: (BuildContext context, Widget? child) {
+                  return AnimatedBuilder(
+                    animation: waveAnimation,
+                    builder: (context, child) {
+                      final primary = context.colorScheme.primary;
+                      final secondary = context.colorScheme.primaryContainer;
+                      final overlay = context.colorScheme.background;
+                      final double rot = rotationController.value;
+                      return WaveBackground(
+                        duration: const Duration(milliseconds: 10),
+                        waves: [
+                          Wave(
+                            intensity: 10,
+                            frequency: 50,
+                            gravity: 65,
+                            rotation: (pi / 180) * (rot + 20),
+                            startColor: primary,
+                            endColor: secondary,
+                          ),
+                          Wave(
+                            intensity: 20,
+                            frequency: 20,
+                            gravity: 60,
+                            rotation: (pi / 180) * (rot),
+                            startColor: secondary,
+                            endColor: primary,
+                            reverseDirection: true,
+                          ),
+                          Wave(
+                            intensity: 15,
+                            frequency: 30,
+                            gravity: 30,
+                            rotation: (pi / 180) * (rot + 15),
+                            startColor: primary,
+                            endColor: secondary,
+                          ),
+                          Wave(
+                            intensity: 20,
+                            frequency: 40,
+                            gravity: 10,
+                            rotation: (pi / 180) * (rot + 20),
+                            startColor: secondary,
+                            endColor: overlay,
+                            reverseDirection: true,
+                          ),
+                        ],
+                        waveMotion: waveAnimation.value * 2 - 1,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            widget.child,
+          ],
+        );
+      }),
     );
   }
 }
