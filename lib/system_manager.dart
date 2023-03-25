@@ -10,10 +10,13 @@ import 'constants.dart';
 
 class SystemManager {
   static bool isInit = true;
+  static late Offset trayPosition;
+  static Size defaultWindowSize = const Size(400, 600);
 
   static Future<void> init() async {
     final box = Hive.box(settings);
-    final bool alwaysOnTopResult = box.get(settingAlwaysOnTop, defaultValue: true);
+    final bool alwaysOnTopResult =
+        box.get(settingAlwaysOnTop, defaultValue: true);
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
@@ -52,12 +55,20 @@ class SystemManager {
         } else {
           windowManager.show();
 
+          trayPosition = await screenRetriever.getCursorScreenPoint() -
+              Offset(defaultWindowSize.width / 2, 0);
+
           if (isInit || !windowPositionMemoryResult) {
-            windowManager.setSize(const Size(400, 600));
-            windowManager.setPosition(
-              await screenRetriever.getCursorScreenPoint() -
-                  const Offset(200, 0),
+            await windowManager.setBounds(
+              Rect.fromLTWH(
+                trayPosition.dx,
+                trayPosition.dy,
+                defaultWindowSize.width,
+                defaultWindowSize.height,
+              ),
+              animate: false,
             );
+            trayPosition = await windowManager.getPosition();
           }
           isInit = false;
         }
@@ -71,5 +82,55 @@ class SystemManager {
 
   static Future<void> closeWindow() {
     return windowManager.close();
+  }
+
+  static Future<void> toggleWindowMemory() async {
+    final box = Hive.box(settings);
+
+    final Size windowSize = await windowManager.getSize();
+    final Offset windowPosition = await windowManager.getPosition();
+    double threshold = 20;
+    double thresholdY = 60;
+    if ((windowSize.width - defaultWindowSize.width).abs() > threshold ||
+        (windowSize.height - defaultWindowSize.height).abs() > threshold ||
+        (windowPosition.dx - trayPosition.dx).abs() > threshold ||
+        (windowPosition.dy - trayPosition.dy).abs() > thresholdY) {
+      // store in hive before changing.
+      box.put(settingsWindowWidth, windowSize.width);
+      box.put(settingsWindowHeight, windowSize.height);
+      box.put(settingsWindowX, windowPosition.dx);
+      box.put(settingsWindowY, windowPosition.dy);
+
+      await windowManager.setBounds(
+        Rect.fromLTWH(
+          trayPosition.dx,
+          trayPosition.dy,
+          defaultWindowSize.width,
+          defaultWindowSize.height,
+        ),
+        animate: true,
+      );
+    } else {
+      // restore from hive.
+      final double? restoredWidth = box.get(settingsWindowWidth);
+      final double? restoredHeight = box.get(settingsWindowHeight);
+      final double? restoredX = box.get(settingsWindowX);
+      final double? restoredY = box.get(settingsWindowY);
+
+      if (restoredWidth != null &&
+          restoredHeight != null &&
+          restoredX != null &&
+          restoredY != null) {
+        await windowManager.setBounds(
+          Rect.fromLTWH(
+            restoredX,
+            restoredY,
+            restoredWidth,
+            restoredHeight,
+          ),
+          animate: true,
+        );
+      }
+    }
   }
 }

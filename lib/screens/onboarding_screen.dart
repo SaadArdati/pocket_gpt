@@ -30,6 +30,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           ValueListenableBuilder(
             valueListenable: box.listenable(),
@@ -45,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 onPressed: () {
                   box.put(
-                    'theme_mode',
+                    settingThemeMode,
                     brightness == Brightness.light
                         ? ThemeMode.dark.name
                         : ThemeMode.light.name,
@@ -54,12 +55,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             },
           ),
-          if (isDesktop)
+          if (isDesktop) ...[
+            const IconButton(
+              tooltip: 'Toggle window bounds',
+              icon: Icon(Icons.photo_size_select_small),
+              onPressed: SystemManager.toggleWindowMemory,
+            ),
             const IconButton(
               tooltip: 'Minimize',
               icon: Icon(Icons.minimize),
               onPressed: SystemManager.closeWindow,
             ),
+          ],
         ],
       ),
       resizeToAvoidBottomInset: true,

@@ -428,8 +428,6 @@ class _NavigationBackgroundState extends State<NavigationBackground>
     curve: Curves.easeInOutQuart,
   );
 
-  bool transitionDirection = false;
-
   bool get isHomePage => widget.state.location == '/home';
 
   bool get isChatPage => widget.state.location == '/chat';

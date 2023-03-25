@@ -97,13 +97,18 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         actions: [
-          if (isDesktop)
+          if (isDesktop) ...[
+            const IconButton(
+              tooltip: 'Toggle window bounds',
+              icon: Icon(Icons.photo_size_select_small),
+              onPressed: SystemManager.toggleWindowMemory,
+            ),
             const IconButton(
               tooltip: 'Minimize',
               icon: Icon(Icons.minimize),
               onPressed: SystemManager.closeWindow,
             ),
-        ],
+          ],        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 32),

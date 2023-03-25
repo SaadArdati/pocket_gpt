@@ -58,12 +58,18 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
         title: const Text('Settings'),
         actions: [
-          if (isDesktop)
+          if (isDesktop) ...[
             const IconButton(
-              onPressed: SystemManager.closeWindow,
+              tooltip: 'Toggle window bounds',
+              icon: Icon(Icons.photo_size_select_small),
+              onPressed: SystemManager.toggleWindowMemory,
+            ),
+            const IconButton(
               tooltip: 'Minimize',
               icon: Icon(Icons.minimize),
+              onPressed: SystemManager.closeWindow,
             ),
+          ],
         ],
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,

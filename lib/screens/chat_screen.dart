@@ -4,8 +4,10 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
 import '../gpt_manager.dart';
 import '../markdown_renderer.dart';
 import '../system_manager.dart';
@@ -54,6 +56,11 @@ class _ChatScreenState extends State<ChatScreen>
     curve: Curves.easeInOut,
   );
 
+  bool historyOpenOnWide = Hive.box(settings).get(
+    historyOpenOnWideScreen,
+    defaultValue: true,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +100,27 @@ class _ChatScreenState extends State<ChatScreen>
           title: Text(widget.type.label),
           centerTitle: false,
           actions: [
+            if (isWide)
+              Padding(
+                padding: EdgeInsets.only(right: historyOpenOnWide ? 230 : 0),
+                child: IconButton(
+                  tooltip: 'Chat History',
+                  onPressed: () {
+                    historyOpenOnWide = !historyOpenOnWide;
+                    Hive.box(settings).put(
+                      historyOpenOnWideScreen,
+                      historyOpenOnWide,
+                    );
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    historyOpenOnWide
+                        ? Icons.arrow_forward_ios
+                        : Icons.arrow_back_ios_new,
+                    size: 16,
+                  ),
+                ),
+              ),
             if (!isWide)
               Builder(
                 builder: (context) {
@@ -105,12 +133,18 @@ class _ChatScreenState extends State<ChatScreen>
                   );
                 },
               ),
-            if (isDesktop)
+            if (isDesktop) ...[
+              const IconButton(
+                tooltip: 'Toggle window bounds',
+                icon: Icon(Icons.photo_size_select_small),
+                onPressed: SystemManager.toggleWindowMemory,
+              ),
               const IconButton(
                 tooltip: 'Minimize',
                 icon: Icon(Icons.minimize),
                 onPressed: SystemManager.closeWindow,
               ),
+            ],
           ],
         ),
         endDrawerEnableOpenDragGesture: false,
@@ -226,7 +260,7 @@ class _ChatScreenState extends State<ChatScreen>
                   ],
                 ),
               ),
-              if (isWide)
+              if (isWide && historyOpenOnWide)
                 SizedBox(
                   width: 300,
                   child: Drawer(
