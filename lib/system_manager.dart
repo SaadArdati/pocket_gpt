@@ -8,6 +8,7 @@ import 'package:system_tray/system_tray.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'constants.dart';
+import 'window_resize_listener.dart';
 
 class SystemManager {
   static bool isInit = true;
@@ -22,6 +23,9 @@ class SystemManager {
 
     await windowManager.ensureInitialized();
 
+    final Offset? position = getSavedWindowPosition();
+    final Size size = getSavedWindowSize(defaultSize: const Size(400, 600));
+
     // final WindowOptions windowOptions = WindowOptions(
     //   size: const Size(400, 600),
     //   backgroundColor: Colors.transparent,
@@ -32,18 +36,21 @@ class SystemManager {
     //
     // await windowManager.waitUntilReadyToShow(windowOptions);
 
-    doWhenWindowReady(() {
+    doWhenWindowReady(() async {
       appWindow.minSize = const Size(400, 600);
-      appWindow.size = const Size(400, 600);
+      appWindow.size = size;
+
+      if (position != null) appWindow.position = position;
+
       windowManager.setSkipTaskbar(true);
       windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       windowManager.setAlwaysOnTop(alwaysOnTopResult);
       windowManager.setBackgroundColor(Colors.transparent);
       windowManager.setAsFrameless();
-      if (Platform.isMacOS) {
-        windowManager.setMovable(true);
-      }
+      windowManager.addListener(WindowResizeListener());
     });
+
+    if (Platform.isMacOS) windowManager.setMovable(true);
 
     final String path =
         Platform.isWindows ? 'assets/app_icon.ico' : 'assets/app_icon.png';
