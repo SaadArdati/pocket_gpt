@@ -17,8 +17,7 @@ class SystemManager {
 
   static Future<void> init() async {
     final box = Hive.box(Constants.settings);
-    final bool alwaysOnTop =
-        box.get(Constants.alwaysOnTop, defaultValue: true);
+    final bool alwaysOnTop = box.get(Constants.alwaysOnTop, defaultValue: true);
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
@@ -26,16 +25,6 @@ class SystemManager {
     trayPosition = getSavedTrayPosition() ?? Offset.zero;
     final Offset? position = getSavedWindowPosition();
     final Size size = getSavedWindowSize(defaultSize: defaultWindowSize);
-
-    // final WindowOptions windowOptions = WindowOptions(
-    //   size: const Size(400, 600),
-    //   backgroundColor: Colors.transparent,
-    //   skipTaskbar: true,
-    //   titleBarStyle: TitleBarStyle.hidden,
-    //   alwaysOnTop: alwaysOnTopResult,
-    // );
-    //
-    // await windowManager.waitUntilReadyToShow(windowOptions);
 
     doWhenWindowReady(() async {
       appWindow.minSize = defaultWindowSize;
@@ -66,12 +55,14 @@ class SystemManager {
 
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) async {
-      final bool windowPositionMemory =
-          box.get(Constants.windowPositionMemory, defaultValue: true);
+      final bool shouldPreserveWindowPosition =
+          box.get(Constants.shouldPreserveWindowPosition, defaultValue: true);
 
       if (eventName == 'click') {
         final bool isVisible = await windowManager.isVisible();
-        if (isVisible) {
+        final bool isFocused = await windowManager.isFocused();
+
+        if (isVisible && isFocused) {
           windowManager.close();
         } else {
           windowManager.show();
@@ -79,7 +70,7 @@ class SystemManager {
           trayPosition = await screenRetriever.getCursorScreenPoint() -
               Offset(defaultWindowSize.width / 2, 0);
 
-          if (isInit || !windowPositionMemory) {
+          if (isInit || !shouldPreserveWindowPosition) {
             saveTrayPosition(trayPosition);
 
             await windowManager.setBounds(
@@ -100,7 +91,7 @@ class SystemManager {
   }
 
   static void dispose() {
-    isInit = true;
+    windowManager.removeListener(WindowResizeListener());
   }
 
   static Future<void> setAlwaysOnTop(bool isAlwaysOnTop) {
@@ -118,7 +109,8 @@ class SystemManager {
     final Offset windowPosition = await windowManager.getPosition();
     double threshold = 20;
     double thresholdY = 60;
-    if ((windowSize.width - defaultWindowSize.width).abs() > threshold ||
+    if (isInit &&
+            (windowSize.width - defaultWindowSize.width).abs() > threshold ||
         (windowSize.height - defaultWindowSize.height).abs() > threshold ||
         (windowPosition.dx - trayPosition.dx).abs() > threshold ||
         (windowPosition.dy - trayPosition.dy).abs() > thresholdY) {

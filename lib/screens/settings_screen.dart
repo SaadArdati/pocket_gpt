@@ -170,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ),
                             if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(Constants.windowPositionMemory,
+                                value: box.get(Constants.shouldPreserveWindowPosition,
                                     defaultValue: true),
                                 title: Text(
                                   'Preserve window position',
@@ -183,9 +183,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    Constants.windowPositionMemory,
+                                    Constants.shouldPreserveWindowPosition,
                                     value ??
-                                        !box.get(Constants.windowPositionMemory),
+                                        !box.get(Constants.shouldPreserveWindowPosition),
                                   );
                                 },
                               ),

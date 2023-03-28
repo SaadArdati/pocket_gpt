@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:hive/hive.dart';
@@ -7,6 +6,13 @@ import 'package:window_manager/window_manager.dart';
 import 'constants.dart';
 
 class WindowResizeListener extends WindowListener {
+
+  WindowResizeListener._();
+
+  static final WindowResizeListener _instance = WindowResizeListener._();
+
+  factory WindowResizeListener() => _instance;
+
   @override
   Future<void> onWindowResized() async {
     final Size size = await windowManager.getSize();
@@ -23,9 +29,9 @@ class WindowResizeListener extends WindowListener {
 }
 
 Offset? getSavedWindowPosition() {
-  final double? left = Hive.box(Constants.settings).get(Constants.windowX);
-  final double? top = Hive.box(Constants.settings).get(Constants.windowY);
-  return top != null && left != null ? Offset(left, top) : null;
+  final double? x = Hive.box(Constants.settings).get(Constants.windowX);
+  final double? y = Hive.box(Constants.settings).get(Constants.windowY);
+  return y != null && x != null ? Offset(x, y) : null;
 }
 
 Size getSavedWindowSize({required Size defaultSize}) {
@@ -38,15 +44,12 @@ Size getSavedWindowSize({required Size defaultSize}) {
 }
 
 Offset? getSavedTrayPosition() {
-  log('getSavedTrayPosition');
-  final double? top = Hive.box(Constants.settings).get(Constants.trayPositionX);
-  final double? left =
-      Hive.box(Constants.settings).get(Constants.trayPositionY);
-  return top != null && left != null ? Offset(left, top) : null;
+  final double? y = Hive.box(Constants.settings).get(Constants.trayPositionY);
+  final double? x = Hive.box(Constants.settings).get(Constants.trayPositionX);
+  return y != null && x != null ? Offset(x, y) : null;
 }
 
 void saveTrayPosition(Offset position) {
-  log('saveTrayPosition');
   Hive.box(Constants.settings).put(Constants.trayPositionX, position.dx);
   Hive.box(Constants.settings).put(Constants.trayPositionY, position.dy);
 }

@@ -9,7 +9,7 @@ class Constants {
   static const String checkForUpdates = 'check_for_updates';
   static const String launchOnStartup = 'launch_on_startup';
   static const String openHistoryOnWideScreen = 'open_history_on_wide_screen';
-  static const String windowPositionMemory = 'window_position_memory';
+  static const String shouldPreserveWindowPosition = 'should_preserve_window_position';
   static const String settingWindowWidth = 'settings_window_size_width';
   static const String settingWindowHeight = 'settings_window_size_height';
   static const String settingWindowX = 'settings_window_x';
