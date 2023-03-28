@@ -87,7 +87,7 @@ class ChatMessage with EquatableMixin {
     required this.text,
     required this.role,
     this.status = MessageStatus.waiting,
-  })  : id = Uuid().v4(),
+  })  : id = const Uuid().v4(),
         timestamp = DateTime.now();
 
   OpenAIChatCompletionChoiceMessageModel toOpenAI() {
@@ -120,7 +120,7 @@ class Chat with EquatableMixin {
   Chat.simple({
     required this.messages,
     this.type = ChatType.general,
-  }) : id = Uuid().v4();
+  }) : id = const Uuid().v4();
 
   factory Chat.fromJson(Map json) => _$ChatFromJson(json);
 
