@@ -336,7 +336,7 @@ class GPTManager extends ChangeNotifier {
           text: "You are PocketGPT, living in the user's system tray for easy"
               ' access. The app in which you live in was created by Saad Ardati.'
               '\n - Twitter: @SaadArdati.'
-              '\n - Website: https://saad-ardati.web.app/.'
+              '\n - Website: https://saad-ardati.dev/.'
               '\n - Github: https://github.com/SaadArdati.'
               '\n - Description: Self-taught software developer with 8+ years'
               ' of experience in game modding and 4+ years of experience'

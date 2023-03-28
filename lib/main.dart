@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' hide log;
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_openai/openai.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/foundation.dart';
@@ -60,7 +61,7 @@ Future<bool> initPocketGPT() async {
       await SystemManager.init();
 
       final box = Hive.box(Constants.settings);
-      if (box.get(Constants.settingLaunchOnStartup, defaultValue: true)) {
+      if (box.get(Constants.launchOnStartup, defaultValue: true)) {
         final packageInfo = await PackageInfo.fromPlatform();
         LaunchAtStartup.instance.setup(
           appName: packageInfo.appName,
@@ -118,7 +119,7 @@ Widget pocketGPTTransition(
 
 ThemeMode getThemeMode() {
   final box = Hive.box(Constants.settings);
-  switch (box.get(Constants.settingThemeMode, defaultValue: 'system')) {
+  switch (box.get(Constants.themeMode, defaultValue: 'system')) {
     case 'dark':
       return ThemeMode.dark;
     case 'light':
@@ -145,6 +146,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
   @override
   void dispose() {
     windowManager.removeListener(this);
+    SystemManager.dispose();
     super.dispose();
   }
 
@@ -163,7 +165,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return NavigationBackground(state: state, child: child);
+          return MoveWindow(child: NavigationBackground(state: state, child: child));
         },
         routes: [
           GoRoute(

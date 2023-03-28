@@ -46,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 onPressed: () {
                   box.put(
-                    Constants.settingThemeMode,
+                    Constants.themeMode,
                     brightness == Brightness.light
                         ? ThemeMode.dark.name
                         : ThemeMode.light.name,
