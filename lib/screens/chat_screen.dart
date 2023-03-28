@@ -73,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen>
       notify: false,
       type: widget.type,
       id: gpt.chatHistory.values
-          .firstWhereOrNull((type) => type.type == widget.type)
+          .lastWhereOrNull((type) => type.type == widget.type)
           ?.id,
     );
   }
@@ -122,13 +122,18 @@ class _ChatScreenState extends State<ChatScreen>
                     setState(() {});
                   },
                   icon: Icon(
-                    historyOpenOnWide
-                        ? Icons.arrow_forward_ios
-                        : Icons.arrow_back_ios_new,
-                    size: 16,
+                    historyOpenOnWide ? Icons.arrow_forward_ios : Icons.history,
+                    size: historyOpenOnWide ? 16 : null,
                   ),
                 ),
               ),
+            IconButton(
+              tooltip: 'New Chat',
+              onPressed: () {
+                gpt.openChat(notify: true, type: widget.type);
+              },
+              icon: const Icon(Icons.add),
+            ),
             if (!isWide)
               Builder(
                 builder: (context) {
@@ -174,17 +179,17 @@ class _ChatScreenState extends State<ChatScreen>
                           style: context.textTheme.bodyLarge,
                         ),
                       ),
-                      // Tooltip(
-                      //   message: 'Start a new chat',
-                      //   child: ListTile(
-                      //     leading: const Icon(Icons.add),
-                      //     title: const Text('New Chat'),
-                      //     onTap: () {
-                      //       gpt.openChat(notify: true);
-                      //       Scaffold.of(context).closeEndDrawer();
-                      //     },
-                      //   ),
-                      // ),
+                      Tooltip(
+                        message: 'Start a new chat',
+                        child: ListTile(
+                          leading: const Icon(Icons.add),
+                          title: const Text('New Chat'),
+                          onTap: () {
+                            gpt.openChat(notify: true, type: widget.type);
+                            Scaffold.of(context).closeEndDrawer();
+                          },
+                        ),
+                      ),
                       for (final Chat chat
                           in gpt.chatHistory.values.toList().reversed)
                         HistoryTile(chat: chat),
@@ -257,7 +262,7 @@ class _ChatScreenState extends State<ChatScreen>
                               );
                             },
                             child: Container(
-                              color: Colors.transparent,
+                              color: context.colorScheme.background.withOpacity(0.5),
                               height: Scaffold.of(context).appBarMaxHeight ??
                                   48 + 16,
                             ),
@@ -290,7 +295,7 @@ class _ChatScreenState extends State<ChatScreen>
                             style: context.textTheme.bodyMedium,
                           ),
                           onTap: () {
-                            gpt.openChat(notify: true);
+                            gpt.openChat(notify: true, type: widget.type);
                           },
                         ),
                         for (final Chat chat
