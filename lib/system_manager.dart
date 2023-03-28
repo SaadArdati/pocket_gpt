@@ -62,8 +62,8 @@ class SystemManager {
           box.get(Constants.settingWindowPositionMemory, defaultValue: true);
 
       if (eventName == 'click') {
-        final bool isFocused = await windowManager.isFocused();
-        if (isFocused) {
+        final bool isVisible = await windowManager.isVisible();
+        if (isVisible) {
           windowManager.close();
         } else {
           windowManager.show();
