@@ -10,7 +10,7 @@ ChatMessage _$ChatMessageFromJson(Map json) => ChatMessage(
       id: json['id'] as String,
       timestamp: jsonToDate(json['timestamp'] as int?),
       text: json['text'] as String,
-      role: $enumDecode(_$RoleEnumMap, json['role']),
+      role: $enumDecode(_$OpenAIChatMessageRoleEnumMap, json['role']),
       status: $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
           MessageStatus.waiting,
     );
@@ -18,16 +18,16 @@ ChatMessage _$ChatMessageFromJson(Map json) => ChatMessage(
 Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'role': _$RoleEnumMap[instance.role]!,
+      'role': _$OpenAIChatMessageRoleEnumMap[instance.role]!,
       'timestamp': dateToJson(instance.timestamp),
       'text': instance.text,
       'status': _$MessageStatusEnumMap[instance.status]!,
     };
 
-const _$RoleEnumMap = {
-  Role.user: 'user',
-  Role.system: 'system',
-  Role.assistant: 'assistant',
+const _$OpenAIChatMessageRoleEnumMap = {
+  OpenAIChatMessageRole.system: 'system',
+  OpenAIChatMessageRole.user: 'user',
+  OpenAIChatMessageRole.assistant: 'assistant',
 };
 
 const _$MessageStatusEnumMap = {
@@ -55,8 +55,8 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
 const _$ChatTypeEnumMap = {
   ChatType.general: 'general',
   ChatType.email: 'email',
+  ChatType.documentCode: 'documentCode',
   ChatType.scientific: 'scientific',
   ChatType.analyze: 'analyze',
-  ChatType.documentCode: 'documentCode',
   ChatType.readMe: 'readMe',
 };

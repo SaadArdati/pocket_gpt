@@ -19,12 +19,6 @@ DateTime jsonToDate(int? value) => value != null
 /// Top level function for serializing [DateTime] to millisecondsSinceEpoch.
 int dateToJson(DateTime date) => date.toUtc().millisecondsSinceEpoch;
 
-enum Role {
-  user,
-  system,
-  assistant,
-}
-
 enum MessageStatus {
   waiting,
   streaming,
@@ -74,7 +68,7 @@ enum ChatType {
 @JsonSerializable(explicitToJson: true, anyMap: true)
 class ChatMessage with EquatableMixin {
   final String id;
-  final Role role;
+  final OpenAIChatMessageRole role;
   @JsonKey(fromJson: jsonToDate, toJson: dateToJson)
   final DateTime timestamp;
 
@@ -99,7 +93,7 @@ class ChatMessage with EquatableMixin {
   OpenAIChatCompletionChoiceMessageModel toOpenAI() {
     return OpenAIChatCompletionChoiceMessageModel(
       content: text,
-      role: role.name,
+      role: role,
     );
   }
 
@@ -142,7 +136,7 @@ class GPTManager extends ChangeNotifier {
   // [
 //     ChatMessage(
 //       text: 'how do i do a gradient blur with flutter?',
-//       role: Role.user,
+//       role: OpenAIChatMessageRole.user,
 //     ),
 //     ChatMessage(
 //       text:
@@ -203,7 +197,7 @@ class GPTManager extends ChangeNotifier {
 // Replace `'assets/your_image_here.jpg'` with the desired image file path. You can adjust the `sigmaX` and `sigmaY` values in the `ImageFilter.blur` function to control the intensity of the blur effect.
 //
 // In this example, a `LinearGradient` is used to apply a gradient from transparent to black. The `BackdropFilter` widget is used to blur the image by wrapping it inside a `Container`.''',
-//       role: Role.assistant,
+//       role: OpenAIChatMessageRole.assistant,
 //     ),
 //   ];
 
@@ -275,14 +269,14 @@ class GPTManager extends ChangeNotifier {
               ' Feel free to ask them for any information you need to complete'
               ' the email. Try to be short, concise, and to the point rather'
               ' than verbose.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         );
       case ChatType.scientific:
         return ChatMessage.simple(
           text: 'Be as precise, objective, and scientific as possible. Do not'
               ' use any colloquialisms or slang. Do not hesitate to admit lack of'
               ' knowledge on anything.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         );
       case ChatType.analyze:
         return ChatMessage.simple(
@@ -290,21 +284,21 @@ class GPTManager extends ChangeNotifier {
               'Be as objective as possible. Try to summarize whatever the user'
               ' sends in a few sentences. Ask the user about what to look for'
               ' specifically if there is nothing obvious.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         );
       case ChatType.documentCode:
         return ChatMessage.simple(
           text: 'Try to embed code high quality, clean, and concise code docs '
               'into any code the user sends. If the programming language is not'
               'obvious, ask the user for it.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         );
       case ChatType.readMe:
         return ChatMessage.simple(
           text: 'Analyze all of the user\'s code and try to write a README.md.'
               'Ask the user for a template. If there is no template, try to do it'
               ' yourself.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         );
     }
   }
@@ -319,7 +313,7 @@ class GPTManager extends ChangeNotifier {
   void sendMessage(String message, {required bool generateResponse}) {
     final ChatMessage userMsg = ChatMessage.simple(
       text: message.trim(),
-      role: Role.user,
+      role: OpenAIChatMessageRole.user,
       status: MessageStatus.done,
     );
     messages.add(userMsg);
@@ -348,7 +342,7 @@ class GPTManager extends ChangeNotifier {
               ' of experience in game modding and 4+ years of experience'
               ' in Flutter development. Currently pursuing a degree in'
               ' Computer Science.',
-          role: Role.system,
+          role: OpenAIChatMessageRole.system,
         ).toOpenAI(),
         if (typePrompt != null) typePrompt.toOpenAI(),
         ...messages.map((msg) => msg.toOpenAI())
@@ -357,7 +351,7 @@ class GPTManager extends ChangeNotifier {
 
     final ChatMessage responseMsg = ChatMessage.simple(
       text: '',
-      role: Role.assistant,
+      role: OpenAIChatMessageRole.assistant,
       status: MessageStatus.waiting,
     );
     messages.add(responseMsg);
@@ -411,7 +405,7 @@ class GPTManager extends ChangeNotifier {
   void regenerateLastResponse() {
     if (messages.isEmpty) return;
     final ChatMessage last = messages.last;
-    if (last.role != Role.assistant) return;
+    if (last.role != OpenAIChatMessageRole.assistant) return;
 
     messages.removeLast();
     saveChat();

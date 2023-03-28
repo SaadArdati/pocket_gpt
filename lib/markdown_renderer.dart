@@ -1,14 +1,14 @@
+import 'package:dart_openai/openai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:flutter_highlighter/themes/atom-one-dark-reasonable.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:markdown/markdown.dart' as md;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:highlighter/highlighter.dart' show highlight, Node;
+import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher_string.dart';
 
-import 'gpt_manager.dart';
 import 'theme_extensions.dart';
 
 class CodeElementBuilder extends MarkdownElementBuilder {
@@ -30,7 +30,7 @@ class CodeElementBuilder extends MarkdownElementBuilder {
 
 class MarkdownText extends StatefulWidget {
   final String text;
-  final Role role;
+  final OpenAIChatMessageRole role;
 
   const MarkdownText({super.key, required this.text, required this.role});
 
