@@ -23,6 +23,7 @@ class SystemManager {
 
     await windowManager.ensureInitialized();
 
+    trayPosition = getSavedTrayPosition() ?? Offset.zero;
     final Offset? position = getSavedWindowPosition();
     final Size size = getSavedWindowSize(defaultSize: const Size(400, 600));
 
@@ -79,6 +80,8 @@ class SystemManager {
               Offset(defaultWindowSize.width / 2, 0);
 
           if (isInit || !windowPositionMemoryResult) {
+            saveTrayPosition(trayPosition);
+
             await windowManager.setBounds(
               Rect.fromLTWH(
                 trayPosition.dx,

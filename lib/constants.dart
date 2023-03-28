@@ -15,5 +15,10 @@ class Constants {
   static const String settingsWindowX = 'settings_window_x';
   static const String settingsWindowY = 'settings_window_y';
   static const String encryptionKey = 'encryption_key';
-
+  static const String windowWidth = 'window_width';
+  static const String windowHeight = 'window_height';
+  static const String windowX = 'window_x';
+  static const String windowY = 'window_y';
+  static const String trayPositionX = 'tray_position_x';
+  static const String trayPositionY = 'tray_position_y';
 }
