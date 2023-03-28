@@ -94,3 +94,5 @@ flutter:
     - assets/logo_bg_light_1000x.png
     - assets/logo_bg_dark_padded_1024x.png
     - assets/logo_bg_light_padded_1024x.png
+
+scripts: scripts.yaml
