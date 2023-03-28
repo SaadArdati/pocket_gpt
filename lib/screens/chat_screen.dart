@@ -59,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen>
   );
 
   bool historyOpenOnWide = Hive.box(Constants.settings).get(
-    Constants.historyOpenOnWideScreen,
+    Constants.openHistoryOnWideScreen,
     defaultValue: true,
   );
 
@@ -116,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen>
                   onPressed: () {
                     historyOpenOnWide = !historyOpenOnWide;
                     Hive.box(Constants.settings).put(
-                      Constants.historyOpenOnWideScreen,
+                      Constants.openHistoryOnWideScreen,
                       historyOpenOnWide,
                     );
                     setState(() {});

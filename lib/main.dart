@@ -61,7 +61,7 @@ Future<bool> initPocketGPT() async {
       await SystemManager.init();
 
       final box = Hive.box(Constants.settings);
-      if (box.get(Constants.settingLaunchOnStartup, defaultValue: true)) {
+      if (box.get(Constants.launchOnStartup, defaultValue: true)) {
         final packageInfo = await PackageInfo.fromPlatform();
         LaunchAtStartup.instance.setup(
           appName: packageInfo.appName,
@@ -119,7 +119,7 @@ Widget pocketGPTTransition(
 
 ThemeMode getThemeMode() {
   final box = Hive.box(Constants.settings);
-  switch (box.get(Constants.settingThemeMode, defaultValue: 'system')) {
+  switch (box.get(Constants.themeMode, defaultValue: 'system')) {
     case 'dark':
       return ThemeMode.dark;
     case 'light':
@@ -146,6 +146,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
   @override
   void dispose() {
     windowManager.removeListener(this);
+    SystemManager.dispose();
     super.dispose();
   }
 
