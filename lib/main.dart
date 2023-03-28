@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' hide log;
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dart_openai/openai.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/foundation.dart';
@@ -163,7 +164,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return NavigationBackground(state: state, child: child);
+          return MoveWindow(child: NavigationBackground(state: state, child: child));
         },
         routes: [
           GoRoute(
