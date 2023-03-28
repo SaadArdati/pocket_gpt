@@ -262,28 +262,7 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                           : context.colorScheme.secondaryContainer
                               .withOpacity(0.5),
                     ),
-                    onPressed: validating
-                        ? null
-                        : () {
-                            setState(() {
-                              errorMessage = null;
-                            });
-                            if (!Form.of(context).validate()) return;
-
-                            validateKey().then((bool success) {
-                              if (success) {
-                                box.put(openAIKey, controller.text);
-                                box.put(isFirstTime, false);
-                                context.go('/onboarding/three');
-                              } else {
-                                if (!mounted) return;
-                                setState(() {
-                                  errorMessage =
-                                      "Invalid API key. Make sure it's correct and try again.";
-                                });
-                              }
-                            });
-                          },
+                    onPressed: validating ? null : onSubmitKey,
                     child: Container(
                       width: 44,
                       height: 44,
@@ -303,6 +282,22 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
         }),
       ),
     );
+  }
+
+  Future<void> onSubmitKey() async {
+    final router = GoRouter.of(context);
+    setState(() => errorMessage = null);
+    if (!Form.of(context).validate()) return;
+
+    final success = await validateKey();
+    if (success) {
+      box.put(openAIKey, controller.text);
+      box.put(isFirstTime, false);
+      router.go('/onboarding/three');
+    } else {
+      errorMessage = "Invalid API key. Make sure it's correct and try again.";
+      if (mounted) setState(() {});
+    }
   }
 }
 

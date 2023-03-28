@@ -32,6 +32,7 @@ void main() async {
 Future<bool> initPocketGPT() async {
   await Hive.initFlutter();
   await Hive.openBox(history);
+  // TODO: Use encrypted box.
   await Hive.openBox(settings);
 
   if (!kIsWeb) {
