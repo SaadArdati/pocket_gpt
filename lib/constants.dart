@@ -12,3 +12,4 @@ const String settingsWindowWidth = 'pocket_gpt_settings_window_size_width';
 const String settingsWindowHeight = 'pocket_gpt_settings_window_size_height';
 const String settingsWindowX = 'pocket_gpt_settings_window_x';
 const String settingsWindowY = 'pocket_gpt_settings_window_y';
+const String encryptionKey = 'encryption_key';

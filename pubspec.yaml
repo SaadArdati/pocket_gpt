@@ -40,6 +40,7 @@ dependencies:
   flutter_native_splash: ^2.2.19
   collection: ^1.17.0
   universal_io: ^2.2.0
+  encrypted_shared_preferences: ^3.0.1
 
 dev_dependencies:
   flutter_test:

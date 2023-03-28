@@ -1,6 +1,9 @@
-import 'dart:math';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:math' hide log;
 
 import 'package:dart_openai/openai.dart';
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,8 +35,25 @@ void main() async {
 Future<bool> initPocketGPT() async {
   await Hive.initFlutter();
   await Hive.openBox(history);
-  // TODO: Use encrypted box.
-  await Hive.openBox(settings);
+
+  final EncryptedSharedPreferences encryptedPrefs =
+      EncryptedSharedPreferences();
+  String key = await encryptedPrefs.getString(encryptionKey);
+  final List<int> encryptionKeyData;
+  if (key.isEmpty) {
+    log('Generating a new encryption key');
+    encryptionKeyData = Hive.generateSecureKey();
+    log('Saving the encryption key');
+    await encryptedPrefs.setString(
+        encryptionKey, base64UrlEncode(encryptionKeyData));
+  } else {
+    log('Found an existing encryption key');
+    encryptionKeyData = base64Url.decode(key);
+  }
+  log('Encryption key: $key');
+
+  await Hive.openBox(settings,
+      encryptionCipher: HiveAesCipher(encryptionKeyData));
 
   if (!kIsWeb) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {

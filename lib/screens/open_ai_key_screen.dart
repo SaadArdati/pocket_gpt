@@ -262,7 +262,7 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                           : context.colorScheme.secondaryContainer
                               .withOpacity(0.5),
                     ),
-                    onPressed: validating ? null : onSubmitKey,
+                    onPressed: validating ? null : () => onSubmitKey(context),
                     child: Container(
                       width: 44,
                       height: 44,
@@ -284,7 +284,7 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
     );
   }
 
-  Future<void> onSubmitKey() async {
+  Future<void> onSubmitKey(BuildContext context) async {
     final router = GoRouter.of(context);
     setState(() => errorMessage = null);
     if (!Form.of(context).validate()) return;
