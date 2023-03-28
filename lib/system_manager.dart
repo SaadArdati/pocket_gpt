@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -21,16 +22,28 @@ class SystemManager {
 
     await windowManager.ensureInitialized();
 
-    final WindowOptions windowOptions = WindowOptions(
-      size: const Size(400, 600),
-      backgroundColor: Colors.transparent,
-      skipTaskbar: true,
-      titleBarStyle: TitleBarStyle.hidden,
-      alwaysOnTop: alwaysOnTopResult,
-    );
-    await windowManager.waitUntilReadyToShow(windowOptions);
-    await windowManager.setMovable(true);
-    await windowManager.setAsFrameless();
+    // final WindowOptions windowOptions = WindowOptions(
+    //   size: const Size(400, 600),
+    //   backgroundColor: Colors.transparent,
+    //   skipTaskbar: true,
+    //   titleBarStyle: TitleBarStyle.hidden,
+    //   alwaysOnTop: alwaysOnTopResult,
+    // );
+    //
+    // await windowManager.waitUntilReadyToShow(windowOptions);
+
+    doWhenWindowReady(() {
+      appWindow.minSize = const Size(400, 600);
+      appWindow.size = const Size(400, 600);
+      windowManager.setSkipTaskbar(true);
+      windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+      windowManager.setAlwaysOnTop(alwaysOnTopResult);
+      windowManager.setBackgroundColor(Colors.transparent);
+      windowManager.setAsFrameless();
+      if (Platform.isMacOS) {
+        windowManager.setMovable(true);
+      }
+    });
 
     final String path =
         Platform.isWindows ? 'assets/app_icon.ico' : 'assets/app_icon.png';
@@ -48,7 +61,7 @@ class SystemManager {
       final bool windowPositionMemoryResult =
           box.get(Constants.settingWindowPositionMemory, defaultValue: true);
 
-      if (eventName == 'leftMouseUp') {
+      if (eventName == 'click') {
         final bool isFocused = await windowManager.isFocused();
         if (isFocused) {
           windowManager.close();

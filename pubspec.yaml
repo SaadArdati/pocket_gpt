@@ -41,6 +41,7 @@ dependencies:
   collection: ^1.17.0
   universal_io: ^2.2.0
   encrypted_shared_preferences: ^3.0.1
+  bitsdojo_window: ^0.1.5
 
 dev_dependencies:
   flutter_test:
