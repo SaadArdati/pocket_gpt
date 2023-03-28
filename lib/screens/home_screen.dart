@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
@@ -81,13 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TargetPlatform platform = Theme.of(context).platform;
-    final bool isDesktop = platform == TargetPlatform.windows ||
-        platform == TargetPlatform.linux ||
-        platform == TargetPlatform.macOS;
+    final TargetPlatform platform = defaultTargetPlatform;
+    final bool isDesktop = !kIsWeb &&
+        (platform == TargetPlatform.windows ||
+            platform == TargetPlatform.linux ||
+            platform == TargetPlatform.macOS);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('System GPT'),
+        title: const Text('PocketGPT'),
         centerTitle: true,
         leading: IconButton(
           tooltip: 'Settings',
@@ -108,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.minimize),
               onPressed: SystemManager.closeWindow,
             ),
-          ],        ],
+          ],
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 32),

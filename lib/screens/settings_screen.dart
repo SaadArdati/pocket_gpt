@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -43,10 +44,11 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final TargetPlatform platform = Theme.of(context).platform;
-    final bool isDesktop = platform == TargetPlatform.windows ||
-        platform == TargetPlatform.linux ||
-        platform == TargetPlatform.macOS;
+    final TargetPlatform platform = defaultTargetPlatform;
+    final bool isDesktop = !kIsWeb &&
+        (platform == TargetPlatform.windows ||
+            platform == TargetPlatform.linux ||
+            platform == TargetPlatform.macOS);
 
     return Scaffold(
       appBar: AppBar(
