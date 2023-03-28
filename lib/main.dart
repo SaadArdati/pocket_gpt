@@ -1,26 +1,27 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_openai/openai.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:universal_io/io.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:window_manager/window_manager.dart';
-import 'gpt_manager.dart';
-import 'screens/open_ai_key_screen.dart';
+
+import 'color_schemes.g.dart';
 import 'constants.dart';
+import 'gpt_manager.dart';
 import 'screens/chat_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/open_ai_key_screen.dart';
 import 'screens/settings_screen.dart';
 import 'system_manager.dart';
 import 'theme_extensions.dart';
-
-import 'color_schemes.g.dart';
 import 'wave_background.dart';
 
 void main() async {
@@ -28,12 +29,12 @@ void main() async {
   runApp(const PocketGPT());
 }
 
-Future<bool> initPocketGPT({bool asWeb = false}) async {
+Future<bool> initPocketGPT() async {
   await Hive.initFlutter();
   await Hive.openBox(history);
   await Hive.openBox(settings);
 
-  if (!asWeb) {
+  if (!kIsWeb) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       await SystemManager.init();
 
