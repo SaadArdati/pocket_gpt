@@ -107,9 +107,9 @@ class OpenAIKeyScreen extends StatefulWidget {
 }
 
 class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
-  final box = Hive.box(settings);
+  final box = Hive.box(Constants.settings);
   late final TextEditingController controller = TextEditingController(
-    text: box.get(openAIKey, defaultValue: ''),
+    text: box.get(Constants.openAIKey, defaultValue: ''),
   );
 
   bool validating = false;
@@ -291,8 +291,8 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
 
     final success = await validateKey();
     if (success) {
-      box.put(openAIKey, controller.text);
-      box.put(isFirstTime, false);
+      box.put(Constants.openAIKey, controller.text);
+      box.put(Constants.isFirstTime, false);
       router.go('/onboarding/three');
     } else {
       errorMessage = "Invalid API key. Make sure it's correct and try again.";
@@ -309,9 +309,9 @@ class OpenAIKeyTile extends StatefulWidget {
 }
 
 class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
-  final box = Hive.box(settings);
+  final box = Hive.box(Constants.settings);
   late final TextEditingController controller = TextEditingController(
-    text: box.get(openAIKey, defaultValue: ''),
+    text: box.get(Constants.openAIKey, defaultValue: ''),
   );
 
   bool isEditing = false;
@@ -478,7 +478,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                               isEditing = true;
                             });
                             return;
-                          } else if (controller.text == box.get(openAIKey)) {
+                          } else if (controller.text == box.get(Constants.openAIKey)) {
                             setState(() {
                               message = null;
                               isError = false;
@@ -499,7 +499,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                           validateKey().then(
                             (bool success) {
                               if (success) {
-                                box.put(openAIKey, controller.text);
+                                box.put(Constants.openAIKey, controller.text);
                                 if (!mounted) return;
                                 setState(() {
                                   message = 'Key updated successfully!';
@@ -525,7 +525,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                         : Icon(
                             !isEditing
                                 ? Icons.edit
-                                : controller.text == box.get(openAIKey)
+                                : controller.text == box.get(Constants.openAIKey)
                                     ? Icons.edit_off
                                     : Icons.navigate_next,
                             color: context.colorScheme.onSurfaceVariant,

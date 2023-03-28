@@ -19,7 +19,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final box = Hive.box(settings);
+  final box = Hive.box(Constants.settings);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 onPressed: () {
                   box.put(
-                    settingThemeMode,
+                    Constants.settingThemeMode,
                     brightness == Brightness.light
                         ? ThemeMode.dark.name
                         : ThemeMode.light.name,

@@ -14,9 +14,9 @@ class SystemManager {
   static Size defaultWindowSize = const Size(400, 600);
 
   static Future<void> init() async {
-    final box = Hive.box(settings);
+    final box = Hive.box(Constants.settings);
     final bool alwaysOnTopResult =
-        box.get(settingAlwaysOnTop, defaultValue: true);
+        box.get(Constants.settingAlwaysOnTop, defaultValue: true);
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
@@ -46,7 +46,7 @@ class SystemManager {
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) async {
       final bool windowPositionMemoryResult =
-          box.get(settingWindowPositionMemory, defaultValue: true);
+          box.get(Constants.settingWindowPositionMemory, defaultValue: true);
 
       if (eventName == 'leftMouseUp') {
         final bool isFocused = await windowManager.isFocused();
@@ -85,7 +85,7 @@ class SystemManager {
   }
 
   static Future<void> toggleWindowMemory() async {
-    final box = Hive.box(settings);
+    final box = Hive.box(Constants.settings);
 
     final Size windowSize = await windowManager.getSize();
     final Offset windowPosition = await windowManager.getPosition();
@@ -96,10 +96,10 @@ class SystemManager {
         (windowPosition.dx - trayPosition.dx).abs() > threshold ||
         (windowPosition.dy - trayPosition.dy).abs() > thresholdY) {
       // store in hive before changing.
-      box.put(settingsWindowWidth, windowSize.width);
-      box.put(settingsWindowHeight, windowSize.height);
-      box.put(settingsWindowX, windowPosition.dx);
-      box.put(settingsWindowY, windowPosition.dy);
+      box.put(Constants.settingsWindowWidth, windowSize.width);
+      box.put(Constants.settingsWindowHeight, windowSize.height);
+      box.put(Constants.settingsWindowX, windowPosition.dx);
+      box.put(Constants.settingsWindowY, windowPosition.dy);
 
       await windowManager.setBounds(
         Rect.fromLTWH(
@@ -112,10 +112,10 @@ class SystemManager {
       );
     } else {
       // restore from hive.
-      final double? restoredWidth = box.get(settingsWindowWidth);
-      final double? restoredHeight = box.get(settingsWindowHeight);
-      final double? restoredX = box.get(settingsWindowX);
-      final double? restoredY = box.get(settingsWindowY);
+      final double? restoredWidth = box.get(Constants.settingsWindowWidth);
+      final double? restoredHeight = box.get(Constants.settingsWindowHeight);
+      final double? restoredX = box.get(Constants.settingsWindowX);
+      final double? restoredY = box.get(Constants.settingsWindowY);
 
       if (restoredWidth != null &&
           restoredHeight != null &&

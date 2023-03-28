@@ -1,15 +1,19 @@
-const String openAIKey = 'pocket_gpt_openai_api_key';
-const String isFirstTime = 'pocket_gpt_is_first_time';
-const String history = 'pocket_gpt_history';
-const String settings = 'pocket_gpt_settings';
-const String settingThemeMode = 'pocket_gpt_theme_mode';
-const String settingAlwaysOnTop = 'pocket_gpt_always_on_top';
-const String settingWindowPositionMemory = 'pocket_gpt_window_position_memory';
-const String settingCheckForUpdates = 'pocket_gpt_check_for_updates';
-const String settingLaunchOnStartup = 'pocket_gpt_launch_on_startup';
-const String historyOpenOnWideScreen = 'pocket_gpt_history_open_on_wide_screen';
-const String settingsWindowWidth = 'pocket_gpt_settings_window_size_width';
-const String settingsWindowHeight = 'pocket_gpt_settings_window_size_height';
-const String settingsWindowX = 'pocket_gpt_settings_window_x';
-const String settingsWindowY = 'pocket_gpt_settings_window_y';
-const String encryptionKey = 'encryption_key';
+class Constants {
+
+  static const String openAIKey = 'openai_api_key';
+  static const String isFirstTime = 'is_first_time';
+  static const String history = 'history';
+  static const String settings = 'settings';
+  static const String settingThemeMode = 'theme_mode';
+  static const String settingAlwaysOnTop = 'always_on_top';
+  static const String settingCheckForUpdates = 'check_for_updates';
+  static const String settingLaunchOnStartup = 'launch_on_startup';
+  static const String historyOpenOnWideScreen = 'history_open_on_wide_screen';
+  static const String settingWindowPositionMemory = 'window_position_memory';
+  static const String settingsWindowWidth = 'settings_window_size_width';
+  static const String settingsWindowHeight = 'settings_window_size_height';
+  static const String settingsWindowX = 'settings_window_x';
+  static const String settingsWindowY = 'settings_window_y';
+  static const String encryptionKey = 'encryption_key';
+
+}

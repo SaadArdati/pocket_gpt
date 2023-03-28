@@ -203,7 +203,7 @@ class GPTManager extends ChangeNotifier {
 
   final StreamController<ChatMessage> responseStreamController =
       StreamController<ChatMessage>.broadcast();
-  final box = Hive.box(history);
+  final box = Hive.box(Constants.history);
 
   Stream<ChatMessage> get responseStream => responseStreamController.stream;
 
@@ -214,7 +214,7 @@ class GPTManager extends ChangeNotifier {
   Chat? currentChat;
 
   void init() {
-    final Map serializedHistory = box.get(history) ?? {};
+    final Map serializedHistory = box.get(Constants.history) ?? {};
     chatHistory = {
       for (final chat in serializedHistory.entries)
         chat.key: Chat.fromJson(chat.value)
@@ -243,7 +243,7 @@ class GPTManager extends ChangeNotifier {
   }
 
   void saveChat() {
-    box.put(history, {
+    box.put(Constants.history, {
       for (final MapEntry<String, Chat> chat in chatHistory.entries)
         chat.key: chat.value.toJson(),
     });

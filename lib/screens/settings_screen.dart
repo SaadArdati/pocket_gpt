@@ -23,7 +23,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
-  final box = Hive.box(settings);
+  final box = Hive.box(Constants.settings);
 
   late final AnimationController animationController = AnimationController(
     duration: const Duration(milliseconds: 500),
@@ -142,14 +142,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ],
                                 onChanged: (ThemeMode? value) {
                                   if (value != null) {
-                                    box.put(settingThemeMode, value.name);
+                                    box.put(Constants.settingThemeMode, value.name);
                                   }
                                 },
                               ),
                             ),
                             if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(settingAlwaysOnTop,
+                                value: box.get(Constants.settingAlwaysOnTop,
                                     defaultValue: true),
                                 title: Text(
                                   'Always on top',
@@ -162,15 +162,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    settingAlwaysOnTop,
-                                    value ?? !box.get(settingAlwaysOnTop),
+                                    Constants.settingAlwaysOnTop,
+                                    value ?? !box.get(Constants.settingAlwaysOnTop),
                                   );
                                   SystemManager.setAlwaysOnTop(value ?? true);
                                 },
                               ),
                             if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(settingWindowPositionMemory,
+                                value: box.get(Constants.settingWindowPositionMemory,
                                     defaultValue: true),
                                 title: Text(
                                   'Preserve window position',
@@ -183,14 +183,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    settingWindowPositionMemory,
+                                    Constants.settingWindowPositionMemory,
                                     value ??
-                                        !box.get(settingWindowPositionMemory),
+                                        !box.get(Constants.settingWindowPositionMemory),
                                   );
                                 },
                               ),
                             CheckboxListTile(
-                              value: box.get(settingCheckForUpdates,
+                              value: box.get(Constants.settingCheckForUpdates,
                                   defaultValue: true),
                               title: Text(
                                 'Automatically check for updates',
@@ -203,14 +203,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ),
                               onChanged: (bool? value) {
                                 box.put(
-                                  settingCheckForUpdates,
-                                  value ?? !box.get(settingCheckForUpdates),
+                                  Constants.settingCheckForUpdates,
+                                  value ?? !box.get(Constants.settingCheckForUpdates),
                                 );
                               },
                             ),
                             if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(settingLaunchOnStartup,
+                                value: box.get(Constants.settingLaunchOnStartup,
                                     defaultValue: true),
                                 title: Text(
                                   'Launch app on startup',
@@ -223,8 +223,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 onChanged: (bool? value) {
                                   box.put(
-                                    settingLaunchOnStartup,
-                                    value ?? !box.get(settingLaunchOnStartup),
+                                    Constants.settingLaunchOnStartup,
+                                    value ?? !box.get(Constants.settingLaunchOnStartup),
                                   );
                                   LaunchAtStartup.instance.disable();
                                 },

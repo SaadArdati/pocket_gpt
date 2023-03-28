@@ -34,33 +34,33 @@ void main() async {
 
 Future<bool> initPocketGPT() async {
   await Hive.initFlutter();
-  await Hive.openBox(history);
+  await Hive.openBox(Constants.history);
 
   final EncryptedSharedPreferences encryptedPrefs =
       EncryptedSharedPreferences();
-  String key = await encryptedPrefs.getString(encryptionKey);
+  String key = await encryptedPrefs.getString(Constants.encryptionKey);
   final List<int> encryptionKeyData;
   if (key.isEmpty) {
     log('Generating a new encryption key');
     encryptionKeyData = Hive.generateSecureKey();
     log('Saving the encryption key');
     await encryptedPrefs.setString(
-        encryptionKey, base64UrlEncode(encryptionKeyData));
+        Constants.encryptionKey, base64UrlEncode(encryptionKeyData));
   } else {
     log('Found an existing encryption key');
     encryptionKeyData = base64Url.decode(key);
   }
   log('Encryption key: $key');
 
-  await Hive.openBox(settings,
+  await Hive.openBox(Constants.settings,
       encryptionCipher: HiveAesCipher(encryptionKeyData));
 
   if (!kIsWeb) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       await SystemManager.init();
 
-      final box = Hive.box(settings);
-      if (box.get(settingLaunchOnStartup, defaultValue: true)) {
+      final box = Hive.box(Constants.settings);
+      if (box.get(Constants.settingLaunchOnStartup, defaultValue: true)) {
         final packageInfo = await PackageInfo.fromPlatform();
         LaunchAtStartup.instance.setup(
           appName: packageInfo.appName,
@@ -71,7 +71,7 @@ Future<bool> initPocketGPT() async {
     setPathUrlStrategy();
   }
 
-  OpenAI.apiKey = Hive.box(settings).get(openAIKey, defaultValue: '');
+  OpenAI.apiKey = Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
   return true;
 }
 
@@ -117,8 +117,8 @@ Widget pocketGPTTransition(
 }
 
 ThemeMode getThemeMode() {
-  final box = Hive.box(settings);
-  switch (box.get(settingThemeMode, defaultValue: 'system')) {
+  final box = Hive.box(Constants.settings);
+  switch (box.get(Constants.settingThemeMode, defaultValue: 'system')) {
     case 'dark':
       return ThemeMode.dark;
     case 'light':
@@ -154,12 +154,12 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     setState(() {});
   }
 
-  final box = Hive.box(settings);
+  final box = Hive.box(Constants.settings);
 
   late final _router = GoRouter(
     // initialLocation: '/onboarding',
     initialLocation:
-        box.get(isFirstTime, defaultValue: true) ? '/onboarding' : '/home',
+        box.get(Constants.isFirstTime, defaultValue: true) ? '/onboarding' : '/home',
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
@@ -350,7 +350,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: [SystemUiOverlay.top]);
     return ValueListenableBuilder(
-      valueListenable: Hive.box(settings).listenable(),
+      valueListenable: Hive.box(Constants.settings).listenable(),
       builder: (context, Box box, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,

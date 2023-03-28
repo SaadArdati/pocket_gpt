@@ -58,8 +58,8 @@ class _ChatScreenState extends State<ChatScreen>
     curve: Curves.easeInOut,
   );
 
-  bool historyOpenOnWide = Hive.box(settings).get(
-    historyOpenOnWideScreen,
+  bool historyOpenOnWide = Hive.box(Constants.settings).get(
+    Constants.historyOpenOnWideScreen,
     defaultValue: true,
   );
 
@@ -115,8 +115,8 @@ class _ChatScreenState extends State<ChatScreen>
                   tooltip: 'Chat History',
                   onPressed: () {
                     historyOpenOnWide = !historyOpenOnWide;
-                    Hive.box(settings).put(
-                      historyOpenOnWideScreen,
+                    Hive.box(Constants.settings).put(
+                      Constants.historyOpenOnWideScreen,
                       historyOpenOnWide,
                     );
                     setState(() {});
