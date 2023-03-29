@@ -6,6 +6,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
+import '../gpt_manager.dart';
 import '../theme_extensions.dart';
 
 class OpenAIKeyInstructions extends StatelessWidget {
@@ -125,8 +126,7 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
 
     try {
       OpenAI.apiKey = controller.text;
-      final List<OpenAIModelModel> models = await OpenAI.instance.model.list();
-
+      final models = await GPTManager.fetchAndStoreModels();
       return models.isNotEmpty;
     } catch (e) {
       return false;
@@ -329,7 +329,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
 
     try {
       OpenAI.apiKey = controller.text;
-      final List<OpenAIModelModel> models = await OpenAI.instance.model.list();
+      final models = await GPTManager.fetchAndStoreModels();
 
       return models.isNotEmpty;
     } catch (e) {
@@ -354,6 +354,31 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
     super.dispose();
   }
 
+  void doValidationCheck() {
+    if (!isEditing) {
+      isEditing = true;
+      setState(() {});
+    }
+    validateKey().then(
+      (bool success) {
+        if (success) {
+          box.put(Constants.openAIKey, controller.text);
+          if (!mounted) return;
+          setState(() {
+            message = 'Key updated successfully!';
+            isError = false;
+          });
+        } else {
+          if (!mounted) return;
+          setState(() {
+            message = "Invalid API key. Make sure it's correct and try again.";
+            isError = true;
+          });
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final BorderRadius borderRadius = BorderRadius.circular(12);
@@ -364,18 +389,35 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const ImageIcon(AssetImage('assets/openai_256.png')),
-                  const SizedBox(width: 8),
-                  Text(
-                    'OpenAI API Key',
-                    style: context.textTheme.bodyLarge,
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const ImageIcon(AssetImage('assets/openai_256.png')),
+                    const SizedBox(width: 8),
+                    Text(
+                      'OpenAI API Key',
+                      style: context.textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    tooltip: 'Validate Token',
+                    iconSize: 18,
+                    icon: Icon(
+                      Icons.youtube_searched_for,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    onPressed: () {
+                      doValidationCheck();
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
@@ -496,25 +538,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
 
                           if (!Form.of(context).validate()) return;
 
-                          validateKey().then(
-                            (bool success) {
-                              if (success) {
-                                box.put(Constants.openAIKey, controller.text);
-                                if (!mounted) return;
-                                setState(() {
-                                  message = 'Key updated successfully!';
-                                  isError = false;
-                                });
-                              } else {
-                                if (!mounted) return;
-                                setState(() {
-                                  message =
-                                      "Invalid API key. Make sure it's correct and try again.";
-                                  isError = true;
-                                });
-                              }
-                            },
-                          );
+                          doValidationCheck();
                         },
                   child: Container(
                     width: 44,

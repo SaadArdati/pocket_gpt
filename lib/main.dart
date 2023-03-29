@@ -75,6 +75,7 @@ Future<bool> initPocketGPT() async {
 
   OpenAI.apiKey =
       Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
+
   return true;
 }
 

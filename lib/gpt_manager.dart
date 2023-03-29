@@ -133,74 +133,6 @@ class Chat with EquatableMixin {
 class GPTManager extends ChangeNotifier {
   List<ChatMessage> get messages => currentChat!.messages;
 
-  // [
-//     ChatMessage(
-//       text: 'how do i do a gradient blur with flutter?',
-//       role: OpenAIChatMessageRole.user,
-//     ),
-//     ChatMessage(
-//       text:
-//           '''In Flutter, to create a gradient blur effect, you can use the `BackdropFilter` widget along with a `BoxDecoration` to apply a gradient. Here's an example of how you can create a gradient blur:
-//
-// 1. First, add the `ImageFilter` and `ui` packages:
-// ```dart
-// import 'dart:ui' as ui;
-// import 'dart:ui' show ImageFilter;
-// ```
-//
-// 2. Then, in your build method or inside your custom widget, you can create a gradient blur with the following code:
-//
-// ```dart
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Gradient Blur Example'),
-//       ),
-//       body: Stack(
-//         children: [
-//           // Add your background image or content here
-//           Image.asset(
-//             'assets/your_image_here.jpg',
-//             fit: BoxFit.cover,
-//             height: MediaQuery.of(context).size.height,
-//             width: MediaQuery.of(context).size.width,
-//           ),
-//
-//           // Implement the Gradient Blur
-//           Container(
-//             height: MediaQuery.of(context).size.height,
-//             width: MediaQuery.of(context).size.width,
-//             decoration: BoxDecoration(
-//               gradient: LinearGradient(
-//                 begin: Alignment.topCenter,
-//                 end: Alignment.bottomCenter,
-//                 colors: [
-//                   Colors.transparent,
-//                   Colors.black54,
-//                 ],
-//               ),
-//             ),
-//             child: BackdropFilter(
-//               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-//               child: Container(
-//                 color: Colors.black.withOpacity(0),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// ```
-//
-// Replace `'assets/your_image_here.jpg'` with the desired image file path. You can adjust the `sigmaX` and `sigmaY` values in the `ImageFilter.blur` function to control the intensity of the blur effect.
-//
-// In this example, a `LinearGradient` is used to apply a gradient from transparent to black. The `BackdropFilter` widget is used to blur the image by wrapping it inside a `Container`.''',
-//       role: OpenAIChatMessageRole.assistant,
-//     ),
-//   ];
-
   final StreamController<ChatMessage> responseStreamController =
       StreamController<ChatMessage>.broadcast();
   final box = Hive.box(Constants.history);
@@ -212,6 +144,41 @@ class GPTManager extends ChangeNotifier {
   Map<String, Chat> chatHistory = {};
 
   Chat? currentChat;
+
+  static Future<List<String>> fetchAndStoreModels() async {
+    final List<OpenAIModelModel> models = await OpenAI.instance.model.list();
+
+    final List<String> ids = [...models.map((model) => model.id)];
+    print(ids);
+
+    // If we couldn't find a model that this app supports, return an empty list
+    // to indicate an error happened.
+    final String? bestModel = findBestModel();
+    if (bestModel == null) return [];
+
+    Hive.box(Constants.settings).put(Constants.gptModels, ids);
+
+    return ids;
+  }
+
+  static List<String> getModels() {
+    return Hive.box(Constants.settings).get(
+      Constants.gptModels,
+      defaultValue: [],
+    );
+  }
+
+  static String? findBestModel() {
+    final List<String> models = getModels();
+    if (models.contains('gpt-4')) {
+      return 'gpt-4';
+    }
+    if (models.contains('gpt-3.5-turbo')) {
+      return 'gpt-3.5-turbo';
+    }
+
+    return null;
+  }
 
   void init() {
     final Map serializedHistory = box.get(Constants.history) ?? {};
@@ -325,12 +292,21 @@ class GPTManager extends ChangeNotifier {
     }
   }
 
+  String findTailoredModel() {
+    final List<String> models = getModels();
+    if (needsExtendedContext() && models.contains('gpt-4-0314')) {
+      return 'gpt-4-0314';
+    }
+
+    return findBestModel()!;
+  }
+
   void _generate() {
     final ChatMessage? typePrompt = buildTypePrompt();
 
     final Stream<OpenAIStreamChatCompletionModel> stream =
         OpenAI.instance.chat.createStream(
-      model: needsExtendedContext() ? 'gpt-4-0314' : 'gpt-4',
+      model: findTailoredModel(),
       messages: [
         ChatMessage.simple(
           text: 'You are PocketGPT, an assistant gpt app powered by OpenAI.'

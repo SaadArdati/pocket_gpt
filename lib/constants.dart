@@ -1,5 +1,6 @@
 class Constants {
   static const String openAIKey = 'openai_api_key';
+  static const String gptModels = 'gpt_models';
   static const String isFirstTime = 'is_first_time';
   static const String history = 'history';
   static const String settings = 'settings';
