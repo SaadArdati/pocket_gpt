@@ -15,6 +15,7 @@ import '../gpt_manager.dart';
 import '../markdown_renderer.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
+import '../ui/window_controls.dart';
 
 class ChatScreenWrapper extends StatelessWidget {
   final ChatType type;
@@ -88,13 +89,9 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
-    final TargetPlatform platform = defaultTargetPlatform;
-    final bool isDesktop = !kIsWeb &&
-        (platform == TargetPlatform.windows ||
-            platform == TargetPlatform.linux ||
-            platform == TargetPlatform.macOS);
-
     final GPTManager gpt = context.watch<GPTManager>();
+    const double buttonSize = 20;
+
     return LayoutBuilder(builder: (context, constraints) {
       final bool isWide = constraints.maxWidth > 800;
       return Scaffold(
@@ -112,8 +109,9 @@ class _ChatScreenState extends State<ChatScreen>
           actions: [
             if (isWide)
               Padding(
-                padding: EdgeInsets.only(right: historyOpenOnWide ? 230 : 0),
+                padding: EdgeInsets.only(right: historyOpenOnWide ? 180 : 0),
                 child: IconButton(
+                  iconSize: buttonSize,
                   tooltip: 'Chat History',
                   onPressed: () {
                     historyOpenOnWide = !historyOpenOnWide;
@@ -130,6 +128,7 @@ class _ChatScreenState extends State<ChatScreen>
                 ),
               ),
             IconButton(
+              iconSize: buttonSize,
               tooltip: 'New Chat',
               onPressed: () {
                 gpt.openChat(notify: true, type: widget.type);
@@ -140,6 +139,7 @@ class _ChatScreenState extends State<ChatScreen>
               Builder(
                 builder: (context) {
                   return IconButton(
+                    iconSize: buttonSize,
                     tooltip: 'Chat History',
                     onPressed: () {
                       Scaffold.of(context).openEndDrawer();
@@ -148,18 +148,7 @@ class _ChatScreenState extends State<ChatScreen>
                   );
                 },
               ),
-            if (isDesktop) ...[
-              IconButton(
-                tooltip: 'Toggle window bounds',
-                icon: const Icon(Icons.photo_size_select_small),
-                onPressed: SystemManager.instance.toggleWindowMemory,
-              ),
-              IconButton(
-                tooltip: 'Minimize',
-                icon: const Icon(Icons.minimize),
-                onPressed: SystemManager.instance.closeWindow,
-              ),
-            ],
+            const WindowControls(),
           ],
         ),
         endDrawerEnableOpenDragGesture: false,
@@ -284,23 +273,23 @@ class _ChatScreenState extends State<ChatScreen>
                       padding: EdgeInsets.zero,
                       children: [
                         Container(
-                          alignment: Alignment.center,
+                          alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.all(18),
                           child: Text(
                             'Chat History',
                             style: context.textTheme.bodyLarge,
                           ),
                         ),
-                        ListTile(
-                          leading: const Icon(Icons.add),
-                          title: Text(
-                            'New Chat',
-                            style: context.textTheme.bodyMedium,
-                          ),
-                          onTap: () {
-                            gpt.openChat(notify: true, type: widget.type);
-                          },
-                        ),
+                        // ListTile(
+                        //   leading: const Icon(Icons.add),
+                        //   title: Text(
+                        //     'New Chat',
+                        //     style: context.textTheme.bodyMedium,
+                        //   ),
+                        //   onTap: () {
+                        //     gpt.openChat(notify: true, type: widget.type);
+                        //   },
+                        // ),
                         for (final Chat chat
                             in gpt.chatHistory.values.toList().reversed)
                           HistoryTile(chat: chat),

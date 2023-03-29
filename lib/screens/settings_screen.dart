@@ -13,6 +13,7 @@ import '../constants.dart';
 import '../main.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
+import '../ui/window_controls.dart';
 import 'open_ai_key_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -59,20 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           icon: const Icon(Icons.arrow_downward),
         ),
         title: const Text('Settings'),
-        actions: [
-          if (isDesktop) ...[
-            IconButton(
-              tooltip: 'Toggle window bounds',
-              icon: const Icon(Icons.photo_size_select_small),
-              onPressed: SystemManager.instance.toggleWindowMemory,
-            ),
-            IconButton(
-              tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: SystemManager.instance.closeWindow,
-            ),
-          ],
-        ],
+        actions: const [WindowControls()],
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,
       ),
@@ -240,26 +228,42 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 value: box.get(Constants.showTitleBar,
                                     defaultValue: true),
                                 title: Text(
-                                  'Show system title bar',
+                                  'Show window title bar',
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 subtitle: Text(
-                                  'Shows the minimize, maximize, and close buttons from the system.',
+                                  'Shows the minimize, maximize, and close buttons from the system. (Restart required)',
                                   style: context.textTheme.bodySmall
                                       ?.copyWith(fontSize: 10),
                                 ),
                                 onChanged: (bool? value) {
-                                  box.put(
-                                    Constants.showTitleBar,
-                                    value ?? !box.get(Constants.showTitleBar),
-                                  );
+                                  SystemManager.instance
+                                      .toggleTitleBar(show: value ?? false);
 
-                                  // if (value == true) {
-                                  //   SystemManager.showTitleBar();
-                                  // } else {
-                                  //   SystemManager.hideTitleBar();
-                                  // }
-                                  // TODO: App needs to restart.
+                                  // Force user to restart app.
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return WillPopScope(
+                                        onWillPop: () async => false,
+                                        child: AlertDialog(
+                                          title: const Text('Restart required'),
+                                          content: const Text(
+                                            'You will need to restart the app for changes to take effect.',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Dismiss'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             if (isDesktop)
@@ -267,7 +271,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 value: box.get(Constants.moveToSystemDock,
                                     defaultValue: true),
                                 title: Text(
-                                  'Move in system dock',
+                                  'Move to system dock',
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 subtitle: Text(
@@ -276,17 +280,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       ?.copyWith(fontSize: 10),
                                 ),
                                 onChanged: (bool? value) {
-                                  box.put(
-                                    Constants.moveToSystemDock,
-                                    value ??
-                                        !box.get(Constants.moveToSystemDock),
-                                  );
-
-                                  // if (value == true) {
-                                  //   SystemManager.moveToSystemDock();
-                                  // } else {
-                                  //   SystemManager.moveToSystemTray();
-                                  // }
+                                  SystemManager.instance
+                                      .toggleSystemDock(show: value ?? false);
                                 },
                               ),
                           ],

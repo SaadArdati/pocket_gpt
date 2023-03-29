@@ -27,6 +27,11 @@ class SystemManager with WindowListener {
   Future<void> init() async {
     final box = Hive.box(Constants.settings);
     final bool alwaysOnTop = box.get(Constants.alwaysOnTop, defaultValue: true);
+    final bool showInTaskbar =
+        box.get(Constants.moveToSystemDock, defaultValue: false);
+    final bool showTitleBar =
+        box.get(Constants.showTitleBar, defaultValue: false);
+
     WidgetsFlutterBinding.ensureInitialized();
 
     await windowManager.ensureInitialized();
@@ -35,13 +40,16 @@ class SystemManager with WindowListener {
     final Offset? position = getSavedWindowPosition();
     final Size size = getSavedWindowSize(defaultSize: defaultWindowSize);
 
-    await windowManager.setAsFrameless();
+    if (!showTitleBar) {
+      await windowManager.setAsFrameless();
+    }
 
     final windowOptions = WindowOptions(
       alwaysOnTop: alwaysOnTop,
       backgroundColor: Colors.transparent,
-      skipTaskbar: true,
-      titleBarStyle: TitleBarStyle.hidden,
+      skipTaskbar: !showInTaskbar,
+      titleBarStyle: showTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      title: 'PocketGPT'
     );
 
     windowManager.waitUntilReadyToShow(windowOptions);
@@ -113,6 +121,24 @@ class SystemManager with WindowListener {
 
   void dispose() {
     windowManager.removeListener(this);
+  }
+
+  void toggleTitleBar({required bool show}) {
+    // Requires restart for borderless frame to be disabled.
+    // if (show) {
+    //   windowManager.setTitleBarStyle(TitleBarStyle.normal);
+    // } else {
+    //   windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    // }
+
+    final box = Hive.box(Constants.settings);
+    box.put(Constants.showTitleBar, show);
+  }
+
+  void toggleSystemDock({required bool show}) {
+    windowManager.setSkipTaskbar(!show);
+    final box = Hive.box(Constants.settings);
+    box.put(Constants.moveToSystemDock, show);
   }
 
   Future<void> setAlwaysOnTop(bool isAlwaysOnTop) {

@@ -6,6 +6,7 @@ import 'package:hive_flutter/adapters.dart';
 import '../constants.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
+import '../ui/window_controls.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final Widget child;
@@ -24,12 +25,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TargetPlatform platform = defaultTargetPlatform;
-    final bool isDesktop = !kIsWeb &&
-        (platform == TargetPlatform.windows ||
-            platform == TargetPlatform.linux ||
-            platform == TargetPlatform.macOS);
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -57,18 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             },
           ),
-          if (isDesktop) ...[
-            IconButton(
-              tooltip: 'Toggle window bounds',
-              icon: const Icon(Icons.photo_size_select_small),
-              onPressed: SystemManager.instance.toggleWindowMemory,
-            ),
-            IconButton(
-              tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: SystemManager.instance.closeWindow,
-            ),
-          ],
+          const WindowControls(),
         ],
       ),
       resizeToAvoidBottomInset: true,

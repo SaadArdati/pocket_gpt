@@ -12,6 +12,7 @@ import '../constants.dart';
 import '../gpt_manager.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
+import '../ui/window_controls.dart';
 import '../versioning.dart';
 
 bool didCheckForUpdates = false;
@@ -82,11 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TargetPlatform platform = defaultTargetPlatform;
-    final bool isDesktop = !kIsWeb &&
-        (platform == TargetPlatform.windows ||
-            platform == TargetPlatform.linux ||
-            platform == TargetPlatform.macOS);
     return Scaffold(
       appBar: AppBar(
         title: const Text('PocketGPT'),
@@ -98,20 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context.go('/settings', extra: {'from': 'home'});
           },
         ),
-        actions: [
-          if (isDesktop) ...[
-            IconButton(
-              tooltip: 'Toggle window bounds',
-              icon: const Icon(Icons.photo_size_select_small),
-              onPressed: SystemManager.instance.toggleWindowMemory,
-            ),
-            IconButton(
-              tooltip: 'Minimize',
-              icon: const Icon(Icons.minimize),
-              onPressed: SystemManager.instance.closeWindow,
-            ),
-          ],
-        ],
+        actions: const [WindowControls()],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 32),
