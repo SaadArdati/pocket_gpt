@@ -1,8 +1,6 @@
-[//]: # (![Banner]&#40;.github/assets/banner.png&#41;)
-
 <br/>
-<img align="left" alt="android" width="200px" src=".github/assets/text_logo_dark.svg#gh-light-mode-only" />
-<img align="left" alt="android" width="200px" src=".github/assets/text_logo_light.svg#gh-dark-mode-only" />
+<img align="left" alt="Logo" width="200px" src=".github/assets/app_logo_dark.svg#gh-light-mode-only" />
+<img align="left" alt="Logo" width="200px" src=".github/assets/app_logo_light.svg#gh-dark-mode-only" />
 <br/>
 <br/>
 
