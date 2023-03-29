@@ -178,7 +178,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   buildContactTile(
                     title: 'Discord',
                     icon: 'assets/discord_256x.png',
-                    url: 'https://discord.gg/3Z2Z5Z5',
+                    url: 'https://discord.gg/ARxJzxU',
                   ),
                   const SizedBox(height: 8),
                   buildContactTile(
@@ -199,6 +199,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      TextButton(
+                        onPressed: () {
+                          launchUrlString('https://saad-ardati.dev/pocket-gpt/privacy-policy');
+                        },
+                        child: const Text('View Privacy Policy'),
+                      ),
                       TextButton(
                         onPressed: () {
                           showLicensePage(context: context);
@@ -253,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launchUrlString('https://discord.gg/ARxJzxU');
+                      launchUrlString(url);
                     },
                 ),
               ],
