@@ -127,14 +127,6 @@ class _ChatScreenState extends State<ChatScreen>
                   ),
                 ),
               ),
-            IconButton(
-              iconSize: buttonSize,
-              tooltip: 'New Chat',
-              onPressed: () {
-                gpt.openChat(notify: true, type: widget.type);
-              },
-              icon: const Icon(Icons.add),
-            ),
             if (!isWide)
               Builder(
                 builder: (context) {
@@ -148,6 +140,14 @@ class _ChatScreenState extends State<ChatScreen>
                   );
                 },
               ),
+            IconButton(
+              iconSize: buttonSize,
+              tooltip: 'New Chat',
+              onPressed: () {
+                gpt.openChat(notify: true, type: widget.type);
+              },
+              icon: const Icon(Icons.add),
+            ),
             const WindowControls(),
           ],
         ),
