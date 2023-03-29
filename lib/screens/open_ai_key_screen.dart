@@ -19,13 +19,12 @@ class OpenAIKeyInstructions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'You need to provide your own key, otherwise this app would'
-          ' cost money to run!',
+          'You need to provide your own key for now, a paid tier is coming soon!',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 8),
         Text(
-          'The key is stored locally on your device, and is never sent to'
+          'The key is stored securely on your device, and is never sent to'
           ' any servers.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
