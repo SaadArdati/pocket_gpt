@@ -46,12 +46,12 @@ class SystemManager with WindowListener {
     }
 
     final windowOptions = WindowOptions(
-        alwaysOnTop: alwaysOnTop,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: !showInTaskbar,
-        titleBarStyle:
-            showTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-        title: 'PocketGPT');
+      alwaysOnTop: alwaysOnTop,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: !showInTaskbar,
+      titleBarStyle: showTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+      title: 'PocketGPT',
+    );
 
     windowManager.waitUntilReadyToShow(windowOptions);
 
@@ -103,9 +103,9 @@ class SystemManager with WindowListener {
 
   Future<void> onSystemTrayClick() async {
     final box = Hive.box(Constants.settings);
-
     final bool shouldPreserveWindowPosition =
         box.get(Constants.shouldPreserveWindowPosition, defaultValue: true);
+    final bool isFirstTime = box.get(Constants.isFirstTime, defaultValue: true);
 
     final bool isVisible = await windowManager.isVisible();
 
@@ -120,15 +120,19 @@ class SystemManager with WindowListener {
       if (isInit || !shouldPreserveWindowPosition) {
         saveTrayPosition(trayPosition);
 
-        await windowManager.setBounds(
-          Rect.fromLTWH(
-            trayPosition.dx,
-            trayPosition.dy,
-            defaultWindowSize.width,
-            defaultWindowSize.height,
-          ),
-          animate: false,
-        );
+        if (isFirstTime) {
+          await windowManager.center(animate: false);
+        } else {
+          await windowManager.setBounds(
+            Rect.fromLTWH(
+              trayPosition.dx,
+              trayPosition.dy,
+              defaultWindowSize.width,
+              defaultWindowSize.height,
+            ),
+            animate: false,
+          );
+        }
         trayPosition = await windowManager.getPosition();
       }
       isInit = false;
