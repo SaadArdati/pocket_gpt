@@ -62,6 +62,11 @@ You can navigate to your [account](https://platform.openai.com/account/api-keys)
 2. Install dependencies with `flutter pub get` or `derry deps`. They are identical.
 3. Run app with `flutter run` on supported platforms.
 
+
+## Contributors
+
+Thank you [Birju Vachhani](birju.dev) for being a key contributor to this project!
+
 ## Contribution
 
 You are most welcome to contribute to this project!
