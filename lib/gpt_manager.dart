@@ -153,7 +153,7 @@ class GPTManager extends ChangeNotifier {
 
     // If we couldn't find a model that this app supports, return an empty list
     // to indicate an error happened.
-    final String? bestModel = findBestModel();
+    final String? bestModel = findBestModel(ids);
     if (bestModel == null) return [];
 
     Hive.box(Constants.settings).put(Constants.gptModels, ids);
@@ -168,8 +168,8 @@ class GPTManager extends ChangeNotifier {
     );
   }
 
-  static String? findBestModel() {
-    final List<String> models = getModels();
+  static String? findBestModel([List<String>? ids]) {
+    final List<String> models = ids ?? getModels();
     if (models.contains('gpt-4')) {
       return 'gpt-4';
     }
