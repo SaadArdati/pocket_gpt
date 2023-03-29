@@ -26,6 +26,7 @@ import 'screens/open_ai_key_screen.dart';
 import 'screens/settings_screen.dart';
 import 'system_manager.dart';
 import 'theme_extensions.dart';
+import 'ui/window_drag_handle.dart';
 import 'wave_background.dart';
 
 void main() async {
@@ -167,7 +168,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return NavigationBackground(state: state, child: child);
+          return WindowDragHandle(child: NavigationBackground(state: state, child: child));
         },
         routes: [
           GoRoute(
