@@ -384,38 +384,50 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
     final BorderRadius borderRadius = BorderRadius.circular(12);
     return Form(
       child: Builder(builder: (context) {
+        final String? bestModel = GPTManager.findBestModel();
         return Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Stack(
-              alignment: Alignment.topCenter,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const ImageIcon(AssetImage('assets/openai_256.png')),
-                    const SizedBox(width: 8),
-                    Text(
-                      'OpenAI API Key',
-                      style: context.textTheme.bodyLarge,
-                    ),
-                  ],
+                const ImageIcon(AssetImage('assets/openai_256.png')),
+                const SizedBox(width: 8),
+                Text(
+                  'OpenAI API Key',
+                  style: context.textTheme.bodyLarge,
                 ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    tooltip: 'Validate Token',
-                    iconSize: 18,
-                    icon: Icon(
-                      Icons.youtube_searched_for,
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
-                    onPressed: () {
-                      doValidationCheck();
-                    },
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  bestModel == null
+                      ? 'No relevant model found!'
+                      : 'Currently using model: [$bestModel]',
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: bestModel == null
+                        ? context.colorScheme.error
+                        : context.colorScheme.onSurfaceVariant,
                   ),
+                ),
+                IconButton(
+                  tooltip: 'Validate Token',
+                  iconSize: 18,
+                  icon: Icon(
+                    Icons.youtube_searched_for,
+                    color: bestModel == null
+                        ? context.colorScheme.primary
+                        : context.colorScheme.onSurfaceVariant,
+                  ),
+                  onPressed: () {
+                    doValidationCheck();
+                  },
                 ),
               ],
             ),
