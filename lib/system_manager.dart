@@ -26,18 +26,19 @@ class SystemManager {
     final Offset? position = getSavedWindowPosition();
     final Size size = getSavedWindowSize(defaultSize: defaultWindowSize);
 
+    await windowManager.setAsFrameless();
+    await windowManager.setSkipTaskbar(true);
+
     doWhenWindowReady(() async {
       appWindow.minSize = defaultWindowSize;
       appWindow.size = size;
 
       if (position != null) appWindow.position = position;
 
-      windowManager.setSkipTaskbar(true);
       windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       windowManager.setAlwaysOnTop(alwaysOnTop);
       windowManager.setBackgroundColor(Colors.transparent);
-      windowManager.setAsFrameless();
-      windowManager.addListener(WindowResizeListener());
+      windowManager.addListener(WindowEventsListener());
     });
 
     if (Platform.isMacOS) windowManager.setMovable(true);
@@ -54,44 +55,49 @@ class SystemManager {
     );
 
     // handle system tray event
-    systemTray.registerSystemTrayEventHandler((eventName) async {
-      final bool shouldPreserveWindowPosition =
-          box.get(Constants.shouldPreserveWindowPosition, defaultValue: true);
-
+    systemTray.registerSystemTrayEventHandler((eventName) {
       if (eventName == 'click') {
-        final bool isVisible = await windowManager.isVisible();
-        final bool isFocused = await windowManager.isFocused();
-
-        if (isVisible && isFocused) {
-          windowManager.close();
-        } else {
-          windowManager.show();
-
-          trayPosition = await screenRetriever.getCursorScreenPoint() -
-              Offset(defaultWindowSize.width / 2, 0);
-
-          if (isInit || !shouldPreserveWindowPosition) {
-            saveTrayPosition(trayPosition);
-
-            await windowManager.setBounds(
-              Rect.fromLTWH(
-                trayPosition.dx,
-                trayPosition.dy,
-                defaultWindowSize.width,
-                defaultWindowSize.height,
-              ),
-              animate: false,
-            );
-            trayPosition = await windowManager.getPosition();
-          }
-          isInit = false;
-        }
+        onSystemTrayClick();
       }
     });
   }
 
+  static Future<void> onSystemTrayClick() async {
+    final box = Hive.box(Constants.settings);
+
+    final bool shouldPreserveWindowPosition =
+        box.get(Constants.shouldPreserveWindowPosition, defaultValue: true);
+
+    final bool isVisible = await windowManager.isVisible();
+
+    if (isVisible) {
+      windowManager.close();
+    } else {
+      windowManager.show();
+
+      trayPosition = await screenRetriever.getCursorScreenPoint() -
+          Offset(defaultWindowSize.width / 2, 0);
+
+      if (isInit || !shouldPreserveWindowPosition) {
+        saveTrayPosition(trayPosition);
+
+        await windowManager.setBounds(
+          Rect.fromLTWH(
+            trayPosition.dx,
+            trayPosition.dy,
+            defaultWindowSize.width,
+            defaultWindowSize.height,
+          ),
+          animate: false,
+        );
+        trayPosition = await windowManager.getPosition();
+      }
+      isInit = false;
+    }
+  }
+
   static void dispose() {
-    windowManager.removeListener(WindowResizeListener());
+    windowManager.removeListener(WindowEventsListener());
   }
 
   static Future<void> setAlwaysOnTop(bool isAlwaysOnTop) {

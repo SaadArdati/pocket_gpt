@@ -1,17 +1,19 @@
-import 'dart:ui';
+import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'constants.dart';
 
-class WindowResizeListener extends WindowListener {
+final ValueNotifier<bool> windowFocus = ValueNotifier(true);
 
-  WindowResizeListener._();
+class WindowEventsListener extends WindowListener {
+  WindowEventsListener._();
 
-  static final WindowResizeListener _instance = WindowResizeListener._();
+  static final WindowEventsListener _instance = WindowEventsListener._();
 
-  factory WindowResizeListener() => _instance;
+  factory WindowEventsListener() => _instance;
 
   @override
   Future<void> onWindowResized() async {
@@ -25,6 +27,24 @@ class WindowResizeListener extends WindowListener {
     final pos = await windowManager.getPosition();
     Hive.box(Constants.settings).put(Constants.windowX, pos.dx);
     Hive.box(Constants.settings).put(Constants.windowY, pos.dy);
+  }
+
+  @override
+  Future<void> onWindowBlur() async {
+    log('window unfocused');
+    final box = Hive.box(Constants.settings);
+    final bool alwaysOnTop = box.get(Constants.alwaysOnTop, defaultValue: true);
+
+    if (alwaysOnTop) return;
+
+    windowManager.hide();
+    windowFocus.value = false;
+  }
+
+  @override
+  void onWindowFocus() {
+    log('window focused');
+    windowFocus.value = true;
   }
 }
 
