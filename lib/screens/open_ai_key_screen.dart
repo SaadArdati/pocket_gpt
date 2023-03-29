@@ -478,7 +478,8 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                               isEditing = true;
                             });
                             return;
-                          } else if (controller.text == box.get(Constants.openAIKey)) {
+                          } else if (controller.text ==
+                              box.get(Constants.openAIKey)) {
                             setState(() {
                               message = null;
                               isError = false;
@@ -525,7 +526,8 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                         : Icon(
                             !isEditing
                                 ? Icons.edit
-                                : controller.text == box.get(Constants.openAIKey)
+                                : controller.text ==
+                                        box.get(Constants.openAIKey)
                                     ? Icons.edit_off
                                     : Icons.navigate_next,
                             color: context.colorScheme.onSurfaceVariant,

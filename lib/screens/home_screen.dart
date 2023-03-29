@@ -100,15 +100,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           if (isDesktop) ...[
-            const IconButton(
+            IconButton(
               tooltip: 'Toggle window bounds',
-              icon: Icon(Icons.photo_size_select_small),
-              onPressed: SystemManager.toggleWindowMemory,
+              icon: const Icon(Icons.photo_size_select_small),
+              onPressed: SystemManager.instance.toggleWindowMemory,
             ),
-            const IconButton(
+            IconButton(
               tooltip: 'Minimize',
-              icon: Icon(Icons.minimize),
-              onPressed: SystemManager.closeWindow,
+              icon: const Icon(Icons.minimize),
+              onPressed: SystemManager.instance.closeWindow,
             ),
           ],
         ],

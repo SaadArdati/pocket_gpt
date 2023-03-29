@@ -61,15 +61,15 @@ class _SettingsScreenState extends State<SettingsScreen>
         title: const Text('Settings'),
         actions: [
           if (isDesktop) ...[
-            const IconButton(
+            IconButton(
               tooltip: 'Toggle window bounds',
-              icon: Icon(Icons.photo_size_select_small),
-              onPressed: SystemManager.toggleWindowMemory,
+              icon: const Icon(Icons.photo_size_select_small),
+              onPressed: SystemManager.instance.toggleWindowMemory,
             ),
-            const IconButton(
+            IconButton(
               tooltip: 'Minimize',
-              icon: Icon(Icons.minimize),
-              onPressed: SystemManager.closeWindow,
+              icon: const Icon(Icons.minimize),
+              onPressed: SystemManager.instance.closeWindow,
             ),
           ],
         ],
@@ -167,12 +167,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     Constants.alwaysOnTop,
                                     value ?? !box.get(Constants.alwaysOnTop),
                                   );
-                                  SystemManager.setAlwaysOnTop(value ?? true);
+                                  SystemManager.instance
+                                      .setAlwaysOnTop(value ?? true);
                                 },
                               ),
                             if (isDesktop)
                               CheckboxListTile(
-                                value: box.get(Constants.shouldPreserveWindowPosition,
+                                value: box.get(
+                                    Constants.shouldPreserveWindowPosition,
                                     defaultValue: true),
                                 title: Text(
                                   'Preserve window position',
@@ -187,7 +189,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   box.put(
                                     Constants.shouldPreserveWindowPosition,
                                     value ??
-                                        !box.get(Constants.shouldPreserveWindowPosition),
+                                        !box.get(Constants
+                                            .shouldPreserveWindowPosition),
                                   );
                                 },
                               ),
@@ -226,7 +229,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 onChanged: (bool? value) {
                                   box.put(
                                     Constants.launchOnStartup,
-                                    value ?? !box.get(Constants.launchOnStartup),
+                                    value ??
+                                        !box.get(Constants.launchOnStartup),
                                   );
                                   LaunchAtStartup.instance.disable();
                                 },

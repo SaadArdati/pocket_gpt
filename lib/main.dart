@@ -58,7 +58,7 @@ Future<bool> initPocketGPT() async {
 
   if (!kIsWeb) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      await SystemManager.init();
+      await SystemManager.instance.init();
 
       final box = Hive.box(Constants.settings);
       if (box.get(Constants.launchOnStartup, defaultValue: true)) {
@@ -72,7 +72,8 @@ Future<bool> initPocketGPT() async {
     setPathUrlStrategy();
   }
 
-  OpenAI.apiKey = Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
+  OpenAI.apiKey =
+      Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
   return true;
 }
 
@@ -146,7 +147,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
   @override
   void dispose() {
     windowManager.removeListener(this);
-    SystemManager.dispose();
+    SystemManager.instance.dispose();
     super.dispose();
   }
 
@@ -160,12 +161,14 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
 
   late final _router = GoRouter(
     // initialLocation: '/onboarding',
-    initialLocation:
-        box.get(Constants.isFirstTime, defaultValue: true) ? '/onboarding' : '/home',
+    initialLocation: box.get(Constants.isFirstTime, defaultValue: true)
+        ? '/onboarding'
+        : '/home',
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return MoveWindow(child: NavigationBackground(state: state, child: child));
+          return MoveWindow(
+              child: NavigationBackground(state: state, child: child));
         },
         routes: [
           GoRoute(

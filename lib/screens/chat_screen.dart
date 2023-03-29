@@ -149,15 +149,15 @@ class _ChatScreenState extends State<ChatScreen>
                 },
               ),
             if (isDesktop) ...[
-              const IconButton(
+              IconButton(
                 tooltip: 'Toggle window bounds',
-                icon: Icon(Icons.photo_size_select_small),
-                onPressed: SystemManager.toggleWindowMemory,
+                icon: const Icon(Icons.photo_size_select_small),
+                onPressed: SystemManager.instance.toggleWindowMemory,
               ),
-              const IconButton(
+              IconButton(
                 tooltip: 'Minimize',
-                icon: Icon(Icons.minimize),
-                onPressed: SystemManager.closeWindow,
+                icon: const Icon(Icons.minimize),
+                onPressed: SystemManager.instance.closeWindow,
               ),
             ],
           ],
@@ -264,7 +264,8 @@ class _ChatScreenState extends State<ChatScreen>
                               );
                             },
                             child: Container(
-                              color: context.colorScheme.background.withOpacity(0.5),
+                              color: context.colorScheme.background
+                                  .withOpacity(0.5),
                               height: Scaffold.of(context).appBarMaxHeight ??
                                   48 + 16,
                             ),
