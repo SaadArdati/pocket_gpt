@@ -333,8 +333,8 @@ class GPTManager extends ChangeNotifier {
       model: needsExtendedContext() ? 'gpt-4-0314' : 'gpt-4',
       messages: [
         ChatMessage.simple(
-          text: "You are PocketGPT, living in the user's system tray for easy"
-              ' access. The app in which you live in was created by Saad Ardati.'
+          text: 'You are PocketGPT, an assistant gpt app powered by OpenAI.'
+              '\nThe app in which you live in is created by Saad Ardati.'
               '\n - Twitter: @SaadArdati.'
               '\n - Website: https://saad-ardati.dev/.'
               '\n - Github: https://github.com/SaadArdati.'

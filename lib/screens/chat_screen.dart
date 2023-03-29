@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../gpt_manager.dart';
 import '../markdown_renderer.dart';
-import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../ui/window_controls.dart';
 
@@ -90,7 +89,14 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   Widget build(BuildContext context) {
     final GPTManager gpt = context.watch<GPTManager>();
-    const double buttonSize = 20;
+
+    final TargetPlatform platform = defaultTargetPlatform;
+    final bool isDesktop = !kIsWeb &&
+        (platform == TargetPlatform.windows ||
+            platform == TargetPlatform.linux ||
+            platform == TargetPlatform.macOS);
+
+    final double? buttonSize = isDesktop ? 20 : null;
 
     return LayoutBuilder(builder: (context, constraints) {
       final bool isWide = constraints.maxWidth > 800;

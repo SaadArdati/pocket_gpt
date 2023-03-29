@@ -20,7 +20,7 @@ class WindowControls extends StatelessWidget {
     final bool showTitleBar =
         box.get(Constants.showTitleBar, defaultValue: false);
 
-    const double buttonSize = 20;
+    final double? buttonSize = isDesktop ? 20 : null;
     return Row(
       children: [
         if (isDesktop && !showTitleBar) ...[
