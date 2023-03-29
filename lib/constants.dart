@@ -10,6 +10,8 @@ class Constants {
   static const String openHistoryOnWideScreen = 'open_history_on_wide_screen';
   static const String shouldPreserveWindowPosition =
       'should_preserve_window_position';
+  static const String showTitleBar = 'show_title_bar';
+  static const String moveToSystemDock = 'move_to_system_dock';
   static const String settingWindowWidth = 'settings_window_size_width';
   static const String settingWindowHeight = 'settings_window_size_height';
   static const String settingWindowX = 'settings_window_x';

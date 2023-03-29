@@ -6,7 +6,7 @@ import bitsdojo_window_macos
 class MainFlutterWindow: BitsdojoWindow {
 
   override func bitsdojo_window_configure() -> UInt {
-    return BDW_CUSTOM_FRAME | BDW_HIDE_ON_STARTUP
+    return BDW_HIDE_ON_STARTUP
   }
 
   override func awakeFromNib() {

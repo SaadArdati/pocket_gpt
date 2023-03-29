@@ -1,0 +1,85 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release Tag'
+        required: true
+
+jobs:
+  android:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "11.x"
+          cache: 'gradle'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Flutter version
+        run: flutter --version
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Create keystore file
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: 'release.jks'
+          fileDir: './android/keystore/'
+          encodedString: ${{ secrets.KEYSTORE_FILE }}
+      - name: Create keystore.properties file
+        run: echo "${{ secrets.KEYSTORE_PROPERTIES }}" > android/keystore.properties
+      - name: Build APK
+        run: flutter build apk --release
+      - name: Build AAB
+        run: flutter build appbundle --release
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: PocketGPT.apk
+          path: build/app/outputs/flutter-apk/*
+          if-no-files-found: error
+          retention-days: 5
+      - name: Upload AAB
+        uses: actions/upload-artifact@v3
+        with:
+          name: PocketGPT.aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 5
+      - name: Clean up keystore and keystore.properties
+        if: ${{ always() }}
+        run: |
+          rm android/keystore.properties
+          rm android/keystore/release.jks
+
+  upload:
+    needs: [ android ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: dist
+      - name: Display structure of downloaded files
+        run: ls -R dist
+      - name: Upload binaries (for Workflow dispatch)
+        if: ${{ github.event.inputs.tag != null }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*
+          tag: ${{ github.event.inputs.tag }}
+          file_glob: true
+      - name: Upload binaries (for release)
+        if: ${{ github.event.inputs.tag == null }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*
+          tag: ${{ github.ref }}
+          file_glob: true

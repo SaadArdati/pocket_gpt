@@ -167,8 +167,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return MoveWindow(
-              child: NavigationBackground(state: state, child: child));
+          return NavigationBackground(state: state, child: child);
         },
         routes: [
           GoRoute(

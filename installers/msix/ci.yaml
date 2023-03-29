@@ -1,0 +1,13 @@
+msix_config:
+  display_name: PocketGPT
+  publisher_display_name: Saad Ardati
+  logo_path: installers\msix\app_icon.png
+  architecture: x64
+  capabilities: "internetClient"
+  certificate_path: installers\msix\POCKETGPT-CERT.pfx
+  certificate_password: {{ password }}
+  output_name: PocketGPT
+  output_path: . 
+  build_windows: false
+  install_certificate: false
+  store: false

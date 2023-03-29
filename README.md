@@ -1,16 +1,71 @@
-# pocket_gpt
+[//]: # (![Banner]&#40;.github/assets/banner.png&#41;)
 
-A pocket size GPT app
+<br/>
+<img align="left" alt="android" width="200px" src=".github/assets/text_logo_dark.svg#gh-light-mode-only" />
+<img align="left" alt="android" width="200px" src=".github/assets/text_logo_light.svg#gh-dark-mode-only" />
+<br/>
+<br/>
 
-## Getting Started
+A pocket-sized GPT assistant that runs everywhere!
 
-This project is a starting point for a Flutter application.
+<a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-android-0.4.0.apk"><img src=".github/assets/android.png" height="70px" /></a> &nbsp; <a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-macos-0.4.0.dmg"><img src=".github/assets/macos.png" height="70px" /></a> &nbsp;
+<a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-windows-0.4.0.msix"><img src=".github/assets/windows.png" height="70px" /></a>
 
-A few resources to get you started if this is your first Flutter project:
+See [Installation Guide](#installation-guide) for installing on desktop.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Preset cards that quickly orient GPT to specific tasks for quick and easy use.
+- Window is very flexible and can be configured to exist however you like on your system, including the system tray!
+- Completely private and local, no data is transmitted to servers unless explicitly asked for.
+- Natural and accessible UI that is easy to use and understand.
+- Works on all major platforms, including Windows, MacOS, Linux, Android, iOS, and web!
+
+
+## Supported Platforms
+
+| Android | iOS | macOS | Windows | Linux | Web |
+|---------|-----|-------|---------|-------|-----|
+| ✅       | 🚧   | ✅     | ✅       | 🚧     | 🚧   |
+
+### Disclaimer
+
+> This is not a product of OpenAI. This is a utility app that uses OpenAI's services.
+
+## Installation Guide
+
+### MacOS
+In order to install PocketGPT on MacOS, download the file named `PocketGPT-macos-x.x.x.dmg`.
+
+#### Installing with DMG (Recommended)
+
+1. To install PocketGPT in your Mac simply open `PocketGPT.dmg` and drag the PocketGPT.app to the `Applications` folder next to it. If you are updating the app you'll need to click `Replace`.
+2. PocketGPT should now appear in your LaunchPad. However, if you try to open it you might get a message saying that `"PocketGPT" can't be opened because Apple cannot check it for malicious software.`
+3. To fix this, open `System Preferences` and click on `Security and Privacy`.
+4. you'll see a message saying `"PocketGPT" was blocked from use because it is not from an identified developer`.
+5. Click on `Open Anyway` and then `Open` in the popup.
+6. Done! You should now be able to use PocketGPT normally!
+
+### Windows
+
+#### Installing with MSIX (Recommended)
+
+Download the `PocketGPT-windows-x.x.x.msix`.
+
+## How to get an API key from OpenAI
+
+You can navigate to your [account](https://platform.openai.com/account/api-keys) on [OpenAI][openai] to get your access token. Make sure you're logged in!
+
+![api_key](.github/assets/api_key.png)
+
+## Build from source
+
+1. Clone the repo
+2. Install dependencies with `flutter pub get` or `derry deps`. They are identical.
+3. Run app with `flutter run` on supported platforms.
+
+## Contribution
+
+You are most welcome to contribute to this project!
+
+[openai]: https://platform.openai.com/

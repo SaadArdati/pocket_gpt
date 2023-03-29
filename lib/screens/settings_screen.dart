@@ -235,6 +235,60 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   LaunchAtStartup.instance.disable();
                                 },
                               ),
+                            if (isDesktop)
+                              CheckboxListTile(
+                                value: box.get(Constants.showTitleBar,
+                                    defaultValue: true),
+                                title: Text(
+                                  'Show system title bar',
+                                  style: context.textTheme.bodyMedium,
+                                ),
+                                subtitle: Text(
+                                  'Shows the minimize, maximize, and close buttons from the system.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                onChanged: (bool? value) {
+                                  box.put(
+                                    Constants.showTitleBar,
+                                    value ?? !box.get(Constants.showTitleBar),
+                                  );
+
+                                  // if (value == true) {
+                                  //   SystemManager.showTitleBar();
+                                  // } else {
+                                  //   SystemManager.hideTitleBar();
+                                  // }
+                                  // TODO: App needs to restart.
+                                },
+                              ),
+                            if (isDesktop)
+                              CheckboxListTile(
+                                value: box.get(Constants.moveToSystemDock,
+                                    defaultValue: true),
+                                title: Text(
+                                  'Move in system dock',
+                                  style: context.textTheme.bodyMedium,
+                                ),
+                                subtitle: Text(
+                                  'Puts the app in the system dock as if it were a full app.',
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(fontSize: 10),
+                                ),
+                                onChanged: (bool? value) {
+                                  box.put(
+                                    Constants.moveToSystemDock,
+                                    value ??
+                                        !box.get(Constants.moveToSystemDock),
+                                  );
+
+                                  // if (value == true) {
+                                  //   SystemManager.moveToSystemDock();
+                                  // } else {
+                                  //   SystemManager.moveToSystemTray();
+                                  // }
+                                },
+                              ),
                           ],
                         ),
                       ),
