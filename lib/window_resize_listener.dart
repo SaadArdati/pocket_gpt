@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'constants.dart';
@@ -37,7 +38,11 @@ class WindowEventsListener extends WindowListener {
 
     if (alwaysOnTop) return;
 
-    windowManager.hide();
+    if (Platform.isWindows) {
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+    print('hiding window from onWindowBlur');
+    await windowManager.hide();
     windowFocus.value = false;
   }
 

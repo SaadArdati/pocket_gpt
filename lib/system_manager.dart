@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:system_tray/system_tray.dart';
+import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'constants.dart';
@@ -27,18 +26,24 @@ class SystemManager {
     final Size size = getSavedWindowSize(defaultSize: defaultWindowSize);
 
     await windowManager.setAsFrameless();
-    await windowManager.setSkipTaskbar(true);
+
+    final windowOptions = WindowOptions(
+      alwaysOnTop: alwaysOnTop,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: true,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
+
+    windowManager.waitUntilReadyToShow(windowOptions);
 
     doWhenWindowReady(() async {
       appWindow.minSize = defaultWindowSize;
-      appWindow.size = size;
+      appWindow.size = defaultWindowSize;
 
       if (position != null) appWindow.position = position;
 
-      windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-      windowManager.setAlwaysOnTop(alwaysOnTop);
-      windowManager.setBackgroundColor(Colors.transparent);
       windowManager.addListener(WindowEventsListener());
+      appWindow.hide();
     });
 
     if (Platform.isMacOS) windowManager.setMovable(true);
@@ -63,6 +68,7 @@ class SystemManager {
   }
 
   static Future<void> onSystemTrayClick() async {
+    print('onSystemClick');
     final box = Hive.box(Constants.settings);
 
     final bool shouldPreserveWindowPosition =
@@ -71,8 +77,10 @@ class SystemManager {
     final bool isVisible = await windowManager.isVisible();
 
     if (isVisible) {
-      windowManager.close();
+      print('hiding window');
+      windowManager.hide();
     } else {
+      print('showing window');
       windowManager.show();
 
       trayPosition = await screenRetriever.getCursorScreenPoint() -
@@ -105,7 +113,7 @@ class SystemManager {
   }
 
   static Future<void> closeWindow() {
-    return windowManager.close();
+    return windowManager.hide();
   }
 
   static Future<void> toggleWindowMemory() async {

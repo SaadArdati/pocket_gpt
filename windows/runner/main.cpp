@@ -13,7 +13,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   HWND hwnd = ::FindWindow(L"FLUTTER_RUNNER_WIN32_WINDOW", L"pocket_gpt");
   if (hwnd != NULL) {
-    ::ShowWindow(hwnd, SW_NORMAL);
+    ::ShowWindow(hwnd, SW_HIDE);
     ::SetForegroundWindow(hwnd);
         return EXIT_FAILURE;
   }
