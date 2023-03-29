@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:system_tray/system_tray.dart';
@@ -45,12 +46,12 @@ class SystemManager with WindowListener {
     }
 
     final windowOptions = WindowOptions(
-      alwaysOnTop: alwaysOnTop,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: !showInTaskbar,
-      titleBarStyle: showTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
-      title: 'PocketGPT'
-    );
+        alwaysOnTop: alwaysOnTop,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: !showInTaskbar,
+        titleBarStyle:
+            showTitleBar ? TitleBarStyle.normal : TitleBarStyle.hidden,
+        title: 'PocketGPT');
 
     windowManager.waitUntilReadyToShow(windowOptions);
 
@@ -73,14 +74,29 @@ class SystemManager with WindowListener {
 
     await systemTray.initSystemTray(
       title: '',
-      toolTip: 'Pocket GPT',
+      toolTip: 'PocketGPT',
       iconPath: path,
     );
 
+    final Menu menu = Menu();
+    await menu.buildFrom([
+      MenuItemLabel(
+        label: 'Toggle Window',
+        onClicked: (menuItem) => onSystemTrayClick(),
+      ),
+      MenuItemLabel(
+        label: 'Quit',
+        onClicked: (menuItem) => SystemNavigator.pop(),
+      ),
+    ]);
+    await systemTray.setContextMenu(menu);
+
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) {
-      if (eventName == 'click') {
+      if (eventName == kSystemTrayEventClick) {
         onSystemTrayClick();
+      } else if (eventName == kSystemTrayEventRightClick) {
+        systemTray.popUpContextMenu();
       }
     });
   }
