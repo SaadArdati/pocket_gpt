@@ -86,6 +86,7 @@ flutter:
     - assets/openai_256.png
     - assets/discord_256x.png
     - assets/twitter_256x.png
+    - assets/instagram_256x.png
     - assets/linked_in_256x.png
     - assets/github_dark_256x.png
     - assets/github_light_256x.png
