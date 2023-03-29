@@ -186,6 +186,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                     icon: 'assets/linked_in_256x.png',
                     url: 'https://www.linkedin.com/in/saad-ardati',
                   ),
+                  const SizedBox(height: 8),
+                  buildContactTile(
+                    title: 'Instagram',
+                    icon: 'assets/instagram_256x.png',
+                    url: 'https://www.instagram.com/saad_ardati',
+                  ),
                   const SizedBox(height: 16),
                   Text('Version: $version'),
                   const SizedBox(height: 8),
@@ -370,7 +376,7 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                   height: 32,
                   indent: 16,
                   endIndent: 16,
-                  color: context.colorScheme.onTertiaryContainer,
+                  color: context.colorScheme.onSurface.withOpacity(0.5),
                 ),
                 Center(
                   child: Row(

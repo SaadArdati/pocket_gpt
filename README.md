@@ -70,13 +70,15 @@ token. Make sure you're logged in!
 
 ## Socials
 
-<a href="https://saad-ardati.dev" ><img alt="Website" width="48px" src=".github/assets/profile.png" />  [saad-ardati.dev](https://saad-ardati.dev) </a>
+<a href="https://saad-ardati.dev" ><img alt="Website" width="32px" src=".github/assets/profile.png" />  [saad-ardati.dev](https://saad-ardati.dev) </a>
 
-<a href="https://discord.gg/ARxJzxU" ><img alt="Discord" width="48" src=".github/assets/discord_256x.png" />  [discord.gg/ARxJzxU](https://discord.gg/ARxJzxU) </a>
+<a href="https://discord.gg/ARxJzxU" ><img alt="Discord" width="32px" src=".github/assets/discord_256x.png" />  [discord.gg/ARxJzxU](https://discord.gg/ARxJzxU) </a>
 
-<a href="https://www.linkedin.com/in/saad-ardati/" ><img alt="LinkedIn" width="48px" src=".github/assets/linked_in_256x.png" /> [linkedin.com/in/saad-ardati/](https://www.linkedin.com/in/saad-ardati/) </a> 
+<a href="https://www.linkedin.com/in/saad-ardati/" ><img alt="LinkedIn" width="32px" src=".github/assets/linked_in_256x.png" />  [linkedin.com/in/saad-ardati/](https://www.linkedin.com/in/saad-ardati/) </a> 
 
-<a href="https://twitter.com/SaadArdati" ><img alt="Twitter" width="48px" src=".github/assets/twitter_256x.png" /> [twitter.com/SaadArdati](https://twitter.com/SaadArdati) </a> 
+<a href="https://twitter.com/SaadArdati" ><img alt="Twitter" width="32px" src=".github/assets/twitter_256x.png" />  [twitter.com/SaadArdati](https://twitter.com/SaadArdati) </a>
+
+<a href="https://instagram.com/saad_ardati" ><img alt="Instagram" width="32px" src=".github/assets/instagram_256x.png" />  [instagram.com/saad_ardati](https://instagram.com/saad_ardati) </a>
 
 ## Contributors
 
