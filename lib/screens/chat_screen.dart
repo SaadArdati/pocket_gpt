@@ -403,6 +403,27 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
   final TextEditingController textController = TextEditingController();
 
   void triggerSend(BuildContext context, {required bool generateResponse}) {
+    if (textController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Audio recording'),
+            content: const Text(
+              'This feature is coming soon! Type a message to show the send button.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
     if (!Form.of(context).validate()) return;
 
     final GPTManager gpt = context.read<GPTManager>();
@@ -471,7 +492,27 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
                         children: [
                           IconButton(
                             tooltip: 'Add attachment',
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Add Attachment'),
+                                    content: const Text(
+                                      'This feature is coming soon!',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                             icon: const Icon(Icons.add),
                           ),
                           const SizedBox(width: 8),
