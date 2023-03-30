@@ -113,6 +113,7 @@ class SystemManager with WindowListener {
     if (isVisible) {
       minimizeWindow();
     } else {
+      appWindow.restore();
       windowManager.show();
 
       trayPosition = await findBestTrayWindowPosition();
@@ -271,7 +272,8 @@ class SystemManager with WindowListener {
 
   Future<void> quitApp() async {
     if (defaultTargetPlatform == TargetPlatform.windows) {
-      return appWindow.close();
+      appWindow.close();
+      exit(0);
     } else {
       return SystemNavigator.pop();
     }
