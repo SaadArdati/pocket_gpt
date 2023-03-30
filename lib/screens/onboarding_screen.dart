@@ -107,28 +107,33 @@ class OnboardingDone extends StatelessWidget {
                 style: context.textTheme.headlineLarge,
               ),
               const SizedBox(height: 8),
-              Text(
-                "The app will naturally live in your system's tray.",
-                textAlign: TextAlign.center,
-                style: context.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 32),
-              if (defaultTargetPlatform == TargetPlatform.windows) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: buildImage(context, 'windows_1'),
+              if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.linux) ...[
+                Text(
+                  "The app will naturally live in your system's tray.",
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyMedium,
                 ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: buildImage(context, 'windows_2'),
-                ),
-              ],
-              if (defaultTargetPlatform == TargetPlatform.macOS) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: buildImage(context, 'macos'),
-                ),
+                if (defaultTargetPlatform == TargetPlatform.windows) ...[
+                  const SizedBox(height: 32),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: buildImage(context, 'windows_1'),
+                  ),
+                  const SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: buildImage(context, 'windows_2'),
+                  ),
+                ],
+                if (defaultTargetPlatform == TargetPlatform.macOS) ...[
+                  const SizedBox(height: 32),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: buildImage(context, 'macos'),
+                  ),
+                ],
               ],
               const SizedBox(height: 32),
               Material(
