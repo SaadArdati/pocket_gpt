@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -165,8 +166,20 @@ class SystemManager with WindowListener {
     return windowManager.setAlwaysOnTop(isAlwaysOnTop);
   }
 
-  Future<void> closeWindow() {
-    return windowManager.hide();
+  Future<void> minimizeWindow() async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      return appWindow.minimize();
+    } else {
+      return windowManager.hide();
+    }
+  }
+
+  Future<void> quitApp() async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      return appWindow.close();
+    } else {
+      return SystemNavigator.pop();
+    }
   }
 
   @override

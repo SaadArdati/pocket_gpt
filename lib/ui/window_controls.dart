@@ -15,6 +15,7 @@ class WindowControls extends StatelessWidget {
         (platform == TargetPlatform.windows ||
             platform == TargetPlatform.linux ||
             platform == TargetPlatform.macOS);
+    final bool isMacOS = isDesktop && platform == TargetPlatform.macOS;
 
     final box = Hive.box(Constants.settings);
     final bool showTitleBar =
@@ -23,19 +24,27 @@ class WindowControls extends StatelessWidget {
     final double? buttonSize = isDesktop ? 20 : null;
     return Row(
       children: [
-        if (isDesktop && !showTitleBar) ...[
+        if (isDesktop) ...[
           IconButton(
             iconSize: buttonSize,
             tooltip: 'Toggle window bounds',
             icon: const Icon(Icons.photo_size_select_small),
             onPressed: SystemManager.instance.toggleWindowMemory,
           ),
-          IconButton(
-            iconSize: buttonSize,
-            tooltip: 'Close',
-            icon: const Icon(Icons.close),
-            onPressed: SystemManager.instance.closeWindow,
-          ),
+          if (!showTitleBar) ...[
+            IconButton(
+              iconSize: buttonSize,
+              tooltip: isMacOS ? 'Close' : 'Minimize',
+              icon: const Icon(Icons.minimize),
+              onPressed: SystemManager.instance.minimizeWindow,
+            ),
+            IconButton(
+              iconSize: buttonSize,
+              tooltip: 'Quit',
+              icon: const Icon(Icons.close),
+              onPressed: SystemManager.instance.quitApp,
+            ),
+          ],
         ],
       ],
     );

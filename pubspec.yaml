@@ -78,6 +78,7 @@ flutter_icons:
     generate: true
   macos:
     generate: true
+    image_path: "assets/macos_icon_256x.png"
 
 flutter:
   uses-material-design: true
@@ -99,5 +100,6 @@ flutter:
     - assets/logo_bg_light_1000x.png
     - assets/logo_bg_dark_padded_1024x.png
     - assets/logo_bg_light_padded_1024x.png
+    - assets/macos_icon_256x.png
 
 scripts: scripts.yaml

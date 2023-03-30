@@ -1,4 +1,5 @@
 import 'package:dart_openai/openai.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -268,7 +269,7 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                       height: 44,
                       alignment: Alignment.center,
                       child: validating
-                          ? const CircularProgressIndicator.adaptive()
+                          ? const CupertinoActivityIndicator()
                           : Icon(
                               Icons.navigate_next,
                               color: context.colorScheme.onSurfaceVariant,
@@ -583,7 +584,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
                             height: 44,
                             alignment: Alignment.center,
                             child: validating
-                                ? const CircularProgressIndicator.adaptive()
+                                ? const CupertinoActivityIndicator()
                                 : Icon(
                                     !isEditing
                                         ? Icons.edit
