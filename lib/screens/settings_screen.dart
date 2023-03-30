@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
-import '../main.dart';
 import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../ui/window_controls.dart';
@@ -317,44 +317,42 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                 ),
               ),
               const SizedBox(height: 16),
-              ValueListenableBuilder(
-                  valueListenable: box.listenable(),
-                  builder: (context, Box box, child) {
-                    final ThemeMode mode = getThemeMode();
+              Builder(builder: (context) {
+                final manager = AdaptiveTheme.of(context);
 
-                    return ListTile(
-                      title: Text(
-                        'Theme Mode',
-                        style: context.textTheme.bodyMedium,
-                      ),
-                      subtitle: Text(
-                        'Controls the behavior of the light and dark theme.',
-                        style:
-                            context.textTheme.bodySmall?.copyWith(fontSize: 10),
-                      ),
-                      trailing: DropdownButton<ThemeMode>(
-                        value: mode,
-                        style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.onPrimaryContainer),
-                        underline: const SizedBox.shrink(),
-                        borderRadius: BorderRadius.circular(8),
-                        alignment: Alignment.center,
-                        items: const [
-                          DropdownMenuItem<ThemeMode>(
-                              value: ThemeMode.light, child: Text('Light')),
-                          DropdownMenuItem<ThemeMode>(
-                              value: ThemeMode.dark, child: Text('Dark')),
-                          DropdownMenuItem<ThemeMode>(
-                              value: ThemeMode.system, child: Text('System'))
-                        ],
-                        onChanged: (ThemeMode? value) {
-                          if (value != null) {
-                            box.put(Constants.themeMode, value.name);
-                          }
-                        },
-                      ),
-                    );
-                  }),
+                return ListTile(
+                  title: Text(
+                    'Theme Mode',
+                    style: context.textTheme.bodyMedium,
+                  ),
+                  subtitle: Text(
+                    'Controls the behavior of the light and dark theme.',
+                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                  ),
+                  trailing: DropdownButton<AdaptiveThemeMode>(
+                    value: manager.mode,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onPrimaryContainer),
+                    underline: const SizedBox.shrink(),
+                    borderRadius: BorderRadius.circular(8),
+                    alignment: Alignment.center,
+                    items: const [
+                      DropdownMenuItem<AdaptiveThemeMode>(
+                          value: AdaptiveThemeMode.light, child: Text('Light')),
+                      DropdownMenuItem<AdaptiveThemeMode>(
+                          value: AdaptiveThemeMode.dark, child: Text('Dark')),
+                      DropdownMenuItem<AdaptiveThemeMode>(
+                          value: AdaptiveThemeMode.system,
+                          child: Text('System'))
+                    ],
+                    onChanged: (AdaptiveThemeMode? value) {
+                      if (value != null) {
+                        manager.setThemeMode(value);
+                      }
+                    },
+                  ),
+                );
+              }),
               CheckboxListTile(
                 value: box.get(Constants.checkForUpdates, defaultValue: true),
                 title: Text(

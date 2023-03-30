@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' hide log;
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:dart_openai/openai.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/foundation.dart';
@@ -31,7 +31,8 @@ import 'wave_background.dart';
 
 void main() async {
   await initPocketGPT();
-  runApp(const PocketGPT());
+  final mode = await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.system;
+  runApp(PocketGPT(mode: mode));
 }
 
 Future<bool> initPocketGPT() async {
@@ -120,20 +121,10 @@ Widget pocketGPTTransition(
   );
 }
 
-ThemeMode getThemeMode() {
-  final box = Hive.box(Constants.settings);
-  switch (box.get(Constants.themeMode, defaultValue: 'system')) {
-    case 'dark':
-      return ThemeMode.dark;
-    case 'light':
-      return ThemeMode.light;
-    default:
-      return ThemeMode.system;
-  }
-}
-
 class PocketGPT extends StatefulWidget {
-  const PocketGPT({super.key});
+  final AdaptiveThemeMode mode;
+
+  const PocketGPT({super.key, required this.mode});
 
   @override
   State<PocketGPT> createState() => _PocketGPTState();
@@ -169,7 +160,8 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
     routes: [
       ShellRoute(
         builder: (context, GoRouterState state, child) {
-          return WindowDragHandle(child: NavigationBackground(state: state, child: child));
+          return WindowDragHandle(
+              child: NavigationBackground(state: state, child: child));
         },
         routes: [
           GoRoute(
@@ -355,48 +347,49 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
         overlays: [SystemUiOverlay.top]);
-    return ValueListenableBuilder(
-      valueListenable: Hive.box(Constants.settings).listenable(),
-      builder: (context, Box box, child) {
+    return AdaptiveTheme(
+      light: ThemeData(
+        useMaterial3: true,
+        colorScheme: lightColorScheme,
+        scaffoldBackgroundColor: Colors.transparent,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemStatusBarContrastEnforced: false,
+            systemNavigationBarContrastEnforced: false,
+            systemNavigationBarColor: Colors.transparent,
+            statusBarColor: Colors.transparent,
+            systemNavigationBarIconBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
+        ),
+      ),
+      dark: ThemeData(
+        useMaterial3: true,
+        colorScheme: darkColorScheme,
+        scaffoldBackgroundColor: Colors.transparent,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemStatusBarContrastEnforced: false,
+            systemNavigationBarContrastEnforced: false,
+            systemNavigationBarColor: Colors.transparent,
+            statusBarColor: Colors.transparent,
+            systemNavigationBarIconBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
+          ),
+        ),
+      ),
+      initial: widget.mode,
+      builder: (theme, darkTheme) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightColorScheme,
-            scaffoldBackgroundColor: Colors.transparent,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                systemStatusBarContrastEnforced: false,
-                systemNavigationBarContrastEnforced: false,
-                systemNavigationBarColor: Colors.transparent,
-                statusBarColor: Colors.transparent,
-                systemNavigationBarIconBrightness: Brightness.dark,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.light,
-              ),
-            ),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: darkColorScheme,
-            scaffoldBackgroundColor: Colors.transparent,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                systemStatusBarContrastEnforced: false,
-                systemNavigationBarContrastEnforced: false,
-                systemNavigationBarColor: Colors.transparent,
-                statusBarColor: Colors.transparent,
-                systemNavigationBarIconBrightness: Brightness.dark,
-                statusBarIconBrightness: Brightness.light,
-                statusBarBrightness: Brightness.dark,
-              ),
-            ),
-          ),
-          themeMode: getThemeMode(),
+          theme: theme,
+          darkTheme: darkTheme,
           routerConfig: _router,
         );
       },

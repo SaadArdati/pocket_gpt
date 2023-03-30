@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../constants.dart';
-import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../ui/window_controls.dart';
 
@@ -28,32 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [
-          ValueListenableBuilder(
-            valueListenable: box.listenable(),
-            builder: (context, Box box, child) {
-              final Brightness brightness = Theme.of(context).brightness;
-              return IconButton(
-                tooltip:
-                    brightness == Brightness.light ? 'Dark Mode' : 'Light Mode',
-                icon: Icon(
-                  brightness == Brightness.dark
-                      ? Icons.light_mode
-                      : Icons.dark_mode,
-                ),
-                onPressed: () {
-                  box.put(
-                    Constants.themeMode,
-                    brightness == Brightness.light
-                        ? ThemeMode.dark.name
-                        : ThemeMode.light.name,
-                  );
-                },
-              );
-            },
-          ),
-          const WindowControls(),
-        ],
+        actions: const [WindowControls()],
       ),
       resizeToAvoidBottomInset: true,
       body: WillPopScope(

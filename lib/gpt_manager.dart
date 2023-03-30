@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:dart_openai/openai.dart';
 import 'package:equatable/equatable.dart';
@@ -149,7 +150,7 @@ class GPTManager extends ChangeNotifier {
     final List<OpenAIModelModel> models = await OpenAI.instance.model.list();
 
     final List<String> ids = [...models.map((model) => model.id)];
-    print(ids);
+    log(ids.join(', '));
 
     // If we couldn't find a model that this app supports, return an empty list
     // to indicate an error happened.

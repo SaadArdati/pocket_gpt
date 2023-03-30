@@ -4,7 +4,6 @@ class Constants {
   static const String isFirstTime = 'is_first_time';
   static const String history = 'history';
   static const String settings = 'settings';
-  static const String themeMode = 'theme_mode';
   static const String alwaysOnTop = 'always_on_top';
   static const String checkForUpdates = 'check_for_updates';
   static const String launchOnStartup = 'launch_on_startup';

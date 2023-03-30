@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
@@ -10,7 +9,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
 import '../gpt_manager.dart';
-import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../ui/window_controls.dart';
 import '../versioning.dart';
