@@ -467,7 +467,11 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                         onChanged: (bool? value) {
                           box.put(
                             Constants.alwaysOnTop,
-                            value ?? !box.get(Constants.alwaysOnTop),
+                            value ??
+                                !box.get(
+                                  Constants.alwaysOnTop,
+                                  defaultValue: true,
+                                ),
                           );
                           SystemManager.instance.setAlwaysOnTop(value ?? true);
                         },
@@ -493,7 +497,9 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                             Constants.shouldPreserveWindowPosition,
                             value ??
                                 !box.get(
-                                    Constants.shouldPreserveWindowPosition),
+                                  Constants.shouldPreserveWindowPosition,
+                                  defaultValue: true,
+                                ),
                           );
                         },
                       ),
@@ -516,15 +522,23 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                         onChanged: (bool? value) {
                           box.put(
                             Constants.launchOnStartup,
-                            value ?? !box.get(Constants.launchOnStartup),
+                            value ??
+                                !box.get(
+                                  Constants.launchOnStartup,
+                                  defaultValue: true,
+                                ),
                           );
-                          LaunchAtStartup.instance.disable();
+                          if (value == false) {
+                            LaunchAtStartup.instance.disable();
+                          } else {
+                            LaunchAtStartup.instance.enable();
+                          }
                         },
                       ),
                       const SizedBox(height: 8),
                       CheckboxListTile(
-                        value:
-                            box.get(Constants.showTitleBar, defaultValue: false),
+                        value: box.get(Constants.showTitleBar,
+                            defaultValue: false),
                         title: Text(
                           'Show window title bar',
                           style: context.textTheme.titleSmall,

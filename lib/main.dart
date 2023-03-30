@@ -67,6 +67,7 @@ Future<bool> initPocketGPT() async {
           appName: packageInfo.appName,
           appPath: Platform.resolvedExecutable,
         );
+        await LaunchAtStartup.instance.enable();
       }
     }
     setPathUrlStrategy();
