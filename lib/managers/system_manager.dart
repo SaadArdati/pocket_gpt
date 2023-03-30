@@ -111,7 +111,7 @@ class SystemManager with WindowListener {
     final bool isVisible = await windowManager.isVisible();
 
     if (isVisible) {
-      windowManager.hide();
+      minimizeWindow();
     } else {
       windowManager.show();
 
@@ -303,7 +303,7 @@ class SystemManager with WindowListener {
       await Future.delayed(const Duration(milliseconds: 200));
     }
     if (Platform.isWindows && isInit) return;
-    await windowManager.hide();
+    await minimizeWindow();
     windowFocus.value = false;
   }
 
