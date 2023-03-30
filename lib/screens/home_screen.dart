@@ -83,8 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PocketGPT'),
-        centerTitle: true,
+        title: Text(
+          'PocketGPT',
+          style: context.textTheme.titleMedium,
+        ),
+        centerTitle: false,
         leading: IconButton(
           tooltip: 'Settings',
           icon: const Icon(Icons.settings),

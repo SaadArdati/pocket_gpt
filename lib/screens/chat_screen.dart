@@ -110,12 +110,15 @@ class _ChatScreenState extends State<ChatScreen>
               context.go('/home', extra: {'from': 'chat'});
             },
           ),
-          title: Text(widget.type.label),
+          title: Text(
+            widget.type.label,
+            style: context.textTheme.titleMedium,
+          ),
           centerTitle: false,
           actions: [
             if (isWide)
               Padding(
-                padding: EdgeInsets.only(right: historyOpenOnWide ? 180 : 0),
+                padding: EdgeInsets.only(right: historyOpenOnWide ? 142 : 0),
                 child: IconButton(
                   iconSize: buttonSize,
                   tooltip: 'Chat History',
@@ -167,30 +170,25 @@ class _ChatScreenState extends State<ChatScreen>
                 ),
                 child: Builder(builder: (context) {
                   return Drawer(
-                    child: ListView(children: [
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(18),
-                        child: Text(
-                          'Chat History',
-                          style: context.textTheme.bodyLarge,
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.all(18),
+                          child: Text(
+                            'Chat History',
+                            style: context.textTheme.bodyMedium,
+                          ),
                         ),
-                      ),
-                      Tooltip(
-                        message: 'Start a new chat',
-                        child: ListTile(
-                          leading: const Icon(Icons.add),
-                          title: const Text('New Chat'),
-                          onTap: () {
-                            gpt.openChat(notify: true, type: widget.type);
-                            Scaffold.of(context).closeEndDrawer();
-                          },
+                        Expanded(
+                          child: ListView(children: [
+                            for (final Chat chat
+                                in gpt.chatHistory.values.toList().reversed)
+                              HistoryTile(chat: chat),
+                          ]),
                         ),
-                      ),
-                      for (final Chat chat
-                          in gpt.chatHistory.values.toList().reversed)
-                        HistoryTile(chat: chat),
-                    ]),
+                      ],
+                    ),
                   );
                 }),
               ),
@@ -275,30 +273,26 @@ class _ChatScreenState extends State<ChatScreen>
                 SizedBox(
                   width: 300,
                   child: Drawer(
-                    child: ListView(
-                      padding: EdgeInsets.zero,
+                    child: Column(
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.all(18),
                           child: Text(
                             'Chat History',
-                            style: context.textTheme.bodyLarge,
+                            style: context.textTheme.bodyMedium,
                           ),
                         ),
-                        // ListTile(
-                        //   leading: const Icon(Icons.add),
-                        //   title: Text(
-                        //     'New Chat',
-                        //     style: context.textTheme.bodyMedium,
-                        //   ),
-                        //   onTap: () {
-                        //     gpt.openChat(notify: true, type: widget.type);
-                        //   },
-                        // ),
-                        for (final Chat chat
-                            in gpt.chatHistory.values.toList().reversed)
-                          HistoryTile(chat: chat),
+                        Expanded(
+                          child: ListView(
+                            padding: EdgeInsets.zero,
+                            children: [
+                              for (final Chat chat
+                                  in gpt.chatHistory.values.toList().reversed)
+                                HistoryTile(chat: chat),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

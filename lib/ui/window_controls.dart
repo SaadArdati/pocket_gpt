@@ -45,6 +45,7 @@ class WindowControls extends StatelessWidget {
               onPressed: SystemManager.instance.quitApp,
             ),
           ],
+          const SizedBox(width: 8),
         ],
       ],
     );

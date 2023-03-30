@@ -51,7 +51,11 @@ class _SettingsScreenState extends State<SettingsScreen>
           },
           icon: const Icon(Icons.arrow_downward),
         ),
-        title: const Text('Settings'),
+        centerTitle: false,
+        title: Text(
+          'Settings',
+          style: context.textTheme.titleMedium,
+        ),
         actions: const [WindowControls()],
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.transparent,
