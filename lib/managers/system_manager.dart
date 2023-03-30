@@ -87,7 +87,7 @@ class SystemManager with WindowListener {
       ),
       MenuItemLabel(
         label: 'Quit',
-        onClicked: (menuItem) => SystemNavigator.pop(),
+        onClicked: (menuItem) => quitApp(),
       ),
     ]);
     await systemTray.setContextMenu(menu);
