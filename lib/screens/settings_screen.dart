@@ -524,7 +524,7 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                       const SizedBox(height: 8),
                       CheckboxListTile(
                         value:
-                            box.get(Constants.showTitleBar, defaultValue: true),
+                            box.get(Constants.showTitleBar, defaultValue: false),
                         title: Text(
                           'Show window title bar',
                           style: context.textTheme.titleSmall,
@@ -570,7 +570,7 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                       const SizedBox(height: 8),
                       CheckboxListTile(
                         value: box.get(Constants.moveToSystemDock,
-                            defaultValue: true),
+                            defaultValue: false),
                         title: Text(
                           'Move to system dock',
                           style: context.textTheme.titleSmall,
