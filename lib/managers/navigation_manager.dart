@@ -114,6 +114,19 @@ class NavigationManager {
                     },
                   );
                 },
+                routes: [
+                  GoRoute(
+                    path: 'tray_position',
+                    builder: (context, state) {
+                      final extras = state.extra;
+                      final String id = extras != null && extras is Map
+                          ? extras['instructionID']
+                          : '';
+
+                      return InstructionView(instructionID: id);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

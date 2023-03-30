@@ -155,132 +155,138 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
   @override
   Widget build(BuildContext context) {
     final BorderRadius borderRadius = BorderRadius.circular(12);
-    return SingleChildScrollView(
-      child: Form(
-        child: Builder(builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(32),
+        child: Form(
+          child: Builder(builder: (context) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(right: 16),
-                      child:
-                          const ImageIcon(AssetImage('assets/openai_256.png')),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          margin: const EdgeInsets.only(right: 16),
+                          child:
+                              const ImageIcon(AssetImage('assets/openai_256.png')),
+                        ),
+                      ),
+                      Text(
+                        'Enter your OpenAI API Key',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const OpenAIKeyInstructions(),
+                  SizedBox(
+                    height: 48,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (errorMessage != null) ...[
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              errorMessage!,
+                              style:
+                                  Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: context.colorScheme.error,
+                                      ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  Text(
-                    'Enter your OpenAI API Key',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const Spacer(),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const OpenAIKeyInstructions(),
-              SizedBox(
-                height: 48,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (errorMessage != null) ...[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          errorMessage!,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: context.colorScheme.error,
-                                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: controller,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Please enter your OpenAI API key';
+                            }
+                            return null;
+                          },
+                          onChanged: (_) {
+                            setState(() {
+                              errorMessage = null;
+                            });
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          style: context.textTheme.bodyMedium,
+                          decoration: InputDecoration(
+                            counterText: '',
+                            labelText: 'sk-xxxxxxxxxxxxxxx',
+                            isDense: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            filled: true,
+                            fillColor: context.colorScheme.secondaryContainer
+                                .withOpacity(0.5),
+                            hoverColor: Colors.transparent,
+                            border: OutlineInputBorder(
+                              borderRadius: borderRadius,
+                              borderSide: const BorderSide(width: 1.5),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: borderRadius,
+                              borderSide: BorderSide(
+                                color: context.colorScheme.primary,
+                                width: 1,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: borderRadius,
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          cursorRadius: const Radius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(borderRadius: borderRadius),
+                          backgroundColor: controller.text.isNotEmpty
+                              ? context.colorScheme.primaryContainer
+                              : context.colorScheme.secondaryContainer
+                                  .withOpacity(0.5),
+                        ),
+                        onPressed: validating ? null : () => onSubmitKey(context),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          alignment: Alignment.center,
+                          child: validating
+                              ? const CupertinoActivityIndicator()
+                              : Icon(
+                                  Icons.navigate_next,
+                                  color: context.colorScheme.onSurfaceVariant,
+                                ),
                         ),
                       ),
                     ],
-                  ],
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: controller,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter your OpenAI API key';
-                        }
-                        return null;
-                      },
-                      onChanged: (_) {
-                        setState(() {
-                          errorMessage = null;
-                        });
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: context.textTheme.bodyMedium,
-                      decoration: InputDecoration(
-                        counterText: '',
-                        labelText: 'sk-xxxxxxxxxxxxxxx',
-                        isDense: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        filled: true,
-                        fillColor: context.colorScheme.secondaryContainer
-                            .withOpacity(0.5),
-                        hoverColor: Colors.transparent,
-                        border: OutlineInputBorder(
-                          borderRadius: borderRadius,
-                          borderSide: const BorderSide(width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: borderRadius,
-                          borderSide: BorderSide(
-                            color: context.colorScheme.primary,
-                            width: 1,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: borderRadius,
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      cursorRadius: const Radius.circular(4),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: borderRadius),
-                      backgroundColor: controller.text.isNotEmpty
-                          ? context.colorScheme.primaryContainer
-                          : context.colorScheme.secondaryContainer
-                              .withOpacity(0.5),
-                    ),
-                    onPressed: validating ? null : () => onSubmitKey(context),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      alignment: Alignment.center,
-                      child: validating
-                          ? const CupertinoActivityIndicator()
-                          : Icon(
-                              Icons.navigate_next,
-                              color: context.colorScheme.onSurfaceVariant,
-                            ),
-                    ),
                   ),
                 ],
               ),
-            ],
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }

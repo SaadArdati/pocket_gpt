@@ -101,5 +101,8 @@ flutter:
     - assets/logo_bg_dark_padded_1024x.png
     - assets/logo_bg_light_padded_1024x.png
     - assets/macos_icon_256x.png
+    - assets/instructions/windows_arrow_1.png
+    - assets/instructions/windows_arrow_2.png
+    - assets/instructions/macos_arrow.png
 
 scripts: scripts.yaml

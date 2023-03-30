@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -19,8 +20,6 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final box = Hive.box(Constants.settings);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,21 +28,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         actions: const [WindowControls()],
       ),
       resizeToAvoidBottomInset: true,
+      extendBodyBehindAppBar: true,
       body: WillPopScope(
         onWillPop: () async => false,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: widget.child,
-            ),
-          ),
-        ),
+        child: widget.child,
       ),
     );
   }
 }
+
+final Map<String, String> instructionIDs = {
+  'windows_1': 'assets/instructions/windows_arrow_1.png',
+  'windows_2': 'assets/instructions/windows_arrow_2.png',
+  'macos': 'assets/instructions/macos_arrow.png',
+};
 
 class OnboardingWelcome extends StatelessWidget {
   const OnboardingWelcome({super.key});
@@ -94,39 +92,126 @@ class OnboardingDone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Spacer(),
-          Text(
-            "You're all set!",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineLarge,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "You're all set!",
+                textAlign: TextAlign.center,
+                style: context.textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "The app will naturally live in your system's tray.",
+                textAlign: TextAlign.center,
+                style: context.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 32),
+              if (defaultTargetPlatform == TargetPlatform.windows) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: buildImage(context, 'windows_1'),
+                ),
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: buildImage(context, 'windows_2'),
+                ),
+              ],
+              if (defaultTargetPlatform == TargetPlatform.macOS) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: buildImage(context, 'macos'),
+                ),
+              ],
+              const SizedBox(height: 32),
+              Material(
+                color: context.colorScheme.primaryContainer,
+                shape: const CircleBorder(),
+                child: IconButton(
+                  tooltip: 'Finish',
+                  onPressed: () {
+                    context.go('/home', extra: {'from': 'onboarding'});
+                  },
+                  iconSize: 32,
+                  icon: const Icon(Icons.navigate_next),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            "The app will naturally live in your system's tray.",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 16),
-          Material(
-            color: context.colorScheme.primaryContainer,
-            shape: const CircleBorder(),
-            child: IconButton(
-              tooltip: 'Finish',
-              onPressed: () {
-                context.go('/home', extra: {'from': 'onboarding'});
+        ),
+      ),
+    );
+  }
+
+  Widget buildImage(BuildContext context, String id) {
+    return Stack(
+      children: [
+        Image.asset(instructionIDs[id]!),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () {
+                // Show full screen image in a dialog
+                context.go(
+                  '/onboarding/three/tray_position',
+                  extra: {'instructionID': id},
+                );
               },
-              iconSize: 32,
-              icon: const Icon(Icons.navigate_next),
             ),
           ),
-          const Spacer(flex: 2),
+        ),
+      ],
+    );
+  }
+}
+
+class InstructionView extends StatelessWidget {
+  final String instructionID;
+
+  const InstructionView({super.key, required this.instructionID});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: context.colorScheme.background,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            onPressed: () {
+              context.pop();
+            },
+          ),
+          const SizedBox(width: 8),
         ],
       ),
+      body: Builder(builder: (context) {
+        if (!instructionIDs.containsKey(instructionID)) {
+          return const SizedBox.expand(
+            child: Center(
+              child: Text('Image not found'),
+            ),
+          );
+        }
+
+        return SizedBox.expand(
+          child: InteractiveViewer(
+            maxScale: 6,
+            child: Image.asset(instructionIDs[instructionID]!),
+          ),
+        );
+      }),
     );
   }
 }
