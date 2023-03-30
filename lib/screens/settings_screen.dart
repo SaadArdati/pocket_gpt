@@ -11,8 +11,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
-import '../system_manager.dart';
-import '../theme_extensions.dart';
+import '../managers/system_manager.dart';
+import '../ui/theme_extensions.dart';
 import '../ui/window_controls.dart';
 import 'open_ai_key_screen.dart';
 

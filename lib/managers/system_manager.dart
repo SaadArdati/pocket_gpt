@@ -10,7 +10,7 @@ import 'package:system_tray/system_tray.dart';
 import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class SystemManager with WindowListener {
   bool isInit = true;

@@ -2,134 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dart_openai/openai.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 
-import 'constants.dart';
-
-part 'gpt_manager.g.dart';
-
-/// Top level function for deserializing millis from json to [DateTime].
-DateTime jsonToDate(int? value) => value != null
-    ? DateTime.fromMillisecondsSinceEpoch(value).toLocal()
-    : DateTime.now();
-
-/// Top level function for serializing [DateTime] to millisecondsSinceEpoch.
-int dateToJson(DateTime date) => date.toUtc().millisecondsSinceEpoch;
-
-enum MessageStatus {
-  waiting,
-  streaming,
-  done,
-  errored,
-}
-
-enum ChatType {
-  general(
-    'General Chat',
-    Icons.waving_hand,
-    'Talk to the AI with any general topic.',
-  ),
-  email(
-    'Email Writer',
-    Icons.email,
-    'Messages automatically convert into formal emails',
-  ),
-  documentCode(
-    'Code Documentation',
-    Icons.code,
-    'Paste your code and the AI will embed docs in it for you.',
-  ),
-  scientific(
-    'Scientific Researcher',
-    Icons.school,
-    'Ask the AI about any scientific topic',
-  ),
-  analyze(
-    'Screen Analysis',
-    Icons.search,
-    "Analyzes your screen and gives you a summary of what's on it.",
-  ),
-  readMe(
-    'Read Me',
-    Icons.book,
-    'Paste your code and the AI will generate a README.md for you.',
-  );
-
-  final String label;
-  final IconData icon;
-  final String caption;
-
-  const ChatType(this.label, this.icon, this.caption);
-}
-
-@JsonSerializable(explicitToJson: true, anyMap: true)
-class ChatMessage with EquatableMixin {
-  final String id;
-  final OpenAIChatMessageRole role;
-  @JsonKey(fromJson: jsonToDate, toJson: dateToJson)
-  final DateTime timestamp;
-
-  String text;
-  MessageStatus status;
-
-  ChatMessage({
-    required this.id,
-    required this.timestamp,
-    required this.text,
-    required this.role,
-    this.status = MessageStatus.waiting,
-  });
-
-  ChatMessage.simple({
-    required this.text,
-    required this.role,
-    this.status = MessageStatus.waiting,
-  })  : id = const Uuid().v4(),
-        timestamp = DateTime.now();
-
-  OpenAIChatCompletionChoiceMessageModel toOpenAI() {
-    return OpenAIChatCompletionChoiceMessageModel(
-      content: text,
-      role: role,
-    );
-  }
-
-  factory ChatMessage.fromJson(Map json) => _$ChatMessageFromJson(json);
-
-  Map toJson() => _$ChatMessageToJson(this);
-
-  @override
-  List<Object?> get props => [text, status];
-}
-
-@JsonSerializable(explicitToJson: true, anyMap: true)
-class Chat with EquatableMixin {
-  final String id;
-  final List<ChatMessage> messages;
-  final ChatType type;
-
-  Chat({
-    required this.id,
-    required this.messages,
-    this.type = ChatType.general,
-  });
-
-  Chat.simple({
-    required this.messages,
-    this.type = ChatType.general,
-  }) : id = const Uuid().v4();
-
-  factory Chat.fromJson(Map json) => _$ChatFromJson(json);
-
-  Map toJson() => _$ChatToJson(this);
-
-  @override
-  List<Object?> get props => [messages];
-}
+import '../constants.dart';
+import '../models/chat.dart';
+import '../models/chat_message.dart';
+import '../models/chat_type.dart';
+import '../models/message_status.dart';
 
 class GPTManager extends ChangeNotifier {
   List<ChatMessage> get messages => currentChat!.messages;

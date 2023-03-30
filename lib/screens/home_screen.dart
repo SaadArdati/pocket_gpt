@@ -9,11 +9,10 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
-import '../gpt_manager.dart';
-import '../system_manager.dart';
-import '../theme_extensions.dart';
+import '../managers/version_manager.dart';
+import '../models/chat_type.dart';
+import '../ui/theme_extensions.dart';
 import '../ui/window_controls.dart';
-import '../versioning.dart';
 
 bool didCheckForUpdates = false;
 
@@ -40,7 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       return;
     }
-    final Version? latestVersion = await getLatestRelease();
+    final Version? latestVersion =
+        await VersionManager.instance.getLatestRelease();
 
     if (latestVersion == null) return;
 

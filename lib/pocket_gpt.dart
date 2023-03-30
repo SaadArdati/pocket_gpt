@@ -1,3 +1,3 @@
-export 'wave_background.dart';
-export 'color_schemes.g.dart';
 export 'main.dart';
+export 'ui/color_schemes.g.dart';
+export 'ui/wave_background.dart';

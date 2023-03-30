@@ -7,8 +7,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
-import '../gpt_manager.dart';
-import '../theme_extensions.dart';
+import '../managers/gpt_manager.dart';
+import '../ui/theme_extensions.dart';
 import 'settings_screen.dart';
 
 class OpenAIKeyInstructions extends StatelessWidget {

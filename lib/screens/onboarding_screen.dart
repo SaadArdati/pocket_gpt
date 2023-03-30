@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../constants.dart';
-import '../theme_extensions.dart';
+import '../ui/theme_extensions.dart';
 import '../ui/window_controls.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -104,6 +104,12 @@ class OnboardingDone extends StatelessWidget {
             "You're all set!",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "The app will naturally live in your system's tray.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
           Material(

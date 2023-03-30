@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import '../constants.dart';
-import '../system_manager.dart';
+import '../managers/system_manager.dart';
 
 class WindowControls extends StatelessWidget {
   const WindowControls({super.key});

@@ -11,9 +11,13 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
-import '../gpt_manager.dart';
-import '../markdown_renderer.dart';
-import '../theme_extensions.dart';
+import '../managers/gpt_manager.dart';
+import '../models/chat.dart';
+import '../models/chat_message.dart';
+import '../models/chat_type.dart';
+import '../models/message_status.dart';
+import '../ui/markdown_renderer.dart';
+import '../ui/theme_extensions.dart';
 import '../ui/window_controls.dart';
 
 class ChatScreenWrapper extends StatelessWidget {
