@@ -45,3 +45,9 @@ app.*.map.json
 
 pubspec.lock
 **/Podfile.lock
+
+**/*.dmg
+**/*.msix
+**/*.apk
+**/*.appbundle
+**/*.ipa
