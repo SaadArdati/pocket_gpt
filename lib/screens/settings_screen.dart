@@ -74,10 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                     const AppSettingsTile(),
                     const SizedBox(height: 16),
-                    const SettingsTile(
-                      padding: EdgeInsets.all(16),
-                      child: OpenAIKeyTile(),
-                    ),
+                    const OpenAIKeyTile(),
                     const SizedBox(height: 16),
                     buildInfoTile(context),
                     const SizedBox(height: 32)
@@ -118,112 +115,125 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   Widget buildInfoTile(BuildContext context) {
     return SettingsTile(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: context.colorScheme.onSurface.withOpacity(0.1),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const ImageIcon(
-                  AssetImage('assets/app_icon.png'),
+                const Icon(
+                  Icons.info_outlined,
+                  size: 20,
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Pocket GPT',
-                  style: context.textTheme.bodyLarge,
+                  'About'.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          FutureBuilder(
-            future: PackageInfo.fromPlatform(),
-            builder:
-                (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-              final String version;
-              if (snapshot.hasError) {
-                version = snapshot.error.toString();
-              } else if (snapshot.hasData) {
-                version = snapshot.data!.version;
-              } else {
-                version = 'Checking...';
-              }
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildContactTile(
-                    title: 'Website',
-                    icon: 'assets/profile_256x.png',
-                    url: 'https://saad-ardati.dev/',
-                    avatar: true,
-                  ),
-                  const SizedBox(height: 8),
-                  buildContactTile(
-                    title: 'Twitter',
-                    icon: 'assets/twitter_256x.png',
-                    url: 'https://twitter.com/SaadArdati',
-                  ),
-                  const SizedBox(height: 8),
-                  buildContactTile(
-                    title: 'Github',
-                    icon: Theme.of(context).brightness == Brightness.dark
-                        ? 'assets/github_dark_256x.png'
-                        : 'assets/github_light_256x.png',
-                    url: 'https://github.com/SaadArdati',
-                  ),
-                  const SizedBox(height: 8),
-                  buildContactTile(
-                    title: 'Discord',
-                    icon: 'assets/discord_256x.png',
-                    url: 'https://discord.gg/ARxJzxU',
-                  ),
-                  const SizedBox(height: 8),
-                  buildContactTile(
-                    title: 'LinkedIn',
-                    icon: 'assets/linked_in_256x.png',
-                    url: 'https://www.linkedin.com/in/saad-ardati',
-                  ),
-                  const SizedBox(height: 8),
-                  buildContactTile(
-                    title: 'Instagram',
-                    icon: 'assets/instagram_256x.png',
-                    url: 'https://www.instagram.com/saad_ardati',
-                  ),
-                  const SizedBox(height: 16),
-                  Text('Version: $version'),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Copyright © 2020-2021. All Rights Reserved',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          launchUrlString(
-                              'https://saad-ardati.dev/pocket-gpt/privacy-policy');
-                        },
-                        child: const Text('View Privacy Policy'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          showLicensePage(context: context);
-                        },
-                        child: const Text('View Licenses'),
-                      )
-                    ],
-                  ),
-                ],
-              );
-            },
+          Divider(
+            height: 1,
+            color: context.colorScheme.onSurface.withOpacity(0.2),
           ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: FutureBuilder(
+              future: PackageInfo.fromPlatform(),
+              builder:
+                  (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                final String version;
+                if (snapshot.hasError) {
+                  version = snapshot.error.toString();
+                } else if (snapshot.hasData) {
+                  version = snapshot.data!.version;
+                } else {
+                  version = 'Checking...';
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildContactTile(
+                      title: 'Website',
+                      icon: 'assets/profile_256x.png',
+                      url: 'https://saad-ardati.dev/',
+                      avatar: true,
+                    ),
+                    const SizedBox(height: 8),
+                    buildContactTile(
+                      title: 'Twitter',
+                      icon: 'assets/twitter_256x.png',
+                      url: 'https://twitter.com/SaadArdati',
+                    ),
+                    const SizedBox(height: 8),
+                    buildContactTile(
+                      title: 'Github',
+                      icon: Theme.of(context).brightness == Brightness.dark
+                          ? 'assets/github_dark_256x.png'
+                          : 'assets/github_light_256x.png',
+                      url: 'https://github.com/SaadArdati',
+                    ),
+                    const SizedBox(height: 8),
+                    buildContactTile(
+                      title: 'Discord',
+                      icon: 'assets/discord_256x.png',
+                      url: 'https://discord.gg/ARxJzxU',
+                    ),
+                    const SizedBox(height: 8),
+                    buildContactTile(
+                      title: 'LinkedIn',
+                      icon: 'assets/linked_in_256x.png',
+                      url: 'https://www.linkedin.com/in/saad-ardati',
+                    ),
+                    const SizedBox(height: 8),
+                    buildContactTile(
+                      title: 'Instagram',
+                      icon: 'assets/instagram_256x.png',
+                      url: 'https://www.instagram.com/saad_ardati',
+                    ),
+                    const SizedBox(height: 16),
+                    Text('Version: $version'),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Copyright © 2020-2021. All Rights Reserved',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            launchUrlString(
+                                'https://saad-ardati.dev/pocket-gpt/privacy-policy');
+                          },
+                          child: const Text('View Privacy Policy'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            showLicensePage(context: context);
+                          },
+                          child: const Text('View Licenses'),
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -299,35 +309,47 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
       mainAxisSize: MainAxisSize.min,
       children: [
         SettingsTile(
-          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
+              Container(
+                color: context.colorScheme.onSurface.withOpacity(0.1),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.settings),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 16),
+                    const Icon(Icons.settings, size: 20),
+                    const SizedBox(width: 12),
                     Text(
-                      'App Settings',
-                      style: context.textTheme.bodyLarge,
+                      'App Settings'.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     )
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              Divider(
+                height: 1,
+                color: context.colorScheme.onSurface.withOpacity(0.2),
+              ),
+              const SizedBox(height: 8),
               Builder(builder: (context) {
                 final manager = AdaptiveTheme.of(context);
 
                 return ListTile(
                   title: Text(
                     'Theme Mode',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'Controls the behavior of the light and dark theme.',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   trailing: SizedBox(
                     height: 36,
@@ -364,15 +386,19 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                   ),
                 );
               }),
+              const SizedBox(height: 8),
               CheckboxListTile(
                 value: box.get(Constants.checkForUpdates, defaultValue: true),
                 title: Text(
                   'Automatically check for updates',
-                  style: context.textTheme.bodyMedium,
+                  style: context.textTheme.titleSmall,
                 ),
                 subtitle: Text(
                   'Checks for updates when the app starts and notifies you if there is an update available.',
-                  style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                    color: context.colorScheme.onSurface.withOpacity(0.7),
+                  ),
                 ),
                 onChanged: (bool? value) {
                   box.put(
@@ -381,35 +407,52 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                   );
                 },
               ),
-              if (isDesktop) ...[
-                Divider(
-                  height: 32,
-                  indent: 16,
-                  endIndent: 16,
-                  color: context.colorScheme.onSurface.withOpacity(0.5),
-                ),
-                Center(
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+        if (isDesktop) ...[
+          const SizedBox(height: 16),
+          SettingsTile(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  color: context.colorScheme.onSurface.withOpacity(0.1),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.desktop_windows_outlined),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 16),
+                      const Icon(Icons.desktop_windows_outlined, size: 20),
+                      const SizedBox(width: 12),
                       Text(
-                        'Desktop Settings',
-                        style: context.textTheme.bodyLarge,
+                        'Desktop Settings'.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       )
                     ],
                   ),
                 ),
+                Divider(
+                  height: 1,
+                  color: context.colorScheme.onSurface.withOpacity(0.2),
+                ),
+                const SizedBox(height: 8),
                 CheckboxListTile(
                   value: box.get(Constants.alwaysOnTop, defaultValue: true),
                   title: Text(
                     'Always on top',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'The window will always be on top of all other windows.',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   onChanged: (bool? value) {
                     box.put(
@@ -419,16 +462,20 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                     SystemManager.instance.setAlwaysOnTop(value ?? true);
                   },
                 ),
+                const SizedBox(height: 8),
                 CheckboxListTile(
                   value: box.get(Constants.shouldPreserveWindowPosition,
                       defaultValue: true),
                   title: Text(
                     'Preserve window position',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'Remembers the position of the window when you close it.',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   onChanged: (bool? value) {
                     box.put(
@@ -437,15 +484,19 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                     );
                   },
                 ),
+                const SizedBox(height: 8),
                 CheckboxListTile(
                   value: box.get(Constants.launchOnStartup, defaultValue: true),
                   title: Text(
                     'Launch app on startup',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'Launches the app when you start your computer.',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   onChanged: (bool? value) {
                     box.put(
@@ -455,15 +506,19 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                     LaunchAtStartup.instance.disable();
                   },
                 ),
+                const SizedBox(height: 8),
                 CheckboxListTile(
                   value: box.get(Constants.showTitleBar, defaultValue: true),
                   title: Text(
                     'Show window title bar',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'Shows the minimize, maximize, and close buttons from the system. (Restart required)',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   onChanged: (bool? value) {
                     SystemManager.instance.toggleTitleBar(show: value ?? false);
@@ -494,26 +549,31 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                     );
                   },
                 ),
+                const SizedBox(height: 8),
                 CheckboxListTile(
                   value:
                       box.get(Constants.moveToSystemDock, defaultValue: true),
                   title: Text(
                     'Move to system dock',
-                    style: context.textTheme.bodyMedium,
+                    style: context.textTheme.titleSmall,
                   ),
                   subtitle: Text(
                     'Puts the app in the system dock as if it were a full app.',
-                    style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      color: context.colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                   onChanged: (bool? value) {
                     SystemManager.instance
                         .toggleSystemDock(show: value ?? false);
                   },
                 ),
+                const SizedBox(height: 12),
               ],
-            ],
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -534,6 +594,7 @@ class SettingsTile extends StatelessWidget {
     return Center(
       child: Container(
         padding: padding,
+        clipBehavior: Clip.antiAlias,
         constraints: const BoxConstraints(maxWidth: 600),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
