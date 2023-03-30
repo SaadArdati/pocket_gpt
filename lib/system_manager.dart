@@ -115,8 +115,7 @@ class SystemManager with WindowListener {
     } else {
       windowManager.show();
 
-      trayPosition = await screenRetriever.getCursorScreenPoint() -
-          Offset(defaultWindowSize.width / 2, 0);
+      trayPosition = await findBestTrayWindowPosition();
 
       if (isInit || !shouldPreserveWindowPosition) {
         saveTrayPosition(trayPosition);
@@ -138,6 +137,102 @@ class SystemManager with WindowListener {
       }
       isInit = false;
     }
+  }
+
+  /// From: https://stackoverflow.com/a/20861130/4327834
+  static bool _pointInTriangle(Offset p, Offset p0, Offset p1, Offset p2) {
+    var s = (p0.dx - p2.dx) * (p.dy - p2.dy) - (p0.dy - p2.dy) * (p.dx - p2.dx);
+    var t = (p1.dx - p0.dx) * (p.dy - p0.dy) - (p1.dy - p0.dy) * (p.dx - p0.dx);
+
+    if ((s < 0) != (t < 0) && s != 0 && t != 0) {
+      return false;
+    }
+
+    var d = (p2.dx - p1.dx) * (p.dy - p1.dy) - (p2.dy - p1.dy) * (p.dx - p1.dx);
+    return d == 0 || (d < 0) == (s + t <= 0);
+  }
+
+  static const Offset _center = Offset(0.5, 0.5);
+  static const Map<AxisDirection, List<Offset>> _triangles = {
+    AxisDirection.left: [
+      Offset.zero,
+      _center,
+      Offset(0, 1),
+    ],
+    AxisDirection.up: [
+      Offset.zero,
+      _center,
+      Offset(1, 0),
+    ],
+    AxisDirection.right: [
+      Offset(1, 0),
+      _center,
+      Offset(1, 1),
+    ],
+    AxisDirection.down: [
+      Offset(0, 1),
+      _center,
+      Offset(1, 1),
+    ],
+  };
+
+  Future<Offset> findBestTrayWindowPosition() async {
+    final Display primaryDisplay = await screenRetriever.getPrimaryDisplay();
+    final Size displaySize = primaryDisplay.size;
+    final double scaleFactor = primaryDisplay.scaleFactor?.toDouble() ?? 1;
+    final Offset pointerPos = await screenRetriever.getCursorScreenPoint();
+
+    AxisDirection dockPosition = AxisDirection.down;
+    for (final AxisDirection section in AxisDirection.values) {
+      if (_pointInTriangle(
+        pointerPos,
+        _triangles[section]![0].scale(displaySize.width, displaySize.height),
+        _triangles[section]![1].scale(displaySize.width, displaySize.height),
+        _triangles[section]![2].scale(displaySize.width, displaySize.height),
+      )) {
+        dockPosition = section;
+        break;
+      }
+    }
+
+    final double dockSize = Platform.isWindows ? 40 * scaleFactor : 0;
+
+    final Size windowSize = defaultWindowSize;
+    late Offset windowPosition;
+    switch (dockPosition) {
+      case AxisDirection.left:
+        windowPosition = Offset(0, pointerPos.dy - windowSize.height / 2);
+        break;
+      case AxisDirection.up:
+        windowPosition = Offset(pointerPos.dx - windowSize.width / 2, 0);
+        break;
+      case AxisDirection.right:
+        windowPosition = Offset(displaySize.width - windowSize.width,
+            pointerPos.dy - windowSize.height / 2);
+        break;
+      case AxisDirection.down:
+        windowPosition = Offset(pointerPos.dx - windowSize.width / 2,
+            displaySize.height - windowSize.height);
+        break;
+    }
+
+    // apply padding.
+    switch (dockPosition) {
+      case AxisDirection.left:
+        windowPosition += Offset(dockSize, 0);
+        break;
+      case AxisDirection.up:
+        windowPosition += Offset(0, dockSize);
+        break;
+      case AxisDirection.right:
+        windowPosition -= Offset(dockSize, 0);
+        break;
+      case AxisDirection.down:
+        windowPosition -= Offset(0, dockSize);
+        break;
+    }
+
+    return windowPosition;
   }
 
   void dispose() {
@@ -231,10 +326,10 @@ class SystemManager with WindowListener {
         (windowPosition.dx - trayPosition.dx).abs() > threshold ||
         (windowPosition.dy - trayPosition.dy).abs() > thresholdY) {
       // store in hive before changing.
-      box.put(Constants.settingWindowWidth, windowSize.width);
-      box.put(Constants.settingWindowHeight, windowSize.height);
-      box.put(Constants.settingWindowX, windowPosition.dx);
-      box.put(Constants.settingWindowY, windowPosition.dy);
+      box.put(Constants.retainedWindowWidth, windowSize.width);
+      box.put(Constants.retainedWindowHeight, windowSize.height);
+      box.put(Constants.retainedWindowX, windowPosition.dx);
+      box.put(Constants.retainedWindowY, windowPosition.dy);
 
       await windowManager.setBounds(
         Rect.fromLTWH(
@@ -247,10 +342,10 @@ class SystemManager with WindowListener {
       );
     } else {
       // restore from hive.
-      final double? restoredWidth = box.get(Constants.settingWindowWidth);
-      final double? restoredHeight = box.get(Constants.settingWindowHeight);
-      final double? restoredX = box.get(Constants.settingWindowX);
-      final double? restoredY = box.get(Constants.settingWindowY);
+      final double? restoredWidth = box.get(Constants.retainedWindowWidth);
+      final double? restoredHeight = box.get(Constants.retainedWindowHeight);
+      final double? restoredX = box.get(Constants.retainedWindowX);
+      final double? restoredY = box.get(Constants.retainedWindowY);
 
       if (restoredWidth != null &&
           restoredHeight != null &&

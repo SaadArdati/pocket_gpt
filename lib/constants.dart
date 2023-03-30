@@ -1,8 +1,13 @@
 class Constants {
+  static const String encryptionKey = 'encryption_key';
+
+  /// General
   static const String openAIKey = 'openai_api_key';
   static const String gptModels = 'gpt_models';
   static const String isFirstTime = 'is_first_time';
   static const String history = 'history';
+
+  /// Settings
   static const String settings = 'settings';
   static const String alwaysOnTop = 'always_on_top';
   static const String checkForUpdates = 'check_for_updates';
@@ -12,15 +17,18 @@ class Constants {
       'should_preserve_window_position';
   static const String showTitleBar = 'show_title_bar';
   static const String moveToSystemDock = 'move_to_system_dock';
-  static const String settingWindowWidth = 'settings_window_size_width';
-  static const String settingWindowHeight = 'settings_window_size_height';
-  static const String settingWindowX = 'settings_window_x';
-  static const String settingWindowY = 'settings_window_y';
-  static const String encryptionKey = 'encryption_key';
-  static const String windowWidth = 'window_width';
-  static const String windowHeight = 'window_height';
+
+  /// Window Meta
+  static const String retainedWindowX = 'retained_window_x';
+  static const String retainedWindowY = 'retained_window_y';
+  static const String retainedWindowWidth = 'retained_window_width';
+  static const String retainedWindowHeight = 'retained_window_height';
+
   static const String windowX = 'window_x';
   static const String windowY = 'window_y';
+  static const String windowWidth = 'window_width';
+  static const String windowHeight = 'window_height';
+
   static const String trayPositionX = 'tray_position_x';
   static const String trayPositionY = 'tray_position_y';
 }

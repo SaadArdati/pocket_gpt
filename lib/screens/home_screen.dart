@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants.dart';
 import '../gpt_manager.dart';
+import '../system_manager.dart';
 import '../theme_extensions.dart';
 import '../ui/window_controls.dart';
 import '../versioning.dart';
