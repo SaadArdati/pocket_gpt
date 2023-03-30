@@ -329,27 +329,38 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                     'Controls the behavior of the light and dark theme.',
                     style: context.textTheme.bodySmall?.copyWith(fontSize: 10),
                   ),
-                  trailing: DropdownButton<AdaptiveThemeMode>(
-                    value: manager.mode,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onPrimaryContainer),
-                    underline: const SizedBox.shrink(),
-                    borderRadius: BorderRadius.circular(8),
-                    alignment: Alignment.center,
-                    items: const [
-                      DropdownMenuItem<AdaptiveThemeMode>(
-                          value: AdaptiveThemeMode.light, child: Text('Light')),
-                      DropdownMenuItem<AdaptiveThemeMode>(
-                          value: AdaptiveThemeMode.dark, child: Text('Dark')),
-                      DropdownMenuItem<AdaptiveThemeMode>(
-                          value: AdaptiveThemeMode.system,
-                          child: Text('System'))
-                    ],
-                    onChanged: (AdaptiveThemeMode? value) {
-                      if (value != null) {
-                        manager.setThemeMode(value);
-                      }
-                    },
+                  trailing: SizedBox(
+                    height: 36,
+                    child: DropdownButton<AdaptiveThemeMode>(
+                      value: manager.mode,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onPrimaryContainer),
+                      underline: const SizedBox.shrink(),
+                      borderRadius: BorderRadius.circular(8),
+                      icon: const Padding(
+                        padding: EdgeInsets.only(right: 4),
+                        child: Icon(Icons.arrow_drop_down),
+                      ),
+                      selectedItemBuilder: (context) => [
+                        for (final mode in AdaptiveThemeMode.values)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
+                            child: Text(mode.modeName),
+                          ),
+                      ],
+                      items: [
+                        for (final mode in AdaptiveThemeMode.values)
+                          DropdownMenuItem<AdaptiveThemeMode>(
+                            value: mode,
+                            child: Text(mode.modeName),
+                          ),
+                      ],
+                      onChanged: (AdaptiveThemeMode? value) {
+                        if (value != null) {
+                          manager.setThemeMode(value);
+                        }
+                      },
+                    ),
                   ),
                 );
               }),
