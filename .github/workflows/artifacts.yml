@@ -73,7 +73,7 @@ jobs:
       - name: Build App
         run: flutter build macos
       - name: Verify Build
-        run: test -d build/macos/Build/Products/Release/PocketGPT.app
+        run: test -d build/macos/Build/Products/Release/pocket_gpt.app
       - name: Install create-dmg
         run: brew install create-dmg
       - name: Create dmg

@@ -26,6 +26,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Enable long path names on Windows.
+        run: git config --system core.longpaths true
       - name: Flutter version
         run: flutter --version
       - name: Install dependencies
