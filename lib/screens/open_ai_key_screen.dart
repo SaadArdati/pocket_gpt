@@ -323,7 +323,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
     setState(() {});
   }
 
-  Future<bool> validateKey() async {
+  Future<bool> validateOpenAIKeyAndStore() async {
     setState(() {
       validating = true;
     });
@@ -360,7 +360,7 @@ class _OpenAIKeyTileState extends State<OpenAIKeyTile> {
       isEditing = true;
       setState(() {});
     }
-    validateKey().then(
+    validateOpenAIKeyAndStore().then(
       (bool success) {
         if (success) {
           box.put(Constants.openAIKey, controller.text);
