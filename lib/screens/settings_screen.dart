@@ -207,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                         fontSize: 12,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
