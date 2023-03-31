@@ -76,6 +76,7 @@ flutter_icons:
     theme_color: "#191C1E"
   windows:
     generate: true
+    image_path: "assets/macos_icon_256x.png"
   macos:
     generate: true
     image_path: "assets/macos_icon_256x.png"

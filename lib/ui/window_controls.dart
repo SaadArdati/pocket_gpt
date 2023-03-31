@@ -15,7 +15,6 @@ class WindowControls extends StatelessWidget {
         (platform == TargetPlatform.windows ||
             platform == TargetPlatform.linux ||
             platform == TargetPlatform.macOS);
-    final bool isMacOS = isDesktop && platform == TargetPlatform.macOS;
 
     final box = Hive.box(Constants.settings);
     final bool showTitleBar =
