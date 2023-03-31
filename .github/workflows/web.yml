@@ -17,6 +17,7 @@ jobs:
           channel: 'stable'
           cache: true
       - name: Flutter version
+        run: flutter --version
       - name: Install dependencies
         run: flutter pub get
       - name: Build web
