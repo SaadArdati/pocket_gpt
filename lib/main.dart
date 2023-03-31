@@ -152,6 +152,7 @@ class _PocketGPTState extends State<PocketGPT> with WindowListener {
       initial: widget.mode,
       builder: (theme, darkTheme) {
         return MaterialApp.router(
+          title: 'PocketGPT',
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: darkTheme,
