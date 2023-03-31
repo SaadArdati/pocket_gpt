@@ -20,8 +20,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - uses: actions/checkout@v2
+      - name: Build web
         run: flutter build web --release --web-renderer canvaskit
-      - name: Build Web
+      - name: Firebase deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
