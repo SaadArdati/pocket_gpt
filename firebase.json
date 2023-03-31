@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "pocketgpt",
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

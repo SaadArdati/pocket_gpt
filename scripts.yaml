@@ -3,6 +3,7 @@ deps: flutter pub get
 codegen: flutter pub run build_runner build --delete-conflicting-outputs
 format: dart format --fix .
 build:
+  web: flutter build web --web-renderer canvaskit
   apk: flutter build apk --release
   aab: flutter build appbundle --release
   macos: flutter build macos
