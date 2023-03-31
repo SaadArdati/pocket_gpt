@@ -34,16 +34,22 @@ class WindowControls extends StatelessWidget {
           if (!showTitleBar) ...[
             IconButton(
               iconSize: buttonSize,
-              tooltip: isMacOS ? 'Close' : 'Minimize',
-              icon: const Icon(Icons.minimize),
+              tooltip: 'Close',
+              icon: const Icon(Icons.close),
               onPressed: SystemManager.instance.minimizeWindow,
             ),
-            IconButton(
-              iconSize: buttonSize,
-              tooltip: 'Quit',
-              icon: const Icon(Icons.close),
-              onPressed: SystemManager.instance.quitApp,
-            ),
+            // IconButton(
+            //   iconSize: buttonSize,
+            //   tooltip: isMacOS ? 'Close' : 'Minimize',
+            //   icon: const Icon(Icons.minimize),
+            //   onPressed: SystemManager.instance.minimizeWindow,
+            // ),
+            // IconButton(
+            //   iconSize: buttonSize,
+            //   tooltip: 'Quit',
+            //   icon: const Icon(Icons.close),
+            //   onPressed: SystemManager.instance.quitApp,
+            // ),
           ],
           const SizedBox(width: 8),
         ],
