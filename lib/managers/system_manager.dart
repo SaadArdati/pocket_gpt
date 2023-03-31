@@ -263,7 +263,7 @@ class SystemManager with WindowListener {
 
   Future<void> minimizeWindow() async {
     if (defaultTargetPlatform == TargetPlatform.windows) {
-      return appWindow.minimize();
+      return appWindow.hide();
     } else {
       return windowManager.hide();
     }
