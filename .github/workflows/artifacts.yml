@@ -26,7 +26,6 @@ jobs:
         run: flutter build web --release --web-renderer canvaskit
       - name: Firebase deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
-        run: firebase target:apply hosting pocketgpt pocketgpt
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAAD_ARDATI }}'

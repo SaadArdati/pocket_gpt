@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "saad-ardati"
+  },
+  "targets": {
+    "saad-ardati": {
+      "hosting": {
+        "pocketgpt": [
+          "pocketgpt"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
