@@ -393,6 +393,15 @@ class _NavigationBackgroundState extends State<NavigationBackground>
                 },
               ),
             ),
+            Positioned.fill(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn,
+                color: context.colorScheme.background.withOpacity(
+                  isChatPage ? 0.8 : 0.5,
+                ),
+              ),
+            ),
             widget.child,
           ],
         );
