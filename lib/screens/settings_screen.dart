@@ -148,91 +148,90 @@ class _SettingsScreenState extends State<SettingsScreen>
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FutureBuilder(
-              future: PackageInfo.fromPlatform(),
-              builder:
-                  (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-                final String version;
-                if (snapshot.hasError) {
-                  version = snapshot.error.toString();
-                } else if (snapshot.hasData) {
-                  version = snapshot.data!.version;
-                } else {
-                  version = 'Checking...';
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildContactTile(
+                  title: 'Website',
+                  icon: 'assets/profile_256x.png',
+                  url: 'https://saad-ardati.dev/',
+                  avatar: true,
+                ),
+                const SizedBox(height: 8),
+                buildContactTile(
+                  title: 'Twitter',
+                  icon: 'assets/twitter_256x.png',
+                  url: 'https://twitter.com/SaadArdati',
+                ),
+                const SizedBox(height: 8),
+                buildContactTile(
+                  title: 'Github',
+                  icon: Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/github_dark_256x.png'
+                      : 'assets/github_light_256x.png',
+                  url: 'https://github.com/SaadArdati',
+                ),
+                const SizedBox(height: 8),
+                buildContactTile(
+                  title: 'Discord',
+                  icon: 'assets/discord_256x.png',
+                  url: 'https://discord.gg/ARxJzxU',
+                ),
+                const SizedBox(height: 8),
+                buildContactTile(
+                  title: 'LinkedIn',
+                  icon: 'assets/linked_in_256x.png',
+                  url: 'https://www.linkedin.com/in/saad-ardati',
+                ),
+                const SizedBox(height: 8),
+                buildContactTile(
+                  title: 'Instagram',
+                  icon: 'assets/instagram_256x.png',
+                  url: 'https://www.instagram.com/saad_ardati',
+                ),
+                const SizedBox(height: 16),
+                FutureBuilder(
+                    future: PackageInfo.fromPlatform(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                      final String version;
+                      if (snapshot.hasError) {
+                        version = snapshot.error.toString();
+                      } else if (snapshot.hasData) {
+                        version = snapshot.data!.version;
+                      } else {
+                        version = 'Checking...';
+                      }
+                    return Text('Version: $version');
+                  }
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Copyright © 2020-2021. All Rights Reserved',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    buildContactTile(
-                      title: 'Website',
-                      icon: 'assets/profile_256x.png',
-                      url: 'https://saad-ardati.dev/',
-                      avatar: true,
+                    TextButton(
+                      onPressed: () {
+                        launchUrlString(
+                            'https://saad-ardati.dev/pocketgpt/privacy-policy');
+                      },
+                      child: const Text('View Privacy Policy'),
                     ),
-                    const SizedBox(height: 8),
-                    buildContactTile(
-                      title: 'Twitter',
-                      icon: 'assets/twitter_256x.png',
-                      url: 'https://twitter.com/SaadArdati',
-                    ),
-                    const SizedBox(height: 8),
-                    buildContactTile(
-                      title: 'Github',
-                      icon: Theme.of(context).brightness == Brightness.dark
-                          ? 'assets/github_dark_256x.png'
-                          : 'assets/github_light_256x.png',
-                      url: 'https://github.com/SaadArdati',
-                    ),
-                    const SizedBox(height: 8),
-                    buildContactTile(
-                      title: 'Discord',
-                      icon: 'assets/discord_256x.png',
-                      url: 'https://discord.gg/ARxJzxU',
-                    ),
-                    const SizedBox(height: 8),
-                    buildContactTile(
-                      title: 'LinkedIn',
-                      icon: 'assets/linked_in_256x.png',
-                      url: 'https://www.linkedin.com/in/saad-ardati',
-                    ),
-                    const SizedBox(height: 8),
-                    buildContactTile(
-                      title: 'Instagram',
-                      icon: 'assets/instagram_256x.png',
-                      url: 'https://www.instagram.com/saad_ardati',
-                    ),
-                    const SizedBox(height: 16),
-                    Text('Version: $version'),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Copyright © 2020-2021. All Rights Reserved',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            launchUrlString(
-                                'https://saad-ardati.dev/pocketgpt/privacy-policy');
-                          },
-                          child: const Text('View Privacy Policy'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            showLicensePage(context: context);
-                          },
-                          child: const Text('View Licenses'),
-                        )
-                      ],
-                    ),
+                    TextButton(
+                      onPressed: () {
+                        showLicensePage(context: context);
+                      },
+                      child: const Text('View Licenses'),
+                    )
                   ],
-                );
-              },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),

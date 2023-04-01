@@ -53,8 +53,8 @@ dev_dependencies:
   json_serializable: ^6.6.1
   dart_code_metrics: ^5.7.0
   dart_code_metrics_presets: ^1.5.0
-  flutter_launcher_icons: ^0.12.0
-  flutter_native_splash: ^2.2.19
+#  flutter_launcher_icons: ^0.12.0
+#  flutter_native_splash: ^2.2.19
 
 flutter_native_splash:
   color: "#FBFCFE"
