@@ -1,7 +1,7 @@
-name: pocketgpt
+name: pocket_gpt
 description: A pocket-sized GPT assistant
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.1.0
+version: 0.2.0
 
 environment:
   sdk: '>=2.19.2 <3.0.0'

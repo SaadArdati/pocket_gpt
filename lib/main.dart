@@ -24,65 +24,65 @@ import 'ui/theme_extensions.dart';
 import 'ui/wave_background.dart';
 
 void main() async {
-  await initPocketGPT();
+  await PocketGPT.initPocketGPT();
   final mode = await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.system;
   runApp(PocketGPT(mode: mode));
-}
-
-Future<bool> initPocketGPT() async {
-  await Hive.initFlutter('PocketGPT');
-  await Hive.openBox(Constants.history);
-
-  final EncryptedSharedPreferences encryptedPrefs =
-      EncryptedSharedPreferences();
-  String key = await encryptedPrefs.getString(Constants.encryptionKey);
-  final List<int> encryptionKeyData;
-  if (key.isEmpty) {
-    log('Generating a new encryption key');
-    encryptionKeyData = Hive.generateSecureKey();
-    log('Saving the encryption key');
-    await encryptedPrefs.setString(
-      Constants.encryptionKey,
-      base64UrlEncode(encryptionKeyData),
-    );
-  } else {
-    log('Found an existing encryption key');
-    encryptionKeyData = base64Url.decode(key);
-  }
-  log('Encryption key: $key');
-
-  await Hive.openBox(
-    Constants.settings,
-    encryptionCipher: HiveAesCipher(encryptionKeyData),
-  );
-
-  if (!kIsWeb) {
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      await SystemManager.instance.init();
-
-      final box = Hive.box(Constants.settings);
-      if (box.get(Constants.launchOnStartup, defaultValue: true)) {
-        final packageInfo = await PackageInfo.fromPlatform();
-        LaunchAtStartup.instance.setup(
-          appName: packageInfo.appName,
-          appPath: Platform.resolvedExecutable,
-        );
-        await LaunchAtStartup.instance.enable();
-      }
-    }
-    setPathUrlStrategy();
-  }
-
-  OpenAI.apiKey =
-      Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
-
-  return true;
 }
 
 class PocketGPT extends StatefulWidget {
   final AdaptiveThemeMode mode;
 
   const PocketGPT({super.key, required this.mode});
+
+  static Future<bool> initPocketGPT() async {
+    await Hive.initFlutter('PocketGPT');
+    await Hive.openBox(Constants.history);
+
+    final EncryptedSharedPreferences encryptedPrefs =
+        EncryptedSharedPreferences();
+    String key = await encryptedPrefs.getString(Constants.encryptionKey);
+    final List<int> encryptionKeyData;
+    if (key.isEmpty) {
+      log('Generating a new encryption key');
+      encryptionKeyData = Hive.generateSecureKey();
+      log('Saving the encryption key');
+      await encryptedPrefs.setString(
+        Constants.encryptionKey,
+        base64UrlEncode(encryptionKeyData),
+      );
+    } else {
+      log('Found an existing encryption key');
+      encryptionKeyData = base64Url.decode(key);
+    }
+    log('Encryption key: $key');
+
+    await Hive.openBox(
+      Constants.settings,
+      encryptionCipher: HiveAesCipher(encryptionKeyData),
+    );
+
+    if (!kIsWeb) {
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+        await SystemManager.instance.init();
+
+        final box = Hive.box(Constants.settings);
+        if (box.get(Constants.launchOnStartup, defaultValue: true)) {
+          final packageInfo = await PackageInfo.fromPlatform();
+          LaunchAtStartup.instance.setup(
+            appName: packageInfo.appName,
+            appPath: Platform.resolvedExecutable,
+          );
+          await LaunchAtStartup.instance.enable();
+        }
+      }
+      setPathUrlStrategy();
+    }
+
+    OpenAI.apiKey =
+        Hive.box(Constants.settings).get(Constants.openAIKey, defaultValue: '');
+
+    return true;
+  }
 
   @override
   State<PocketGPT> createState() => _PocketGPTState();

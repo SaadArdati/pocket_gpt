@@ -104,13 +104,26 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
-            child: Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              runAlignment: WrapAlignment.center,
-              alignment: WrapAlignment.center,
-              children: [
-                ...ChatType.values.map((type) {
+            child: LayoutBuilder(builder: (context, constraints) {
+              final int crossAxisCount;
+
+              if (constraints.maxWidth <= 500) {
+                crossAxisCount = 2;
+              } else if (constraints.maxWidth <= 700) {
+                crossAxisCount = 3;
+              } else {
+                crossAxisCount = 4;
+              }
+
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                ),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: ChatType.values.length,
+                itemBuilder: (context, index) {
+                  final type = ChatType.values[index];
                   final bool isComingSoon;
                   switch (type) {
                     case ChatType.general:
@@ -124,13 +137,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       isComingSoon = true;
                       break;
                   }
-                  return GPTCard(
-                    type: type,
-                    isComingSoon: isComingSoon,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GPTCard(
+                      type: type,
+                      isComingSoon: isComingSoon,
+                    ),
                   );
-                })
-              ],
-            ),
+                },
+              );
+            }),
           ),
         ),
       ),
