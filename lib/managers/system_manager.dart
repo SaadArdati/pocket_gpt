@@ -13,7 +13,7 @@ import 'package:window_manager/window_manager.dart';
 import '../constants.dart';
 
 class SystemManager with WindowListener {
-  bool isInit = true;
+  bool isInitializing = true;
   late Offset trayPosition;
   Size defaultWindowSize = const Size(400, 600);
   final ValueNotifier<bool> windowFocus = ValueNotifier(true);
@@ -114,10 +114,12 @@ class SystemManager with WindowListener {
       minimizeWindow();
     } else {
       revealWindow();
+      final AxisDirection dockPosition = await findSystemDockPosition();
+      saveDockPosition(dockPosition);
 
-      trayPosition = await findBestTrayWindowPosition();
+      trayPosition = await findBestTrayWindowPosition(dockPosition);
 
-      if (isInit || !shouldPreserveWindowPosition) {
+      if (isInitializing || !shouldPreserveWindowPosition) {
         saveTrayPosition(trayPosition);
 
         if (isFirstTime) {
@@ -135,7 +137,7 @@ class SystemManager with WindowListener {
         }
         trayPosition = await windowManager.getPosition();
       }
-      isInit = false;
+      isInitializing = false;
     }
   }
 
@@ -176,10 +178,9 @@ class SystemManager with WindowListener {
     ],
   };
 
-  Future<Offset> findBestTrayWindowPosition() async {
+  Future<AxisDirection> findSystemDockPosition() async {
     final Display primaryDisplay = await screenRetriever.getPrimaryDisplay();
     final Size displaySize = primaryDisplay.size;
-    final double scaleFactor = primaryDisplay.scaleFactor?.toDouble() ?? 1;
     final Offset pointerPos = await screenRetriever.getCursorScreenPoint();
 
     AxisDirection dockPosition = AxisDirection.down;
@@ -195,11 +196,32 @@ class SystemManager with WindowListener {
       }
     }
 
-    final double dockSize = Platform.isWindows ? 40 * scaleFactor : 0;
+    return dockPosition;
+  }
+
+  Future<Offset> findBestTrayWindowPosition(
+      AxisDirection systemDockPosition) async {
+    final Offset pointerPos = await screenRetriever.getCursorScreenPoint();
+    final Display primaryDisplay = await screenRetriever.getPrimaryDisplay();
+    final Size displaySize = primaryDisplay.size;
+    final double scaleFactor = primaryDisplay.scaleFactor?.toDouble() ?? 1;
+
+    final bool isHorizontalDock = systemDockPosition == AxisDirection.left ||
+        systemDockPosition == AxisDirection.right;
+    final double dockSize;
+    if (Platform.isWindows) {
+      if (isHorizontalDock) {
+        dockSize = 50 * scaleFactor;
+      } else {
+        dockSize = 40 * scaleFactor;
+      }
+    } else {
+      dockSize = 0;
+    }
 
     final Size windowSize = defaultWindowSize;
     late Offset windowPosition;
-    switch (dockPosition) {
+    switch (systemDockPosition) {
       case AxisDirection.left:
         windowPosition = Offset(0, pointerPos.dy - windowSize.height / 2);
         break;
@@ -217,7 +239,7 @@ class SystemManager with WindowListener {
     }
 
     // apply padding.
-    switch (dockPosition) {
+    switch (systemDockPosition) {
       case AxisDirection.left:
         windowPosition += Offset(dockSize, 0);
         break;
@@ -311,7 +333,7 @@ class SystemManager with WindowListener {
     if (Platform.isWindows) {
       await Future.delayed(const Duration(milliseconds: 200));
     }
-    if (Platform.isWindows && isInit) return;
+    if (Platform.isWindows && isInitializing) return;
     await minimizeWindow();
     windowFocus.value = false;
   }
@@ -329,7 +351,7 @@ class SystemManager with WindowListener {
     final Offset windowPosition = await windowManager.getPosition();
     double threshold = 20;
     double thresholdY = 60;
-    if (isInit &&
+    if (isInitializing &&
             (windowSize.width - defaultWindowSize.width).abs() > threshold ||
         (windowSize.height - defaultWindowSize.height).abs() > threshold ||
         (windowPosition.dx - trayPosition.dx).abs() > threshold ||
@@ -340,6 +362,15 @@ class SystemManager with WindowListener {
       box.put(Constants.retainedWindowX, windowPosition.dx);
       box.put(Constants.retainedWindowY, windowPosition.dy);
 
+      final savedDockPosition = getSavedDockPosition();
+      final currentDockPosition = await findSystemDockPosition();
+      if (savedDockPosition != currentDockPosition) {
+        // dock position changed.
+        box.put(Constants.systemDockPosition, currentDockPosition);
+
+        trayPosition = await findBestTrayWindowPosition(currentDockPosition);
+        saveTrayPosition(trayPosition);
+      }
       await windowManager.setBounds(
         Rect.fromLTWH(
           trayPosition.dx,
@@ -398,4 +429,16 @@ Offset? getSavedTrayPosition() {
 void saveTrayPosition(Offset position) {
   Hive.box(Constants.settings).put(Constants.trayPositionX, position.dx);
   Hive.box(Constants.settings).put(Constants.trayPositionY, position.dy);
+}
+
+void saveDockPosition(AxisDirection position) {
+  Hive.box(Constants.settings)
+      .put(Constants.systemDockPosition, position.index);
+}
+
+AxisDirection getSavedDockPosition() {
+  final int? index = Hive.box(Constants.settings).get(
+      Constants.systemDockPosition,
+      defaultValue: AxisDirection.down.index);
+  return AxisDirection.values[index!];
 }

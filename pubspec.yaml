@@ -68,7 +68,7 @@ flutter_icons:
   adaptive_icon_background: "#191C1E"
   adaptive_icon_foreground: "assets/app_logo_1000x.png"
   android: true
-  image_path_ios: "assets/logo_bg_dark_padded_1024x.png"
+  image_path_ios: "assets/app_icons/ios_app_icon.png"
   ios: true
   web:
     generate: true
@@ -76,10 +76,10 @@ flutter_icons:
     theme_color: "#191C1E"
   windows:
     generate: true
-    image_path: "assets/windows_icon_256x.png"
+    image_path: "assets/app_icons/windows_app_icon.png"
   macos:
     generate: true
-    image_path: "assets/macos_icon_256x.png"
+    image_path: "assets/app_icons/macos_app_icon.png"
 
 flutter:
   uses-material-design: true
@@ -101,9 +101,11 @@ flutter:
     - assets/logo_bg_light_1000x.png
     - assets/logo_bg_dark_padded_1024x.png
     - assets/logo_bg_light_padded_1024x.png
-    - assets/macos_icon_256x.png
     - assets/instructions/windows_arrow_1.png
     - assets/instructions/windows_arrow_2.png
     - assets/instructions/macos_arrow.png
+    - assets/app_icons/windows_app_icon.png
+    - assets/app_icons/macos_app_icon.png
+    - assets/app_icons/ios_app_icon.png
 
 scripts: scripts.yaml
