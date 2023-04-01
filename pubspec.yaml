@@ -1,4 +1,4 @@
-name: pocket_gpt
+name: pocketgpt
 description: A pocket-sized GPT assistant
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.1.0
@@ -76,7 +76,7 @@ flutter_icons:
     theme_color: "#191C1E"
   windows:
     generate: true
-    image_path: "assets/macos_icon_256x.png"
+    image_path: "assets/windows_icon_256x.png"
   macos:
     generate: true
     image_path: "assets/macos_icon_256x.png"

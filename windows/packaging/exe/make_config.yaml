@@ -1,0 +1,10 @@
+app_id: dev.saad-ardati.pocketgpt
+publisher: Saad Ardati
+publisher_url: https://github.com/SaadArdati/pocketgpt
+display_name: PocketGPT
+install_dir_name: PocketGPT
+setup_icon_file: app_icon.ico
+create_desktop_icon: true
+script_template: inno_setup.iss
+locales:
+  - en

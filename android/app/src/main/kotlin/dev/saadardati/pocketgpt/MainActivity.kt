@@ -1,4 +1,4 @@
-package me.saad.pocket_gpt
+package dev.saadardati.pocketgpt
 
 import io.flutter.embedding.android.FlutterActivity
 

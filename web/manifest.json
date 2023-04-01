@@ -1,6 +1,6 @@
 {
-    "name": "pocket_gpt",
-    "short_name": "pocket_gpt",
+    "name": "pocketgpt",
+    "short_name": "pocketgpt",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#191C1E",

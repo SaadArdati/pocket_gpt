@@ -1,6 +1,6 @@
 #!/bin/sh
 test -f "PocketGPT.dmg" && rm "PocketGPT.dmg"
-mv "build/macos/Build/Products/Release/pocket_gpt.app" "build/macos/Build/Products/Release/PocketGPT.app"
+mv "build/macos/Build/Products/Release/pocketgpt.app" "build/macos/Build/Products/Release/PocketGPT.app"
 create-dmg \
   --volname "PocketGPT Installer" \
   --volicon "./installers/dmg/AppIcon.icns" \

@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           textColor: context.colorScheme.inversePrimary,
           onPressed: () {
             launchUrlString(
-                'https://github.com/SaadArdati/pocket_gpt/releases/$latestVersion');
+                'https://github.com/SaadArdati/pocketgpt/releases/$latestVersion');
           },
         ),
       ),

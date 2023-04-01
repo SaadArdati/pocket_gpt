@@ -218,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                         TextButton(
                           onPressed: () {
                             launchUrlString(
-                                'https://saad-ardati.dev/pocket-gpt/privacy-policy');
+                                'https://saad-ardati.dev/pocketgpt/privacy-policy');
                           },
                           child: const Text('View Privacy Policy'),
                         ),
