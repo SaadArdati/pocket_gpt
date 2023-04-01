@@ -1,11 +1,11 @@
 {
-    "name": "pocketgpt",
-    "short_name": "pocketgpt",
+    "name": "PocketGPT",
+    "short_name": "PocketGPT",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#191C1E",
     "theme_color": "#191C1E",
-    "description": "A pocket size GPT app",
+    "description": "A pocket-sized GPT assistant",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -30,6 +30,10 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
+        },
+        {
+            "src": "google-touch-icon.png",
+            "sizes": "512x512"
         }
     ]
 }
