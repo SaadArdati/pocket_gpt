@@ -210,37 +210,35 @@ class _ChatScreenState extends State<ChatScreen>
                       children: [
                         Expanded(
                           child: SelectionArea(
-                            child: NotificationListener<ScrollNotification>(
-                              // onNotification: _handleScrollNotification,
-                              child: ListView.separated(
-                                controller: scrollController,
-                                reverse: true,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: gpt.messages.length,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 8),
-                                itemBuilder: (context, index) {
-                                  final int reversedIndex =
-                                      gpt.messages.length - 1 - index;
-                                  final ChatMessage message =
-                                      gpt.messages[reversedIndex];
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      top: index == gpt.messages.length - 1
-                                          ? (Scaffold.of(context)
-                                                      .appBarMaxHeight ??
-                                                  48) +
-                                              16
-                                          : 0,
-                                      bottom: index == 0 ? 16 : 0,
-                                    ),
-                                    child: ChatMessageBubble(
-                                      message: message,
-                                    ),
-                                  );
-                                },
-                              ),
+                            child: ListView.separated(
+                              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                              controller: scrollController,
+                              reverse: true,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              itemCount: gpt.messages.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (context, index) {
+                                final int reversedIndex =
+                                    gpt.messages.length - 1 - index;
+                                final ChatMessage message =
+                                    gpt.messages[reversedIndex];
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    top: index == gpt.messages.length - 1
+                                        ? (Scaffold.of(context)
+                                                    .appBarMaxHeight ??
+                                                48) +
+                                            16
+                                        : 0,
+                                    bottom: index == 0 ? 16 : 0,
+                                  ),
+                                  child: ChatMessageBubble(
+                                    message: message,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
