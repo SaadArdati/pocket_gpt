@@ -1,8 +1,8 @@
 name: Release Artifacts
 
 on:
-  release:
-    types: [ published ]
+#  release:
+#    types: [ published ]
   workflow_dispatch:
     inputs:
       tag:
@@ -10,38 +10,6 @@ on:
         required: true
 
 jobs:
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Inno
-        run: |
-          .\windows\packaging\exe\inno.ps1
-      - name: Verify Inno installation
-        run: dir "C:\Program Files (x86)\Inno Setup 6\"
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2.8.0
-        with:
-          channel: stable
-          cache: true
-      - name: Flutter version
-        run: flutter --version
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Install Flutter distributor
-        run: flutter pub global activate flutter_distributor
-      - name: Run scripts
-        run: dart scripts/windows/copy_icon.dart
-      - name: Build
-        run: flutter_distributor package --platform windows --targets exe --artifact-name=PocketGPT
-      - name: Display structure of dist directory
-        run: ls -R dist
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          path: dist/**/*.exe
-          if-no-files-found: error
-          retention-days: 5
   web:
     runs-on: macos-latest
     steps:
@@ -155,6 +123,48 @@ jobs:
           path: PocketGPT-macos-${{ github.event.release.tag_name }}.dmg
           if-no-files-found: error
           retention-days: 5
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Flutter version
+        run: flutter --version
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build App
+        run: flutter build windows
+      - name: Build App
+        run: flutter build windows
+      - name: Setup MSIX configs
+        run: dart installers\msix\setup.dart installers\msix\ci.yaml ${{ secrets.WIN_CERT_PASSWORD }}
+      - name: Create MSIX Installer
+        run: flutter pub run msix:create
+      - name: Rename file
+        if: ${{ github.event.inputs.tag != null }}
+        run: ren PocketGPT.msix PocketGPT-windows-${{ github.event.inputs.tag }}.msix
+      - name: Rename file
+        if: ${{ github.event.inputs.tag == null }}
+        run: ren PocketGPT.msix PocketGPT-windows-${{ github.event.release.tag_name }}.msix
+      - name: Upload Artifacts
+        if: ${{ github.event.inputs.tag != null }}
+        uses: actions/upload-artifact@v3
+        with:
+          path: PocketGPT-windows-${{ github.event.inputs.tag }}.msix
+          if-no-files-found: error
+          retention-days: 5
+      - name: Upload Artifacts
+        if: ${{ github.event.inputs.tag == null }}
+        uses: actions/upload-artifact@v3
+        with:
+          path: PocketGPT-windows-${{ github.event.release.tag_name }}.msix
+          if-no-files-found: error
+          retention-days: 5
+
   upload:
     needs: [ android, macos, windows ]
     if: always()

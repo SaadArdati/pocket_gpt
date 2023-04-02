@@ -1,16 +1,8 @@
 ![Banner](.github/assets/banner.png)
 
-<br/>
-<img alt="Logo" width="128px" src=".github/assets/app_logo_dark.svg#gh-light-mode-only" />
-<img alt="Logo" width="128px" src=".github/assets/app_logo_light.svg#gh-dark-mode-only" />
-<br/>
-
-A pocket-sized GPT assistant that runs everywhere!
-
-<a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-android-0.4.0.apk"><img src=".github/assets/android.png" height="70px" /></a>
-&nbsp; <a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-macos-0.4.0.dmg"><img src=".github/assets/macos.png" height="70px" /></a>
-&nbsp;
-<a href="https://github.com/BirjuVachhani/target_mate/releases/download/0.4.0/TargetMate-windows-0.4.0.msix"><img src=".github/assets/windows.png" height="70px" /></a>
+<a href="https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-android-0.1.1.apk"><img src=".github/assets/android.png" height="70px" /></a>
+<a href="https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-macos-0.1.1.dmg"><img src=".github/assets/macos.png" height="70px" /></a>
+<a href="https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-windows-0.1.1.dmg"><img src=".github/assets/windows.png" height="70px" /></a>
 
 See [Installation Guide](#installation-guide) for installing on desktop.
 
@@ -20,13 +12,13 @@ See [Installation Guide](#installation-guide) for installing on desktop.
 - Window is very flexible and can be configured to exist however you like on your system, including the system tray!
 - Completely private and local, no data is transmitted to servers unless explicitly asked for.
 - Natural and accessible UI that is easy to use and understand.
-- Works on all major platforms, including Windows, MacOS, Linux, Android, iOS, and web!
+- Works on all major platforms, including Windows, MacOS, Android, iOS, and web!
 
 ## Supported Platforms
 
 | Android | iOS | macOS | Windows | Linux | Web |
 |---------|-----|-------|---------|-------|-----|
-| ✅       | 🚧  | ✅     | ✅       | 🚧    | 🚧  |
+| ✅       | ✅   | ✅     | ✅       | 🚧    | ✅   |
 
 ### Disclaimer
 
@@ -74,7 +66,7 @@ token. Make sure you're logged in!
 
 <a href="https://discord.gg/ARxJzxU" ><img alt="Discord" width="32px" src=".github/assets/discord_256x.png" />  [discord.gg/ARxJzxU](https://discord.gg/ARxJzxU) </a>
 
-<a href="https://www.linkedin.com/in/saad-ardati/" ><img alt="LinkedIn" width="32px" src=".github/assets/linked_in_256x.png" />  [linkedin.com/in/saad-ardati/](https://www.linkedin.com/in/saad-ardati/) </a> 
+<a href="https://www.linkedin.com/in/saad-ardati/" ><img alt="LinkedIn" width="32px" src=".github/assets/linked_in_256x.png" />  [linkedin.com/in/saad-ardati/](https://www.linkedin.com/in/saad-ardati/) </a>
 
 <a href="https://twitter.com/SaadArdati" ><img alt="Twitter" width="32px" src=".github/assets/twitter_256x.png" />  [twitter.com/SaadArdati](https://twitter.com/SaadArdati) </a>
 
@@ -82,10 +74,18 @@ token. Make sure you're logged in!
 
 ## Contributors
 
-Thank you [Birju Vachhani](birju.dev) for being a key contributor to this project!
+Thank you [Birju Vachhani](https://birju.dev/) for being a key contributor to this project!
 
 ## Contribution
 
 You are most welcome to contribute to this project!
 
 [openai]: https://platform.openai.com/
+
+[android]: https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-android-0.1.1.apk
+
+[macos]: https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-macos-0.1.1.dmg
+
+[windows]: https://github.com/SaadArdati/pocket_gpt/releases/download/0.1.1/PocketGPT-windows-0.1.1.dmg
+
+[web]: https://saad-ardati.dev/pocketgpt

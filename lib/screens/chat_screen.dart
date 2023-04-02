@@ -101,6 +101,8 @@ class _ChatScreenState extends State<ChatScreen>
             platform == TargetPlatform.macOS);
 
     final double? buttonSize = isDesktop ? 20 : null;
+    final bool isGenerating = gpt.messages.isNotEmpty &&
+        gpt.messages.last.status == MessageStatus.streaming;
 
     return LayoutBuilder(builder: (context, constraints) {
       final bool isWide = constraints.maxWidth > 800;
@@ -174,24 +176,26 @@ class _ChatScreenState extends State<ChatScreen>
                 ),
                 child: Builder(builder: (context) {
                   return Drawer(
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.all(18),
-                          child: Text(
-                            'Chat History',
-                            style: context.textTheme.bodyMedium,
+                    child: SafeArea(
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.all(18),
+                            child: Text(
+                              'Chat History',
+                              style: context.textTheme.bodyMedium,
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView(children: [
-                            for (final Chat chat
-                                in gpt.chatHistory.values.toList().reversed)
-                              HistoryTile(chat: chat),
-                          ]),
-                        ),
-                      ],
+                          Expanded(
+                            child: ListView(children: [
+                              for (final Chat chat
+                                  in gpt.chatHistory.values.toList().reversed)
+                                HistoryTile(chat: chat),
+                            ]),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }),
@@ -238,6 +242,45 @@ class _ChatScreenState extends State<ChatScreen>
                                 },
                               ),
                             ),
+                          ),
+                        ),
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeOutQuart,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            switchOutCurve: Curves.easeOutQuart,
+                            switchInCurve: Curves.easeOutQuart,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0, 1),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: isGenerating
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Tooltip(
+                                          message: 'Stop generating response',
+                                          child: FilledButton.tonalIcon(
+                                            onPressed: gpt.stopGenerating,
+                                            icon: const Icon(Icons.stop_circle),
+                                            label: const Text('Stop generating'),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
                           ),
                         ),
                         const UserInteractionRegion(),
@@ -355,6 +398,31 @@ class _HistoryTileState extends State<HistoryTile> {
           gpt.openChat(id: widget.chat.id, notify: true);
           Scaffold.of(context).closeEndDrawer();
         },
+        onLongPress: () {
+          // Delete with a confirmation dialog
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text('Delete Chat'),
+                    content: const Text(
+                        'Are you sure you want to delete this chat?'),
+                    actions: [
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Delete'),
+                        onPressed: () {
+                          gpt.deleteChat(widget.chat.id);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ));
+        },
         selected: isActiveChat,
         selectedTileColor: context.colorScheme.primaryContainer,
         selectedColor: context.colorScheme.onPrimaryContainer,
@@ -459,172 +527,139 @@ class _UserInteractionRegionState extends State<UserInteractionRegion> {
             top: false,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 800, minHeight: 56),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                switchOutCurve: Curves.easeOutQuart,
-                switchInCurve: Curves.easeOutQuart,
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 1),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
-                    ),
-                  );
-                },
-                child: isGenerating
-                    ? Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Tooltip(
-                              message: 'Stop generating response',
-                              child: FilledButton.tonalIcon(
-                                onPressed: gpt.stopGenerating,
-                                icon: const Icon(Icons.stop_circle),
-                                label: const Text('Stop generating'),
+              child: Row(
+                children: [
+                  IconButton(
+                    tooltip: 'Add attachment',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Add Attachment'),
+                            content: const Text(
+                              'This feature is coming soon!',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
                               ),
-                            )
-                          ],
-                        ),
-                      )
-                    : Row(
-                        children: [
-                          IconButton(
-                            tooltip: 'Add attachment',
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Add Attachment'),
-                                    content: const Text(
-                                      'This feature is coming soon!',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            icon: const Icon(Icons.add),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.of(context).size.height / 3,
-                              ),
-                              child: TextFormField(
-                                controller: textController,
-                                focusNode: focusNode,
-                                maxLength: 10000,
-                                maxLengthEnforcement:
-                                    MaxLengthEnforcement.enforced,
-                                textInputAction: TextInputAction.newline,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                                autovalidateMode: AutovalidateMode.disabled,
-                                onChanged: (_) {
-                                  setState(() {});
-                                },
-                                onFieldSubmitted: (_) => triggerSend(
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height / 3,
+                      ),
+                      child: TextFormField(
+                        controller: textController,
+                        focusNode: focusNode,
+                        maxLength: 10000,
+                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                        textInputAction: TextInputAction.newline,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.disabled,
+                        onChanged: (_) {
+                          setState(() {});
+                        },
+                        onFieldSubmitted: isGenerating
+                            ? null
+                            : (_) => triggerSend(
                                   context,
                                   generateResponse: true,
                                 ),
-                                style: context.textTheme.bodyMedium?.copyWith(
-                                  color:
-                                      context.colorScheme.onSecondaryContainer,
-                                ),
-                                decoration: InputDecoration(
-                                  counterText: '',
-                                  labelText: 'Type a message...',
-                                  isDense: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  filled: true,
-                                  fillColor: context
-                                      .colorScheme.secondaryContainer
-                                      .withOpacity(0.5),
-                                  hoverColor: Colors.transparent,
-                                  border: OutlineInputBorder(
-                                    borderRadius: borderRadius,
-                                    borderSide: const BorderSide(width: 1.5),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: borderRadius,
-                                    borderSide: BorderSide(
-                                      color: context.colorScheme.primary,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: borderRadius,
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                      width: 1,
-                                    ),
-                                  ),
-                                ),
-                                cursorRadius: const Radius.circular(4),
-                              ),
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSecondaryContainer,
+                        ),
+                        decoration: InputDecoration(
+                          counterText: '',
+                          labelText: 'Type a message...',
+                          isDense: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          filled: true,
+                          fillColor: context.colorScheme.secondaryContainer
+                              .withOpacity(0.5),
+                          hoverColor: Colors.transparent,
+                          border: OutlineInputBorder(
+                            borderRadius: borderRadius,
+                            borderSide: const BorderSide(width: 1.5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: borderRadius,
+                            borderSide: BorderSide(
+                              color: context.colorScheme.primary,
+                              width: 1,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            decoration: const BoxDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: borderRadius,
+                            borderSide: const BorderSide(
                               color: Colors.transparent,
-                              shape: BoxShape.circle,
+                              width: 1,
                             ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Tooltip(
-                                message: textController.text.isEmpty
-                                    ? 'Start recording'
-                                    : 'Send message',
-                                child: InkWell(
-                                  onTap: () => triggerSend(
+                          ),
+                        ),
+                        cursorRadius: const Radius.circular(4),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Tooltip(
+                        message: textController.text.isEmpty
+                            ? 'Start recording'
+                            : 'Send message',
+                        child: InkWell(
+                          onTap: isGenerating
+                              ? null
+                              : () => triggerSend(
                                     context,
                                     generateResponse: true,
                                   ),
-                                  onLongPress: () {
-                                    triggerSend(
-                                      context,
-                                      generateResponse: false,
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12),
-                                    child: Icon(
-                                      textController.text.isEmpty
-                                          ? Icons.mic
-                                          : Icons.send,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                          onLongPress: isGenerating
+                              ? null
+                              : () {
+                                  triggerSend(
+                                    context,
+                                    generateResponse: false,
+                                  );
+                                },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Icon(
+                              textController.text.isEmpty
+                                  ? Icons.mic
+                                  : Icons.send,
                             ),
                           ),
-                        ],
+                        ),
                       ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
