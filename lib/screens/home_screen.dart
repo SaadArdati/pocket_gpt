@@ -111,9 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: LayoutBuilder(builder: (context, constraints) {
               final int crossAxisCount;
 
-              if (constraints.maxWidth <= 500) {
+              if (constraints.maxWidth <= 600) {
                 crossAxisCount = 2;
-              } else if (constraints.maxWidth <= 700) {
+              } else if (constraints.maxWidth <= 750) {
                 crossAxisCount = 3;
               } else {
                 crossAxisCount = 4;
@@ -124,6 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: crossAxisCount,
                 ),
                 physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 shrinkWrap: true,
                 itemCount: ChatType.values.length,
                 itemBuilder: (context, index) {
@@ -138,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     case ChatType.scientific:
                     case ChatType.analyze:
                     case ChatType.readMe:
-                      isComingSoon = true;
+                      isComingSoon = false;
                       break;
                   }
                   return Padding(

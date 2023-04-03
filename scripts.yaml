@@ -1,16 +1,27 @@
-clean: flutter clean && flutter pub get
-deps: flutter pub get
 codegen: flutter pub run build_runner build --delete-conflicting-outputs
 format: dart format --fix .
+clean:
+  - flutter clean && flutter pub get
+  - dart scripts/pods_fix.dart
 build:
   web: flutter build web --web-renderer canvaskit
   apk: flutter build apk --release
   aab: flutter build appbundle --release
-  macos: flutter build macos
+  macos:
+    - dart scripts/pods_fix.dart
+    - flutter build macos
   windows: flutter build windows
   dmg:
+    - dart scripts/pods_fix.dart
     - flutter build macos
     - ./installers/dmg/create.sh
+  msix:
+    - dart ./installers/msix/setup_local.dart
+    - flutter pub run msix:create
+    - git restore pubspec.yaml
+  exe:
+    - dart scripts/windows/copy_icon.dart
+    - flutter_distributor package --platform windows --targets exe --artifact-name=TargetMate
 bundle:
   dmg: ./installers/dmg/create.sh
   msix:
@@ -21,3 +32,5 @@ bundle:
 pod:
   - cd macos && pod install
   - cd ios && pod install
+  - dart scripts/pods_fix.dart
+genicons: flutter pub run flutter_launcher_icons

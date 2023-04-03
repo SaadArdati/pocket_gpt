@@ -61,5 +61,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: PocketGPT-windows-${{ steps.GetTag.outputs.tag }}.msix
-          tag: ${{ steps.GetTag.outputs.tag }}
+          tag: refs/tags/${{ github.event.inputs.tag }}
           file_glob: true

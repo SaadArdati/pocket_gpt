@@ -64,5 +64,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/${{ steps.GetPubspecVersion.outputs.version }}/PocketGPT-windows-${{ steps.GetTag.outputs.tag }}.exe
-          tag: ${{ steps.GetTag.outputs.tag }}
+          tag: refs/tags/${{ github.event.inputs.tag }}
           file_glob: true
