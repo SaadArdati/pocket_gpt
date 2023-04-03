@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
-import '../constants.dart';
-import '../ui/theme_extensions.dart';
-import '../ui/window_controls.dart';
+import '../../constants.dart';
+import '../../ui/theme_extensions.dart';
+import '../../ui/window_controls.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final Widget child;
@@ -142,7 +142,12 @@ class OnboardingDone extends StatelessWidget {
                 child: IconButton(
                   tooltip: 'Finish',
                   onPressed: () {
-                    context.go('/home', extra: {'from': 'onboarding'});
+                    if (!kIsWeb &&
+                        defaultTargetPlatform == TargetPlatform.macOS) {
+                      context.go('/onboarding/three/macos_onboarding');
+                    } else {
+                      context.go('/home', extra: {'from': 'onboarding'});
+                    }
                   },
                   iconSize: 32,
                   icon: const Icon(Icons.navigate_next),

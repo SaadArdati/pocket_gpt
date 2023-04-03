@@ -17,6 +17,8 @@ class Constants {
       'should_preserve_window_position';
   static const String showTitleBar = 'show_title_bar';
   static const String moveToSystemDock = 'move_to_system_dock';
+  static const String macOSLeftClickOpensApp =
+      'macos_left_click_opens_app';
 
   /// Window Meta
   static const String retainedWindowX = 'retained_window_x';

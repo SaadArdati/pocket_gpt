@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
@@ -7,7 +8,8 @@ import '../main.dart';
 import '../models/chat_type.dart';
 import '../screens/chat_screen.dart';
 import '../screens/home_screen.dart';
-import '../screens/onboarding_screen.dart';
+import '../screens/onboarding/onboarding_screen.dart';
+import '../screens/onboarding/macos_onboarding_screen.dart';
 import '../screens/open_ai_key_screen.dart';
 import '../screens/settings_screen.dart';
 import '../ui/window_drag_handle.dart';
@@ -24,10 +26,10 @@ class NavigationManager {
   final box = Hive.box(Constants.settings);
 
   late final router = GoRouter(
-    // initialLocation: '/onboarding',
-    initialLocation: box.get(Constants.isFirstTime, defaultValue: true)
-        ? '/onboarding'
-        : '/home',
+    initialLocation: '/onboarding',
+    // initialLocation: box.get(Constants.isFirstTime, defaultValue: true)
+    //     ? '/onboarding'
+    //     : '/home',
     routes: [baseRoute],
   );
 
@@ -115,6 +117,27 @@ class NavigationManager {
                   );
                 },
                 routes: [
+                  GoRoute(
+                    path: 'macos_onboarding',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const MacOSOnboarding(),
+                        opaque: false,
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return pocketGPTTransition(
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                            state: state,
+                            comesFrom: AxisDirection.right,
+                          );
+                        },
+                      );
+                    },
+                  ),
                   GoRoute(
                     path: 'tray_position',
                     builder: (context, state) {

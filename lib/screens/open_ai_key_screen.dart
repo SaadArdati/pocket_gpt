@@ -1,5 +1,6 @@
 import 'package:dart_openai/openai.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -174,8 +175,8 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                         child: Container(
                           alignment: Alignment.centerRight,
                           margin: const EdgeInsets.only(right: 16),
-                          child:
-                              const ImageIcon(AssetImage('assets/openai_256.png')),
+                          child: const ImageIcon(
+                              AssetImage('assets/openai_256.png')),
                         ),
                       ),
                       Text(
@@ -198,10 +199,12 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               errorMessage!,
-                              style:
-                                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: context.colorScheme.error,
-                                      ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: context.colorScheme.error,
+                                  ),
                             ),
                           ),
                         ],
@@ -261,13 +264,15 @@ class _OpenAIKeyScreenState extends State<OpenAIKeyScreen> {
                       const SizedBox(width: 8),
                       TextButton(
                         style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: borderRadius),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: borderRadius),
                           backgroundColor: controller.text.isNotEmpty
                               ? context.colorScheme.primaryContainer
                               : context.colorScheme.secondaryContainer
                                   .withOpacity(0.5),
                         ),
-                        onPressed: validating ? null : () => onSubmitKey(context),
+                        onPressed:
+                            validating ? null : () => onSubmitKey(context),
                         child: Container(
                           width: 44,
                           height: 44,

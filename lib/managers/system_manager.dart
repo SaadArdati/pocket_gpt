@@ -63,7 +63,8 @@ class SystemManager with WindowListener {
       if (position != null) appWindow.position = position;
 
       windowManager.addListener(this);
-      appWindow.hide();
+
+      minimizeWindow();
     });
 
     if (Platform.isMacOS) windowManager.setMovable(true);
@@ -94,10 +95,23 @@ class SystemManager with WindowListener {
 
     // handle system tray event
     systemTray.registerSystemTrayEventHandler((eventName) {
-      if (eventName == kSystemTrayEventClick) {
-        onSystemTrayClick();
-      } else if (eventName == kSystemTrayEventRightClick) {
-        systemTray.popUpContextMenu();
+      final bool macOSLeftClickOpensApp = box.get(
+        Constants.macOSLeftClickOpensApp,
+        defaultValue: false,
+      );
+
+      if (Platform.isMacOS && !macOSLeftClickOpensApp) {
+        if (eventName == kSystemTrayEventClick) {
+          systemTray.popUpContextMenu();
+        } else if (eventName == kSystemTrayEventRightClick) {
+          onSystemTrayClick();
+        }
+      } else {
+        if (eventName == kSystemTrayEventClick) {
+          onSystemTrayClick();
+        } else if (eventName == kSystemTrayEventRightClick) {
+          systemTray.popUpContextMenu();
+        }
       }
     });
   }
@@ -362,15 +376,6 @@ class SystemManager with WindowListener {
       box.put(Constants.retainedWindowX, windowPosition.dx);
       box.put(Constants.retainedWindowY, windowPosition.dy);
 
-      final savedDockPosition = getSavedDockPosition();
-      final currentDockPosition = await findSystemDockPosition();
-      if (savedDockPosition != currentDockPosition) {
-        // dock position changed.
-        box.put(Constants.systemDockPosition, currentDockPosition);
-
-        trayPosition = await findBestTrayWindowPosition(currentDockPosition);
-        saveTrayPosition(trayPosition);
-      }
       await windowManager.setBounds(
         Rect.fromLTWH(
           trayPosition.dx,

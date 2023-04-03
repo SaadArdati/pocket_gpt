@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     case ChatType.scientific:
                     case ChatType.analyze:
                     case ChatType.readMe:
-                      isComingSoon = false;
+                      isComingSoon = true;
                       break;
                   }
                   return Padding(

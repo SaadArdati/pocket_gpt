@@ -192,8 +192,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                 const SizedBox(height: 16),
                 FutureBuilder(
                     future: PackageInfo.fromPlatform(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<PackageInfo> snapshot) {
                       final String version;
                       if (snapshot.hasError) {
                         version = snapshot.error.toString();
@@ -202,9 +202,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                       } else {
                         version = 'Checking...';
                       }
-                    return Text('Version: $version');
-                  }
-                ),
+                      return Text('Version: $version');
+                    }),
                 const SizedBox(height: 8),
                 Text(
                   'Copyright © 2020-2021. All Rights Reserved',
@@ -601,6 +600,37 @@ class _AppSettingsTileState extends State<AppSettingsTile> {
                               .toggleSystemDock(show: value ?? false);
                         },
                       ),
+                      if (defaultTargetPlatform == TargetPlatform.macOS) ...[
+                        const SizedBox(height: 8),
+                        CheckboxListTile(
+                          value: box.get(
+                            Constants.macOSLeftClickOpensApp,
+                            defaultValue: false,
+                          ),
+                          title: Text(
+                            'Left-click opens app',
+                            style: context.textTheme.titleSmall,
+                          ),
+                          subtitle: Text(
+                            'Left-clicking on the menu bar icon will open the app, right-clicking will open the options menu.',
+                            style: context.textTheme.bodySmall?.copyWith(
+                              fontSize: 12,
+                              color: context.colorScheme.onSurface
+                                  .withOpacity(0.7),
+                            ),
+                          ),
+                          onChanged: (bool? value) {
+                            box.put(
+                              Constants.macOSLeftClickOpensApp,
+                              value ??
+                                  !box.get(
+                                    Constants.macOSLeftClickOpensApp,
+                                    defaultValue: false,
+                                  ),
+                            );
+                          },
+                        ),
+                      ],
                       const SizedBox(height: 12),
                     ],
                   ),
