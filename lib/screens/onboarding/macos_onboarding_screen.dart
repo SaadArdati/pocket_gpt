@@ -55,7 +55,7 @@ class MacOSOnboarding extends StatelessWidget {
                           defaultValue: false,
                         ),
                         title: Text(
-                          'Left-click opens app',
+                          'Open app on left-click',
                           style: context.textTheme.titleSmall,
                         ),
                         subtitle: Text(
