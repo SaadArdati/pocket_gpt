@@ -26,10 +26,10 @@ class NavigationManager {
   final box = Hive.box(Constants.settings);
 
   late final router = GoRouter(
-    initialLocation: '/onboarding',
-    // initialLocation: box.get(Constants.isFirstTime, defaultValue: true)
-    //     ? '/onboarding'
-    //     : '/home',
+    // initialLocation: '/onboarding',
+    initialLocation: box.get(Constants.isFirstTime, defaultValue: true)
+        ? '/onboarding'
+        : '/home',
     routes: [baseRoute],
   );
 
